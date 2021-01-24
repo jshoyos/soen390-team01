@@ -41,6 +41,9 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: Test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
          dotnet test soen390-team01/soen390-team01Tests /p:CollectCoverage=true /p:CoverletOutputFormat="opencover" /p:CoverletOutput="./TestResults/" --verbosity normal
@@ -49,4 +52,8 @@ jobs:
         shell: powershell
         run: dotnet build soen390-team01/soen390-team01.sln
       - name: End Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
         run: .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{secrets.SONAR_TOKEN }}"
