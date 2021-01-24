@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  soen390-team01:
-    image: ${DOCKER_REGISTRY-}soen390team01
-    build:
-      context: .
-      dockerfile: soen390-team01/Dockerfile
