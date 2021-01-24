@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>5e932f78-6669-43fe-8fca-2e4db3995d8b</ProjectGuid>
+    <ProjectGuid>eb84f950-5c09-44b2-a77e-931eed2624ab</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>soen390-team01</DockerServiceName>
