@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soen390-team01", "soen390-team01\soen390-team01.csproj", "{4A2E5CDF-3331-4D65-B0CA-F611E8464DBF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soen390-team01Tests", "soen390-team01Tests\soen390-team01Tests.csproj", "{43DFDE8D-26A0-4004-A653-736C09BC238A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "soen390-team01", "soen390-team01\soen390-team01.csproj", "{4A2E5CDF-3331-4D65-B0CA-F611E8464DBF}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{EB84F950-5C09-44B2-A77E-931EED2624AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soen390-team01Tests", "..\soen390-team01Tests\soen390-team01Tests.csproj", "{A1569FBE-1C0D-4B5A-8B22-D12D4CFD0B29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{4A2E5CDF-3331-4D65-B0CA-F611E8464DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A2E5CDF-3331-4D65-B0CA-F611E8464DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A2E5CDF-3331-4D65-B0CA-F611E8464DBF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{43DFDE8D-26A0-4004-A653-736C09BC238A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43DFDE8D-26A0-4004-A653-736C09BC238A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43DFDE8D-26A0-4004-A653-736C09BC238A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43DFDE8D-26A0-4004-A653-736C09BC238A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB84F950-5C09-44B2-A77E-931EED2624AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB84F950-5C09-44B2-A77E-931EED2624AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB84F950-5C09-44B2-A77E-931EED2624AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB84F950-5C09-44B2-A77E-931EED2624AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1569FBE-1C0D-4B5A-8B22-D12D4CFD0B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1569FBE-1C0D-4B5A-8B22-D12D4CFD0B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1569FBE-1C0D-4B5A-8B22-D12D4CFD0B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1569FBE-1C0D-4B5A-8B22-D12D4CFD0B29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
