@@ -50,4 +50,4 @@ jobs:
           dotnet build soen390-team01/soen390-team01.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
       - name: Test
-        run: dotnet test soen390-team01/soen390-team01.Tests --no-restore --verbosity normal
+        run: dotnet test soen390-team01/soen390-team01Tests --no-restore --verbosity normal
