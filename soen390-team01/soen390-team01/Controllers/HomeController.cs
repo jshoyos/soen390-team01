@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace soen390_team01.Controllers
 {
@@ -13,6 +14,7 @@ namespace soen390_team01.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        [ActivatorUtilitiesConstructor]
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;

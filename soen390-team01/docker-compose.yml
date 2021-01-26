@@ -1,8 +1,36 @@
 version: '3.4'
 
+networks:
+  soen390-team01-network:
+    driver: bridge 
+
 services:
   soen390-team01:
     image: ${DOCKER_REGISTRY-}soen390team01
+    depends_on:
+      - "postgres"
     build:
       context: .
       dockerfile: soen390-team01/Dockerfile
+    environment:
+      DB_CONNECTION_STRING: "host=localhost;port=5431;database=soen390team01devdb;username=soen390team01devuser;password=soen390team01devpassword"
+    networks:
+      - soen390-team01-network  
+  
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5431:5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
+    environment:
+      POSTGRES_USER: "soen390team01devuser"
+      POSTGRES_PASSWORD: "soen390team01devpassword"
+      POSTGRES_DB: "soen390team01devdb"
+    networks:
+      - soen390-team01-network
+
+volumes:
+  db_volume:
