@@ -24,14 +24,6 @@ namespace soen390_team01.Data.Models
         public virtual DbSet<Part> Parts { get; set; }
         public virtual DbSet<PartMaterial> PartMaterials { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")!);
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "en_US.utf8");
