@@ -1,0 +1,2 @@
+using Microsoft.EntityFrameworkCore;namespace soen390_team01.Data
+{    public class ErpDbContext : DbContext    {        public ErpDbContext(DbContextOptions<ErpDbContext> options) : base(options)        {        }    //    public DbSet<Blog> Blogs { get; set; }    //    protected override void OnModelCreating(ModelBuilder modelBuilder)    //    {    //        base.OnModelCreating(modelBuilder);    //        new BlogMap(modelBuilder.Entity<Blog>());    //    }    }}
