@@ -20,16 +20,9 @@ namespace soen390_team01.Services
             try
             {
                 var auth = await _ap.SignInWithEmailAndPasswordAsync(email, password);
-                if (auth.User != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return auth.User != null;
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return false;
             }
