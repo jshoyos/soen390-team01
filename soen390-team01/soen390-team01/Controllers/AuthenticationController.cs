@@ -16,17 +16,16 @@ namespace soen390_team01.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Model = Input;
             return View();
         }
         [TempData]
         public string StringErrorMessage { get; set; }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = AuthenticateUser(ViewData["Email"].ToString(), ViewData["Password"].ToString());
+                var user = AuthenticateUser(model.Email, model.Password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");

@@ -31,7 +31,6 @@ namespace soen390_team01.Services
             }
             catch(Exception e)
             {
-                Debug.Assert(false, "fail on the authentication" + e.Message);
                 return false;
             }
 
