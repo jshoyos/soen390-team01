@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System;
@@ -13,7 +14,12 @@ namespace soen390_team01.Controllers
         [BindProperty]
         public LoginModel Input { get; set; }
         private AuthenticationService _authService = new AuthenticationService();
-
+        private IDataProtector _provider;
+        
+        public AuthenticationController(IDataProtectionProvider provider)
+        {
+            _provider = provider.CreateProtector("asp.AuthenticationController");
+        }
         public IActionResult Index()
         {
             return View();
@@ -25,7 +31,7 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = AuthenticateUser(model.Email, model.Password);
+                var user = AuthenticateUser(_provider.Protect(model.Email), _provider.Protect(model.Password));
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
