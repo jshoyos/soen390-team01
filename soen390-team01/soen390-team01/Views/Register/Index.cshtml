@@ -1,18 +1,17 @@
-﻿@model soen390_team01.Models.LoginModel
+﻿@model soen390_team01.Models.RegisterModel
 
 @{
-    ViewData["Title"] = "LoginView";
-    Layout = null;
+    ViewData["Title"] = "RegisterView";
 }
 
-<h1>LoginView</h1>
+<h1>RegisterView</h1>
 
-<h4>LoginModel</h4>
+<h4>RegisterModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
-            @using (Html.BeginForm("OnPost", "Authentication", FormMethod.Post))
+            @using (Html.BeginForm("OnPost", "Register", FormMethod.Post))
             {
                 @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
@@ -24,15 +23,13 @@
                     @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                 </div>
-
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
                 <input type="submit" value="Log in" />
             }
         </div>
     </div>
 </div>
-
-<div>
-    <a asp-controller="Authentication"
-       asp-action="ForgotPassword">Forgot Password</a>
-</div>
-

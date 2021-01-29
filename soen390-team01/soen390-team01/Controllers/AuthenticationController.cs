@@ -12,39 +12,78 @@ namespace soen390_team01.Controllers
 {
     public class AuthenticationController : Controller
     {
-        [BindProperty]
-        public LoginModel Input { get; set; }
+        #region fields
+        private string _email;
+        private string _protectedPassword;
         private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
         private IDataProtector _provider;
-        
+        #endregion
+
         public AuthenticationController(IDataProtectionProvider provider)
         {
             _provider = provider.CreateProtector("asp.AuthenticationController");
         }
+
+        #region properties
+        [BindProperty]
+        public LoginModel Input { get; set; }
+        [TempData]
+        public string StringErrorMessage { get; set; }
+        #endregion
+
+        #region Methods
         public IActionResult Index()
         {
             return View();
         }
-        [TempData]
-        public string StringErrorMessage { get; set; }
 
+        public IActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
+
+        public void SendPasswordRequest(LoginModel model)
+        {
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                _authService.RequestPasswordChange(model.Email);
+            }
+            ModelState.AddModelError(string.Empty, "Email cannot be empty");
+        }
         public IActionResult OnPost(LoginModel model)
         {
+            if (validateInput(model.Email, model.Password))
+            _email = model.Email;
+            _protectedPassword = _provider.Protect(model.Password);
+
             if (ModelState.IsValid)
             {
-                var user = AuthenticateUser(model.Email, model.Password);
+                var user = AuthenticateUser(_email, _protectedPassword);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
-                    return View(model);
+                    return LocalRedirect("/");
                 }
-                setAuthCookie(model.Email, this.HttpContext);
+                setAuthCookie(_email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Error");
-                return View();
+                return LocalRedirect("/");
+            }
+        }
+
+        private bool validateInput(string email, string password)
+        {
+            if (!(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password)))
+            {
+                return true;
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Password Field cannot be empty");
+                return false;
             }
         }
 
@@ -82,5 +121,6 @@ namespace soen390_team01.Controllers
         {
             await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
         }
+        #endregion
     }
 }
