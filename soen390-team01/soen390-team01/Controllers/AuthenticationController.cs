@@ -14,7 +14,7 @@ namespace soen390_team01.Controllers
     {
         #region fields
         private string _email;
-        private string _protectedPassword;
+        private string _password;
         private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
         private IDataProtector _provider;
         #endregion
@@ -41,7 +41,10 @@ namespace soen390_team01.Controllers
         {
             return View("ForgotPassword");
         }
-
+        /// <summary>
+        /// Event handler when the user sends a password reset request
+        /// </summary>
+        /// <param name="model"></param>
         public void SendPasswordRequest(LoginModel model)
         {
             if (!string.IsNullOrEmpty(model.Email))
@@ -50,15 +53,21 @@ namespace soen390_team01.Controllers
             }
             ModelState.AddModelError(string.Empty, "Email cannot be empty");
         }
+        /// <summary>
+        /// Event handler when the user presses the button to login.
+        /// Returns to the login page if there is an error with the Authentication otherwise it redirects to the home page
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IActionResult OnPost(LoginModel model)
         {
             if (validateInput(model.Email, model.Password))
             _email = model.Email;
-            _protectedPassword = _provider.Protect(model.Password);
+            _password = model.Password;
 
             if (ModelState.IsValid)
             {
-                var user = AuthenticateUser(_email, _protectedPassword);
+                var user = AuthenticateUser(_email, _password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
@@ -73,7 +82,12 @@ namespace soen390_team01.Controllers
                 return View("Index");
             }
         }
-
+        /// <summary>
+        /// Validates both the email and password fields
+        /// </summary>
+        /// <param name="email">User's email</param>
+        /// <param name="password">User's password</param>
+        /// <returns>true if inputs pass the validation false otherwise</returns>
         private bool validateInput(string email, string password)
         {
             if (!(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password)))
@@ -86,11 +100,17 @@ namespace soen390_team01.Controllers
                 return false;
             }
         }
-
+        /// <summary>
+        /// Authenticates the user with the help of the firebase services
+        /// </summary>
+        /// <param name="email">User's email</param>
+        /// <param name="password">User's password</param>
+        /// <returns>returns the current user</returns>
         private string AuthenticateUser(string email, string password)
         {
             if (_authService.AuthenticateUser(email, password).Result)
             {
+                //TODO: return more than just a string
                 return "User";
             }
             else
@@ -99,7 +119,11 @@ namespace soen390_team01.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Sets the authentication cookie so user is remembered in the browser
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="context"></param>
         private async void setAuthCookie(string email, HttpContext context)
         {
             var claims = new List<Claim>
@@ -116,11 +140,11 @@ namespace soen390_team01.Controllers
 
             await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
-
-        private async void removeAuthCookie(HttpContext context)
-        {
-            await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
-        }
+        // this method might go in another controller later on
+        //private async void removeAuthCookie(HttpContext context)
+        //{
+        //    await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
+        //}
         #endregion
     }
 }
