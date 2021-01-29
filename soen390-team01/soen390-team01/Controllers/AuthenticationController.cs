@@ -62,7 +62,7 @@ namespace soen390_team01.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
-                    return LocalRedirect("/");
+                    return View("Index");
                 }
                 setAuthCookie(_email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
@@ -70,7 +70,7 @@ namespace soen390_team01.Controllers
             else
             {
                 ModelState.AddModelError(string.Empty, "Error");
-                return LocalRedirect("/");
+                return View("Index");
             }
         }
 

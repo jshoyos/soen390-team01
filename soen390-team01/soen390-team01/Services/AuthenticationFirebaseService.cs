@@ -59,7 +59,7 @@ namespace soen390_team01.Services
         /// </summary>
         /// <param name="email">user's email</param>
         /// <returns></returns>
-        public async Task RequestPasswordChange(string email)
+        public async void RequestPasswordChange(string email)
         {
             await _ap.SendPasswordResetEmailAsync(email);
         }
