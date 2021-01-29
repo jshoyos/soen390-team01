@@ -35,7 +35,11 @@ namespace soen390_team01
                 options.Conventions.AuthorizePage("/Home/Privacy");
             });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Authentication/index";
+                    //options.LogoutPath = "";
+                });
             services.AddDbContext<ErpDbContext>(options =>
                 options.UseNpgsql(
                     Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")!

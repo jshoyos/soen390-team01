@@ -1,17 +1,15 @@
 ﻿using Firebase.Auth;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace soen390_team01.Services
 {
-    public class AuthenticationService
+    public class AuthenticationFirebaseService
     {
         private readonly FirebaseAuthProvider _ap;
 
-        public AuthenticationService()
+        public AuthenticationFirebaseService()
         {
             _ap = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD_HlK6kr9gptfYidc7_4Egn7uHwHes2pI"));
         }
@@ -19,8 +17,8 @@ namespace soen390_team01.Services
         /// <summary>
         /// Method used to expose the firebase service of authentication through email and password
         /// </summary>
-        /// <param name="email">user email</param>
-        /// <param name="password">user password</param>
+        /// <param name="email">user's email</param>
+        /// <param name="password">user's password</param>
         /// <returns>boolean wether authentication was succesful or not</returns>
         public async Task<bool> AuthenticateUser(string email, string password)
         {
@@ -39,8 +37,8 @@ namespace soen390_team01.Services
         /// <summary>
         /// Method to expose the firebase service to create an account with email and password
         /// </summary>
-        /// <param name="email">user email</param>
-        /// <param name="password">user password</param>
+        /// <param name="email">user's email</param>
+        /// <param name="password">user's password</param>
         /// <returns>boolean wether the account was succesfully created</returns>
         public async Task<bool> RegisterUser(string email, string password)
         {
@@ -56,6 +54,11 @@ namespace soen390_team01.Services
             }
         }
 
+        /// <summary>
+        /// Method to expose the firebase service to request a password change via email
+        /// </summary>
+        /// <param name="email">user's email</param>
+        /// <returns></returns>
         public async Task RequestPasswordChange(string email)
         {
             await _ap.SendPasswordResetEmailAsync(email);
