@@ -14,7 +14,7 @@ SET default_table_access_method = heap;
 
 
 CREATE TABLE public.bike (
-    bike_id bigint DEFAULT nextval('public.bike_id_seq'::regclass) NOT NULL,
+    item_id bigint DEFAULT nextval('public.bike_id_seq'::regclass) NOT NULL,
     name character varying(64) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL,
@@ -89,7 +89,7 @@ ALTER TABLE public.material_id_seq OWNER TO soen390team01devuser;
 
 
 CREATE TABLE public.material (
-    material_id bigint DEFAULT nextval('public.material_id_seq'::regclass) NOT NULL,
+    item_id bigint DEFAULT nextval('public.material_id_seq'::regclass) NOT NULL,
     name character varying(64) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL
@@ -111,7 +111,7 @@ ALTER TABLE public.part_id_seq OWNER TO soen390team01devuser;
 
 
 CREATE TABLE public.part (
-    part_id bigint DEFAULT nextval('public.part_id_seq'::regclass) NOT NULL,
+    item_id bigint DEFAULT nextval('public.part_id_seq'::regclass) NOT NULL,
     name character varying(6) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL,
@@ -142,7 +142,7 @@ ALTER TABLE ONLY public.bike_part
 
 
 ALTER TABLE ONLY public.bike
-    ADD CONSTRAINT bike_pkey PRIMARY KEY (bike_id);
+    ADD CONSTRAINT bike_pkey PRIMARY KEY (item_id);
 
 
 ALTER TABLE ONLY public.inventory
@@ -155,7 +155,7 @@ ALTER TABLE ONLY public.inventory
 
 
 ALTER TABLE ONLY public.material
-    ADD CONSTRAINT material_pkey PRIMARY KEY (material_id);
+    ADD CONSTRAINT material_pkey PRIMARY KEY (item_id);
 
 
 
@@ -164,7 +164,7 @@ ALTER TABLE ONLY public.part_material
 
 
 ALTER TABLE ONLY public.part
-    ADD CONSTRAINT part_pkey PRIMARY KEY (part_id);
+    ADD CONSTRAINT part_pkey PRIMARY KEY (item_id);
 
 
 
@@ -174,18 +174,18 @@ ALTER TABLE ONLY public.part_material
 
 
 ALTER TABLE ONLY public.bike_part
-    ADD CONSTRAINT bike_part_bike_id_fkey FOREIGN KEY (bike_id) REFERENCES public.bike(bike_id) NOT VALID;
+    ADD CONSTRAINT bike_part_bike_id_fkey FOREIGN KEY (bike_id) REFERENCES public.bike(item_id) NOT VALID;
 
 
 
 ALTER TABLE ONLY public.bike_part
-    ADD CONSTRAINT bike_part_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(part_id) NOT VALID;
+    ADD CONSTRAINT bike_part_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(item_id) NOT VALID;
 
 
 
 ALTER TABLE ONLY public.part_material
-    ADD CONSTRAINT part_material_material_id_fkey FOREIGN KEY (material_id) REFERENCES public.material(material_id) NOT VALID;
+    ADD CONSTRAINT part_material_material_id_fkey FOREIGN KEY (material_id) REFERENCES public.material(item_id) NOT VALID;
 
 
 ALTER TABLE ONLY public.part_material
-    ADD CONSTRAINT part_material_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(part_id) NOT VALID;
+    ADD CONSTRAINT part_material_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(item_id) NOT VALID;

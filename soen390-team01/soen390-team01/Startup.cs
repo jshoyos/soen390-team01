@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using soen390_team01.Data.Models;
+using soen390_team01.Data;
 
 namespace soen390_team01
 {
