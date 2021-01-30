@@ -16,17 +16,9 @@ namespace soen390_team01.Controllers
         private string _email;
         private string _password;
         private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
-        private IDataProtector _provider;
         #endregion
 
-        public AuthenticationController(IDataProtectionProvider provider)
-        {
-            _provider = provider.CreateProtector("asp.AuthenticationController");
-        }
-
         #region properties
-        [BindProperty]
-        public LoginModel Input { get; set; }
         [TempData]
         public string StringErrorMessage { get; set; }
         #endregion
@@ -61,19 +53,17 @@ namespace soen390_team01.Controllers
         /// <returns></returns>
         public IActionResult OnPost(LoginModel model)
         {
-            if (validateInput(model.Email, model.Password))
-            _email = model.Email;
-            _password = model.Password;
-
-            if (ModelState.IsValid)
+            if (ValidateInput(model) && ModelState.IsValid)
             {
+                _email = model.Email;
+                _password = model.Password;
                 var user = AuthenticateUser(_email, _password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View("Index");
                 }
-                setAuthCookie(_email, this.HttpContext);
+                SetAuthCookie(_email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
             else
@@ -88,15 +78,17 @@ namespace soen390_team01.Controllers
         /// <param name="email">User's email</param>
         /// <param name="password">User's password</param>
         /// <returns>true if inputs pass the validation false otherwise</returns>
-        private bool validateInput(string email, string password)
+        private bool ValidateInput(LoginModel model)
         {
-            if (!(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password)))
+            if (!(string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password)))
             {
                 return true;
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Password Field cannot be empty");
+                ModelState.AddModelError(string.Empty,string.IsNullOrEmpty(model.Email) 
+                    ? "Email field cannot be empty "
+                    : "Password Field cannot be empty");
                 return false;
             }
         }
@@ -124,7 +116,7 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="email"></param>
         /// <param name="context"></param>
-        private async void setAuthCookie(string email, HttpContext context)
+        private async void SetAuthCookie(string email, HttpContext context)
         {
             var claims = new List<Claim>
             {

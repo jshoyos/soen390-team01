@@ -15,20 +15,13 @@ namespace soen390_team01.Controllers
         private string _email;
         private string _password;
         private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
-        private IDataProtector _provider;
         #endregion
 
         #region properties
-        [BindProperty]
-        public RegisterModel registerInput { get; set; }
         [TempData]
         public string StringErrorMessage { get; set; }
         #endregion
 
-        public RegisterController(IDataProtectionProvider provider)
-        {
-            _provider = provider.CreateProtector("asp.RegisterController");
-        }
 
         #region Methods
         public IActionResult Index()
@@ -42,14 +35,10 @@ namespace soen390_team01.Controllers
         /// <returns></returns>
         public IActionResult OnPost(RegisterModel model)
         {
-            if (validateInput(model.Email, model.Password, model.ConfirmPassword))
+            if (ValidateInput(model) && ModelState.IsValid)
             {
                 _email = model.Email;
                 _password = model.Password;
-            }
-
-            if (ModelState.IsValid)
-            {
                 if (AddUser(_email, _password))
                 {
                     return LocalRedirect("/Home/Privacy");
@@ -75,11 +64,16 @@ namespace soen390_team01.Controllers
         /// <param name="password">password</param>
         /// <param name="confirmPassowrd">confirmation of the password</param>
         /// <returns></returns>
-        private bool validateInput(string email, string password, string confirmPassowrd)
+        private bool ValidateInput(RegisterModel model)
         {
-            if (!(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassowrd)))
+            if (!(string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.ConfirmPassword)))
             {
-                if (password.Equals(confirmPassowrd))
+                if (string.IsNullOrEmpty(model.Email))
+                {
+                    ModelState.AddModelError(string.Empty, "Email field cannot be empty");
+                    return false;
+                }
+                if (model.Password.Equals(model.ConfirmPassword))
                 {
                     return true;
                 }
@@ -103,11 +97,7 @@ namespace soen390_team01.Controllers
         /// <returns></returns>
         private bool AddUser(string email, string password)
         {
-            if (_authService.RegisterUser(email, password).Result)
-            {
-                return true;
-            }
-            return false;
+            return _authService.RegisterUser(email, password).Result;
         }
         #endregion
     }
