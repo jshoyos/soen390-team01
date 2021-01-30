@@ -1,0 +1,38 @@
+﻿@model soen390_team01.Models.LoginModel
+
+@{
+    ViewData["Title"] = "LoginView";
+    Layout = null;
+}
+
+<h1>LoginView</h1>
+
+<h4>LoginModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            @using (Html.BeginForm("OnPost", "Authentication", FormMethod.Post))
+            {
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+
+                <input type="submit" value="Log in" />
+            }
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Authentication"
+       asp-action="ForgotPassword">Forgot Password</a>
+</div>
+
