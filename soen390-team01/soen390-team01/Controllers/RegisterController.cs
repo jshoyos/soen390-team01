@@ -18,6 +18,8 @@ namespace soen390_team01.Controllers
         #endregion
 
         #region properties
+        [BindProperty]
+        public RegisterModel registerInput { get; set; }
         [TempData]
         public string StringErrorMessage { get; set; }
         #endregion

@@ -19,6 +19,8 @@ namespace soen390_team01.Controllers
         #endregion
 
         #region properties
+        [BindProperty]
+        public LoginModel Input { get; set; }
         [TempData]
         public string StringErrorMessage { get; set; }
         #endregion
