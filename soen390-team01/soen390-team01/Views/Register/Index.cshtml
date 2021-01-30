@@ -1,0 +1,35 @@
+﻿@model soen390_team01.Models.RegisterModel
+
+@{
+    ViewData["Title"] = "RegisterView";
+}
+
+<h1>RegisterView</h1>
+
+<h4>RegisterModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            @using (Html.BeginForm("OnPost", "Register", FormMethod.Post))
+            {
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+                <input type="submit" value="Add New User" />
+            }
+        </div>
+    </div>
+</div>
