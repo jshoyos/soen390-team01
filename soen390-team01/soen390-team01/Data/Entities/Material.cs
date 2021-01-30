@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace soen390_team01.Data.Models
+namespace soen390_team01.Entities.Models
 {
-    public partial class Material
+    public partial class Material: Items
     {
         public Material()
         {
@@ -13,9 +13,9 @@ namespace soen390_team01.Data.Models
         }
 
         public long MaterialId { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Grade { get; set; }
+        public override string Name { get; set; }
+        public override decimal Price { get; set; }
+        public override string Grade { get; set; }
 
         public virtual ICollection<PartMaterial> PartMaterials { get; set; }
     }
