@@ -68,6 +68,7 @@ namespace soen390_team01.Controllers
         /// <returns></returns>
         private bool ValidateInput(RegisterModel model)
         {
+            // TODO: replace the if-else-blocks with exceptions 
             if (!(string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.ConfirmPassword)))
             {
                 if (string.IsNullOrEmpty(model.Email))
