@@ -13,9 +13,6 @@ namespace soen390_team01.Data.Entities
         }
 
         public string Size { get; set; }
-        
-        
-
         public virtual PartMaterial PartMaterial { get; set; }
         public virtual ICollection<BikePart> BikeParts { get; set; }
     }
