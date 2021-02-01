@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using soen390_team01.Data;
 
 #nullable disable
 
-namespace soen390_team01.Data.Models
+namespace soen390_team01.Data.Entities
 {
-    public partial class Bike
+    public partial class Bike : Item
     {
         public Bike()
         {
             BikeParts = new HashSet<BikePart>();
         }
 
-        public long BikeId { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Grade { get; set; }
         public string Size { get; set; }
 
         public virtual ICollection<BikePart> BikeParts { get; set; }

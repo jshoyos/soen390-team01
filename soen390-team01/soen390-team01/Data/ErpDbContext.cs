@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using soen390_team01.Data.Entities;
 
 #nullable disable
 
-namespace soen390_team01.Data.Models
+namespace soen390_team01.Data
 {
     public partial class ErpDbContext : DbContext
     {
@@ -32,8 +33,8 @@ namespace soen390_team01.Data.Models
             {
                 entity.ToTable("bike");
 
-                entity.Property(e => e.BikeId)
-                    .HasColumnName("bike_id")
+                entity.Property(e => e.ItemId)
+                    .HasColumnName("item_id")
                     .HasDefaultValueSql("nextval('bike_id_seq'::regclass)");
 
                 entity.Property(e => e.Grade)
@@ -109,8 +110,8 @@ namespace soen390_team01.Data.Models
             {
                 entity.ToTable("material");
 
-                entity.Property(e => e.MaterialId)
-                    .HasColumnName("material_id")
+                entity.Property(e => e.ItemId)
+                    .HasColumnName("item_id")
                     .HasDefaultValueSql("nextval('material_id_seq'::regclass)");
 
                 entity.Property(e => e.Grade)
@@ -132,8 +133,8 @@ namespace soen390_team01.Data.Models
             {
                 entity.ToTable("part");
 
-                entity.Property(e => e.PartId)
-                    .HasColumnName("part_id")
+                entity.Property(e => e.ItemId)
+                    .HasColumnName("item_id")
                     .HasDefaultValueSql("nextval('part_id_seq'::regclass)");
 
                 entity.Property(e => e.Grade)

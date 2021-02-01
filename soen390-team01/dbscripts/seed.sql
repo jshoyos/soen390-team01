@@ -14,7 +14,7 @@ SET default_table_access_method = heap;
 
 
 CREATE TABLE public.bike (
-    bike_id bigint DEFAULT nextval('public.bike_id_seq'::regclass) NOT NULL,
+    item_id bigint DEFAULT nextval('public.bike_id_seq'::regclass) NOT NULL,
     name character varying(64) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL,
@@ -28,27 +28,11 @@ ALTER TABLE public.bike OWNER TO soen390team01devuser;
 CREATE TABLE public.bike_part (
     bike_id bigint NOT NULL,
     part_id bigint NOT NULL,
-    part_quantity integer NOT NULL,
-    bike_part_id bigint NOT NULL
+    part_quantity integer NOT NULL
 );
 
 
 ALTER TABLE public.bike_part OWNER TO soen390team01devuser;
-
-
-CREATE SEQUENCE public.bike_part_bike_part_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.bike_part_bike_part_id_seq OWNER TO soen390team01devuser;
-
-
-ALTER SEQUENCE public.bike_part_bike_part_id_seq OWNED BY public.bike_part.bike_part_id;
-
 
 
 CREATE TABLE public.inventory (
@@ -89,7 +73,7 @@ ALTER TABLE public.material_id_seq OWNER TO soen390team01devuser;
 
 
 CREATE TABLE public.material (
-    material_id bigint DEFAULT nextval('public.material_id_seq'::regclass) NOT NULL,
+    item_id bigint DEFAULT nextval('public.material_id_seq'::regclass) NOT NULL,
     name character varying(64) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL
@@ -111,7 +95,7 @@ ALTER TABLE public.part_id_seq OWNER TO soen390team01devuser;
 
 
 CREATE TABLE public.part (
-    part_id bigint DEFAULT nextval('public.part_id_seq'::regclass) NOT NULL,
+    item_id bigint DEFAULT nextval('public.part_id_seq'::regclass) NOT NULL,
     name character varying(6) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL,
@@ -132,17 +116,15 @@ CREATE TABLE public.part_material (
 ALTER TABLE public.part_material OWNER TO soen390team01devuser;
 
 
-ALTER TABLE ONLY public.bike_part ALTER COLUMN bike_part_id SET DEFAULT nextval('public.bike_part_bike_part_id_seq'::regclass);
-
 ALTER TABLE ONLY public.inventory ALTER COLUMN inventory_id SET DEFAULT nextval('public.inventory_inventory_id_seq'::regclass);
 
 
 ALTER TABLE ONLY public.bike_part
-    ADD CONSTRAINT bike_part_pkey PRIMARY KEY (bike_part_id);
+    ADD CONSTRAINT bike_part_pkey PRIMARY KEY (bike_id, part_id);
 
 
 ALTER TABLE ONLY public.bike
-    ADD CONSTRAINT bike_pkey PRIMARY KEY (bike_id);
+    ADD CONSTRAINT bike_pkey PRIMARY KEY (item_id);
 
 
 ALTER TABLE ONLY public.inventory
@@ -153,39 +135,31 @@ ALTER TABLE ONLY public.inventory
     ADD CONSTRAINT inventory_pkey PRIMARY KEY (inventory_id);
 
 
-
 ALTER TABLE ONLY public.material
-    ADD CONSTRAINT material_pkey PRIMARY KEY (material_id);
-
+    ADD CONSTRAINT material_pkey PRIMARY KEY (item_id);
 
 
 ALTER TABLE ONLY public.part_material
-    ADD CONSTRAINT part_material_pkey PRIMARY KEY (part_id);
+    ADD CONSTRAINT part_material_pkey PRIMARY KEY (part_id, material_id);
 
 
 ALTER TABLE ONLY public.part
-    ADD CONSTRAINT part_pkey PRIMARY KEY (part_id);
+    ADD CONSTRAINT part_pkey PRIMARY KEY (item_id);
 
 
-
-ALTER TABLE ONLY public.part_material
-    ADD CONSTRAINT unique_part_material UNIQUE (part_id) INCLUDE (material_id);
+ALTER TABLE ONLY public.bike_part
+    ADD CONSTRAINT bike_part_bike_id_fkey FOREIGN KEY (bike_id) REFERENCES public.bike(item_id) NOT VALID;
 
 
 
 ALTER TABLE ONLY public.bike_part
-    ADD CONSTRAINT bike_part_bike_id_fkey FOREIGN KEY (bike_id) REFERENCES public.bike(bike_id) NOT VALID;
-
-
-
-ALTER TABLE ONLY public.bike_part
-    ADD CONSTRAINT bike_part_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(part_id) NOT VALID;
+    ADD CONSTRAINT bike_part_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(item_id) NOT VALID;
 
 
 
 ALTER TABLE ONLY public.part_material
-    ADD CONSTRAINT part_material_material_id_fkey FOREIGN KEY (material_id) REFERENCES public.material(material_id) NOT VALID;
+    ADD CONSTRAINT part_material_material_id_fkey FOREIGN KEY (material_id) REFERENCES public.material(item_id) NOT VALID;
 
 
 ALTER TABLE ONLY public.part_material
-    ADD CONSTRAINT part_material_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(part_id) NOT VALID;
+    ADD CONSTRAINT part_material_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(item_id) NOT VALID;
