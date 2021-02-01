@@ -7,28 +7,33 @@
 
 <h1>Log in</h1>
 <hr />
-<div class="form-group">
-    @using (Html.BeginForm("OnPost", "Authentication", FormMethod.Post))
-    {
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-        </div>
-        <div class="col-md-10" style="margin-top:15px">
-            <div class="row">
-                <button type="submit" class="btn btn-primary btn-lg">Log in</button>
-                <a asp-controller="Authentication"
-                   asp-action="ForgotPassword" style="margin-top:10px; margin-left:15px">Forgot Password</a>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            @using (Html.BeginForm("OnPost", "Authentication", FormMethod.Post))
+            {
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-10" style="margin-top:15px; margin-left:20px">
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary btn-lg">Log in</button>
+                        <a asp-controller="Authentication"
+                           asp-action="ForgotPassword" style="margin-top:10px; margin-left:15px">Forgot Password</a>
+                    </div>
+                </div>
 
-    }
+            }
+
+        </div>
+    </div>
 </div>
 
 
