@@ -9,17 +9,6 @@ namespace soen390_team01.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        [ActivatorUtilitiesConstructor]
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
-        public HomeController()
-        {
-        }
         [Authorize]
         public IActionResult Index()
         {

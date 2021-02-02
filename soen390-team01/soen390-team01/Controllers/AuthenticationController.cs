@@ -13,9 +13,7 @@ namespace soen390_team01.Controllers
     public class AuthenticationController : Controller
     {
         #region fields
-        private string _email;
-        private string _password;
-        private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
+        private readonly AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
         #endregion
 
         #region properties
@@ -45,15 +43,15 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                _email = model.Email;
-                _password = model.Password;
-                var user = AuthenticateUser(_email, _password);
+                string email = model.Email;
+                string password = model.Password;
+                var user = AuthenticateUser(email, password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View(model);
                 }
-                SetAuthCookie(_email, this.HttpContext);
+                SetAuthCookie(email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
             else

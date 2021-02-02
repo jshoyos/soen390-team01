@@ -7,9 +7,7 @@ namespace soen390_team01.Controllers
     public class RegisterController : Controller
     {
         #region fields
-        private string _email;
-        private string _password;
-        private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
+        private readonly AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
         #endregion
 
         #region properties
@@ -36,9 +34,7 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                _email = model.Email;
-                _password = model.Password;
-                if (AddUser(_email, _password))
+                if (AddUser(model))
                 {
                     return LocalRedirect("/Home/Privacy");
                 }
@@ -52,9 +48,9 @@ namespace soen390_team01.Controllers
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        private bool AddUser(string email, string password)
+        private bool AddUser(RegisterModel model)
         {
-            return _authService.RegisterUser(email, password).Result;
+            return _authService.RegisterUser(model.Email, model.Password).Result;
         }
         #endregion
     }
