@@ -19,13 +19,14 @@ namespace soen390_team01.Controllers
 
         #region properties
         [BindProperty]
-        public RegisterModel registerInput { get; set; }
+        public RegisterModel RegisterInput { get; set; }
         [TempData]
         public string StringErrorMessage { get; set; }
         #endregion
 
 
         #region Methods
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
@@ -35,9 +36,10 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IActionResult OnPost(RegisterModel model)
+        [HttpPost]
+        public IActionResult Index(RegisterModel model)
         {
-            if (ValidateInput(model) && ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _email = model.Email;
                 _password = model.Password;
@@ -45,53 +47,10 @@ namespace soen390_team01.Controllers
                 {
                     return LocalRedirect("/Home/Privacy");
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "The account failed to be created");
-                    return View("Index");
-                }
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error");
-                return View();
-            }
+            return View();
         }
-        /// <summary>
-        /// Validates the inputs to Register a new user
-        /// Checks that all the fields are completed
-        /// Checks that both the password and the confirmation of the password match
-        /// </summary>
-        /// <param name="email">email</param>
-        /// <param name="password">password</param>
-        /// <param name="confirmPassowrd">confirmation of the password</param>
-        /// <returns></returns>
-        private bool ValidateInput(RegisterModel model)
-        {
-            // TODO: replace the if-else-blocks with exceptions 
-            if (!(string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.ConfirmPassword)))
-            {
-                if (string.IsNullOrEmpty(model.Email))
-                {
-                    ModelState.AddModelError(string.Empty, "Email field cannot be empty");
-                    return false;
-                }
-                if (model.Password.Equals(model.ConfirmPassword))
-                {
-                    return true;
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Passwords do not match");
-                    return false;
-                }
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Password Field cannot be empty");
-                return false;
-            }
-        }
+
         /// <summary>
         /// Uses the firebase service to add the user with email and password
         /// </summary>
