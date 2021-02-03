@@ -25,7 +25,7 @@ namespace soen390_team01.Services
         public List<Inventory> GetAllBikes()
         {
             return _context.Inventories
-                                .Where(inv => inv.Type.Equals("Bike"))
+                                .Where(inv => inv.Type.Equals("bike"))
                                 .ToList();
         }
         /// <summary>

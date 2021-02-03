@@ -27,7 +27,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        public IActionResult BikeTab(InventoryModel model)
+        public IActionResult Index(InventoryModel model)
         {
             model.inventoryList = _invService.GetAllBikes();
             return View(model);
