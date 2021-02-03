@@ -21,31 +21,22 @@ namespace soen390_team01.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpPost]
         public IActionResult Index(InventoryModel model)
         {
-            model.inventoryList = _invService.GetAllBikes();
+            model.BikeList = _invService.GetAllBikes();
+            model.PartList = _invService.GetAllParts();
+            model.MaterialList = _invService.GetAllMaterials();
             return View(model);
         }
 
-        [HttpPost]
-        public IActionResult PartTab(InventoryModel model)
-        {
-            model.inventoryList = _invService.GetAllParts();
-            return View(model);
-        }
-        [HttpPost]
-        public IActionResult MaterialTab(InventoryModel model)
-        {
-            model.inventoryList = _invService.GetAllMaterials();
-            return View(model);
-        }
+        //[HttpPost]
+        //public IActionResult Index(InventoryModel model)
+        //{
 
+        //    return View(model);
+        //}
+
+      
         [HttpPost]
         public IActionResult AddItem(InventoryModel model)
         {

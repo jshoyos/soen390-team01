@@ -35,7 +35,7 @@ namespace soen390_team01.Services
         public List<Inventory> GetAllParts()
         {
             return _context.Inventories
-                                .Where(inv => inv.Type.Equals("Part", StringComparison.OrdinalIgnoreCase))
+                                .Where(inv => inv.Type.Equals("part"))
                                 .ToList();
         }
         /// <summary>
@@ -45,7 +45,7 @@ namespace soen390_team01.Services
         public List<Inventory> GetAllMaterials()
         {
             return _context.Inventories
-                                .Where(inv => inv.Type.Equals("Material", StringComparison.OrdinalIgnoreCase))
+                                .Where(inv => inv.Type.Equals("material"))
                                 .ToList();
         }
         /// <summary>
