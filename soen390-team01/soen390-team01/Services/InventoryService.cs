@@ -57,6 +57,20 @@ namespace soen390_team01.Services
         {
             _context.Inventories.Add(item);
         }
+        public void Update(Inventory model)
+        {
+            var item = _context.Inventories.FirstOrDefault(x => x.InventoryId == model.InventoryId);
+
+            if(item != null)
+            {
+                item.ItemId = model.ItemId;
+                item.Quantity = model.Quantity;
+                item.InventoryId = item.InventoryId;
+                item.Type = model.Type;
+                item.Warehouse = model.Warehouse;
+            }
+            _context.SaveChanges();
+        }
 
         public void Dispose()
         {
