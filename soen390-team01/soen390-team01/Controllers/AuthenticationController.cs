@@ -15,9 +15,13 @@ namespace soen390_team01.Controllers
         #region fields
         private string _email;
         private string _password;
-        private AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
+        private AuthenticationFirebaseService _authService;
         #endregion
 
+        public AuthenticationController(AuthenticationFirebaseService authService) 
+        {
+            _authService = authService;
+        }
         #region properties
         [BindProperty]
         public LoginModel Input { get; set; }

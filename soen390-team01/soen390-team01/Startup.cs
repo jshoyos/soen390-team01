@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using soen390_team01.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using soen390_team01.Services;
 
 namespace soen390_team01
 {
@@ -28,6 +29,8 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<AuthenticationFirebaseService>();
+            services.AddScoped<InventoryService>();
             services.AddDataProtection();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();

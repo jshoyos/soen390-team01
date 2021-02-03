@@ -6,12 +6,17 @@
 
 <h1>InventoryView</h1>
 
-<h4>RegisterModel</h4>
+<h4>InventoryModel</h4>
 <hr />
+
+
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
-          
+            <form method="post" asp-controller="Inventory" asp-action="BikeTab" asp-route-returnurl="">
+                <input class="btn btn-primary btn-lg" type="submit" value="test" />
+            </form>
         </div>
     </div>
 </div>
+
