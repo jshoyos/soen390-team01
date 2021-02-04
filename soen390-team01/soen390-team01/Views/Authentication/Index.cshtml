@@ -5,25 +5,28 @@
     Layout = "_AuthenticationLayout";
 }
 
-<h1>Log in</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div style="padding: 30px;">
+    <div class="row">
+        <h1>Log in</h1>
+    </div>
+    <div class="row">
         <div class="form-group">
             <form method="post" asp-controller="Authentication" asp-action="Index" asp-route-returnurl="">
-                <div>
+                <div class="row" style="padding: 10px;">
                     <label asp-for="Email"></label>
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-                <div>
+                <div class="row"  style="padding: 10px;">
                     <label asp-for="Password"></label>
                     <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <input class="btn btn-primary btn-lg" type="submit" value="Login" />
-                <a asp-controller="Authentication"
-                   asp-action="ForgotPassword" style="margin-top:10px; margin-left:15px">Forgot Password</a>
+                <div class="row" style="margin-top:10px;">
+                    <input class="btn btn-primary" type="submit" value="Login" style="margin: 10px;" />
+                    <a class=" btn btn-outline-primary" asp-controller="Authentication" asp-action="ForgotPassword" style="margin: 10px;">Forgot Password</a>
+                </div>
             </form>
         </div>
     </div>
