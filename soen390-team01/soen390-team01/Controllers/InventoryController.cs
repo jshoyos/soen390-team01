@@ -16,12 +16,9 @@ namespace soen390_team01.Controllers
         }
         [Authorize]
         [HttpGet]
-        public IActionResult Index(InventoryModel model)
+        public IActionResult Index()
         {
-            model.BikeList = _invService.GetAllBikes();
-            model.PartList = _invService.GetAllParts();
-            model.MaterialList = _invService.GetAllMaterials();
-            return View(model);
+            return View(_invService.GetInventoryModel());
         }
         /// <summary>
         ///     Action to add item to inventory
@@ -29,7 +26,7 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
 
         [HttpPost]
-        public IActionResult AddItem(InventoryModel model)
+        public IActionResult AddItem([FromBody] InventoryModel model)
         {
             _invService.AddItem(new Inventory
             {
@@ -42,23 +39,13 @@ namespace soen390_team01.Controllers
             return View(model);
         }
         /// <summary>
-        ///     Increments the quantity of an item
+        ///     Changes the quantity of an item
         /// </summary>
-        /// <param name="model"></param>
-        public IActionResult Increment(Inventory inventory)
+        /// <param name="inventory"></param>
+        [HttpPost]
+        public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {
-            inventory.Quantity++;
-            _invService.Update(inventory);
-
-            return Redirect("/Inventory");
-        }
-        /// <summary>
-        ///     Decrements the quantity of an item
-        /// </summary>
-        /// <param name="model"></param>
-        public IActionResult Decrement(Inventory inventory)
-        {
-            if (--inventory.Quantity >= 0)
+            if (inventory.Quantity >= 0)
             {
                 _invService.Update(inventory);
             }
@@ -67,7 +54,7 @@ namespace soen390_team01.Controllers
                 ModelState.AddModelError(string.Empty, "Quantity below 0");
             }
 
-            return Redirect("/Inventory");
+            return PartialView("InventoryItem", inventory);
         }
     }
 }
