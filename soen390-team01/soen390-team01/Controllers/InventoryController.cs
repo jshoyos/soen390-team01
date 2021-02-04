@@ -45,36 +45,29 @@ namespace soen390_team01.Controllers
         ///     Increments the quantity of an item
         /// </summary>
         /// <param name="model"></param>
-        
-        public IActionResult Increment(Inventory model)
+        public IActionResult Increment(Inventory inventory)
         {
-            _invService.Update(new Inventory
-            {
-                InventoryId = model.InventoryId,
-                ItemId = model.ItemId,
-                Quantity = model.Quantity + 1,
-                Type = model.Type,
-                Warehouse = model.Warehouse
-            });
- 
-            return LocalRedirect("/Inventory");
+            inventory.Quantity++;
+            _invService.Update(inventory);
+
+            return Redirect("/Inventory");
         }
         /// <summary>
         ///     Decrements the quantity of an item
         /// </summary>
         /// <param name="model"></param>
-        [HttpPost]
-        public IActionResult Decrement(Inventory model)
+        public IActionResult Decrement(Inventory inventory)
         {
-            _invService.Update(new Inventory
+            if (--inventory.Quantity >= 0)
             {
-                InventoryId = model.InventoryId,
-                ItemId = model.ItemId,
-                Quantity = model.Quantity - 1,
-                Type = model.Type,
-                Warehouse = model.Warehouse
-            });
-            return View(model);
+                _invService.Update(inventory);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Quantity below 0");
+            }
+
+            return Redirect("/Inventory");
         }
     }
 }

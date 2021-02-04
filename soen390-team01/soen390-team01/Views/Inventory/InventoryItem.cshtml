@@ -1,0 +1,17 @@
+﻿@model soen390_team01.Data.Entities.Inventory
+
+<tr id="itemRow">
+    <td>@Model.ItemId</td>
+    <td>@Model.Type</td>
+    <td>@Model.Warehouse</td>
+    <td>@Model.InventoryId</td>
+    <td>
+        <div class="quantity">
+            <button class="button-minus" onclick="">-</button>
+            <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@Model.Quantity" maxlength="1" size="1">
+            <button id="incrementButton" class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", Model)'">+</button>
+
+        </div>
+    </td>
+</tr>
+

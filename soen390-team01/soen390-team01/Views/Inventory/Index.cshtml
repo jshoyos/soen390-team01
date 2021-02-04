@@ -214,32 +214,28 @@
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
+                    <td><u>ItemId</u></td>
                     <td><u>Type</u></td>
                     <td><u>Warehouse</u></td>
-                    <td><u>InventoryID</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
 
                 @foreach (var item in Model.BikeList)
                 {
                     <tr>
+                        <td>@item.InventoryId</td>
                         <td>@item.ItemId</td>
                         <td>@item.Type</td>
                         <td>@item.Warehouse</td>
-                        <td>@item.InventoryId</td>
                         <td>
                             <div class="quantity">
-                                <button class="button-minus" onclick="">-</button>
+                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
                                 <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
                                 <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
-                                @*<input type="button"
-                                       value="Go Somewhere Else"
-                                       onclick="location.href='@Url.Action(" Increment", "Inventory", item )'" />*@
                             </div>
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
 
@@ -248,29 +244,28 @@
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
+                    <td><u>ItemId</u></td>
                     <td><u>Type</u></td>
                     <td><u>Warehouse</u></td>
-                    <td><u>InventoryID</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
 
                 @foreach (var item in Model.PartList)
                 {
                     <tr>
+                        <td>@item.InventoryId</td>
                         <td>@item.ItemId</td>
                         <td>@item.Type</td>
                         <td>@item.Warehouse</td>
-                        <td>@item.InventoryId</td>
                         <td>
                             <div class="quantity">
-                                <button class="button-minus" onclick="">-</button>
+                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
                                 <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
-                                <button class="button-plus" onclick="">+</button>
+                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
                             </div>
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
 
@@ -279,29 +274,28 @@
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
+                    <td><u>ItemId</u></td>
                     <td><u>Type</u></td>
                     <td><u>Warehouse</u></td>
-                    <td><u>InventoryID</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
 
                 @foreach (var item in Model.MaterialList)
                 {
                     <tr>
+                        <td>@item.InventoryId</td>
                         <td>@item.ItemId</td>
                         <td>@item.Type</td>
                         <td>@item.Warehouse</td>
-                        <td>@item.InventoryId</td>
                         <td>
                             <div class="quantity">
-                                <button class="button-minus" onclick="">-</button>
+                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
                                 <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
-                                <button class="button-plus" onclick="">+</button>
+                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
                             </div>
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
 
