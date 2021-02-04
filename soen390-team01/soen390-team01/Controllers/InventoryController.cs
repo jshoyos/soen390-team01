@@ -45,8 +45,8 @@ namespace soen390_team01.Controllers
         ///     Increments the quantity of an item
         /// </summary>
         /// <param name="model"></param>
-        [HttpPost]
-        public IActionResult Increment(InventoryModel model)
+        
+        public IActionResult Increment(Inventory model)
         {
             _invService.Update(new Inventory
             {
@@ -57,14 +57,14 @@ namespace soen390_team01.Controllers
                 Warehouse = model.Warehouse
             });
  
-            return View(model);
+            return LocalRedirect("/Inventory");
         }
         /// <summary>
         ///     Decrements the quantity of an item
         /// </summary>
         /// <param name="model"></param>
         [HttpPost]
-        public IActionResult Decrement(InventoryModel model)
+        public IActionResult Decrement(Inventory model)
         {
             _invService.Update(new Inventory
             {
