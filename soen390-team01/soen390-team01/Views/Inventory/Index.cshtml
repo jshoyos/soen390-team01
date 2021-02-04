@@ -9,6 +9,11 @@
         div.inventory-view::after { visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
         * html .clearfix {zoom: 1;}
         *:first-child + html .clearfix {zoom: 1;}
+
+        div.quantity::after {visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+        * html .clearfix {zoom: 1;}
+        *:first-child + html .clearfix {zoom: 1;}
+
         div.inventory-view {
             border-style: solid;
             border-width: thin;
@@ -35,7 +40,6 @@
             background-color: white;
         }
 
-        /* Style the buttons that are used to open the tab content */
         #matButton {
             background-color: white;
             float: left;
@@ -58,32 +62,69 @@
             width: 33.3%;
         }
 
-        
         .bike-components {
             width:78.7%;
         }
 
-        /* Change background color of buttons on hover */
         #bikeButton:hover, #partButton:hover, #matButton:hover {
             background-color: #ccc;
         }
 
-        /* Create an active/current tablink class */
         #bikeButton.active, #partButton.active, #matButton.active {
             background-color: #ccc;
         }
 
-        /* Style the tab content */
         .tabcontent {
             display: none;
             padding: 6px 12px;
             border: 1px solid #ccc;
             border-top: none;
+            height: 400px;
+        }
+
+        .scroll{
+            color: lightgray;
+        }
+
+        .quantity {
+            border-style:solid; 
+            border-color:black; 
+            border-width:thin; 
+            width:114px; 
+            border-radius:10px
+        }
+
+        .button-minus {
+            float: left;
+            border: none;
+            height: 28px;
+            background-color: lightgray;
+            width: 28px;
+            border-bottom-left-radius: 10px;
+            border-top-left-radius: 10px
+        }
+
+        .button-plus {
+            float: left;
+            border: none;
+            height: 28px;
+            background-color: lightgray;
+            width: 28px;
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px
+        }
+
+        .quantity-text {
+            float: left;
+            height: 28px;
+            border: none;
+            text-align: center;
+            width: 56px;
         }
     </style>
 
     <script>
-        function openCity(evt, cityName) {
+        function openTab(evt, tableName) {
             // Declare all variables
             var i, tabcontent, tablinks;
 
@@ -100,7 +141,7 @@
             }
 
             // Show the current tab, and add an "active" class to the button that opened the tab
-            document.getElementById(cityName).style.display = "block";
+            document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
         }
     </script>
@@ -112,7 +153,7 @@
         <form action="">
             <p><b>Price</b></p>
             <span>50$</span>
-            <input type="range" min="50" max="500" value="250">
+            <input class="scroll" type="range" min="50" max="500" value="250">
             <span>500$</span>
             <br /><br />
             <p><b>Grade</b></p>
@@ -137,18 +178,18 @@
     </div>
     <div class="bike-components">
         <div class="tab">
-            <button class="tablinks" id ="bikeButton" onclick="openCity(event, 'Bike')">Bike</button>
-            <button class="tablinks" id ="partButton" onclick="openCity(event, 'Part')">Part</button>
-            <button class="tablinks" id ="matButton" onclick="openCity(event, 'Material')">Material</button>
+            <button class="tablinks" id ="bikeButton" onclick="openTab(event, 'Bike')">Bike</button>
+            <button class="tablinks" id ="partButton" onclick="openTab(event, 'Part')">Part</button>
+            <button class="tablinks" id ="matButton" onclick="openTab(event, 'Material')">Material</button>
         </div>
         <!-- Tab content -->
         <div id="Bike" class="tabcontent">
+            <h3>Bikes</h3>
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
                     <td><u>Name</u></td>
                     <td><u>Price</u></td>
-                    <td><u>Name</u></td>
                     <td><u>Grade</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
@@ -160,11 +201,12 @@
                         <td>@item.InventoryId</td>
                         <td>@item.Quantity</td>
                         <td>@item.Type</td>
-                        <td></td>
                         <td>
-                            <button class="button" onclick="" style="border-color:black; border-width:thin">+</button>
-                            <input type="text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
-                            <button class="button" onclick="" style="border-color:black; border-width:thin">-</button>
+                            <div class="quantity">
+                                <button class="button-minus" onclick="">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
+                                <button class="button-plus" onclick="">+</button>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -179,7 +221,6 @@
                     <td><u>Id</u></td>
                     <td><u>Name</u></td>
                     <td><u>Price</u></td>
-                    <td><u>Name</u></td>
                     <td><u>Grade</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
@@ -191,11 +232,12 @@
                         <td>@item.InventoryId</td>
                         <td>@item.Quantity</td>
                         <td>@item.Type</td>
-                        <td></td>
                         <td>
-                            <button class="button" onclick="" style="border-color:black; border-width:thin">+</button>
-                            <input type="text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
-                            <button class="button" onclick="" style="border-color:black; border-width:thin">-</button>
+                            <div class="quantity">
+                                <button class="button-minus" onclick="">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
+                                <button class="button-plus" onclick="">+</button>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -210,7 +252,6 @@
                     <td><u>Id</u></td>
                     <td><u>Name</u></td>
                     <td><u>Price</u></td>
-                    <td><u>Name</u></td>
                     <td><u>Grade</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
@@ -222,11 +263,12 @@
                         <td>@item.InventoryId</td>
                         <td>@item.Quantity</td>
                         <td>@item.Type</td>
-                        <td></td>
                         <td>
-                            <button class="button" onclick="" style="border-color:black; border-width:thin">+</button>
-                            <input type="text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
-                            <button class="button" onclick="" style="border-color:black; border-width:thin">-</button>
+                            <div class="quantity">
+                                <button class="button-minus" onclick="">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
+                                <button class="button-plus" onclick="">+</button>
+                            </div>
                         </td>
                     </tr>
                 }
