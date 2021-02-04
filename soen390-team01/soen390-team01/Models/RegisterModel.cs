@@ -9,6 +9,7 @@ namespace soen390_team01.Models
         public string Email { get; set; }
 
         [Required]
+        [StringLength(999, MinimumLength = 6, ErrorMessage = "The password should be a minimum 6 characters")]
         [Compare("ConfirmPassword", ErrorMessage = "Passwords do not match")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

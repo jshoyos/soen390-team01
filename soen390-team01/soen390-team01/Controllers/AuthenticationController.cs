@@ -13,9 +13,14 @@ namespace soen390_team01.Controllers
     public class AuthenticationController : Controller
     {
         #region fields
+
         private readonly AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
         #endregion
 
+        public AuthenticationController(AuthenticationFirebaseService authService) 
+        {
+            _authService = authService;
+        }
         #region properties
         [BindProperty]
         public LoginModel Input { get; set; }
