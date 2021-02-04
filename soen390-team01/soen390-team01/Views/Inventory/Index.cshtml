@@ -6,13 +6,39 @@
 
 <head>
     <style>
-        div.inventory-view::after { visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
-        * html .clearfix {zoom: 1;}
-        *:first-child + html .clearfix {zoom: 1;}
+        div.inventory-view::after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0;
+        }
 
-        div.quantity::after {visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
-        * html .clearfix {zoom: 1;}
-        *:first-child + html .clearfix {zoom: 1;}
+        * html .clearfix {
+            zoom: 1;
+        }
+
+        *:first-child + html .clearfix {
+            zoom: 1;
+        }
+
+        div.quantity::after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0;
+        }
+
+        * html .clearfix {
+            zoom: 1;
+        }
+
+        *:first-child + html .clearfix {
+            zoom: 1;
+        }
 
         div.inventory-view {
             border-style: solid;
@@ -30,7 +56,7 @@
             border-style: solid;
             border-color: lightgrey;
             padding: 10px;
-            border-width:thin;
+            border-width: thin;
             float: right;
         }
 
@@ -51,7 +77,7 @@
             width: 33.4%;
         }
 
-        #bikeButton,#partButton {
+        #bikeButton, #partButton {
             background-color: white;
             float: left;
             border: none;
@@ -63,7 +89,7 @@
         }
 
         .bike-components {
-            width:78.7%;
+            width: 78.7%;
         }
 
         #bikeButton:hover, #partButton:hover, #matButton:hover {
@@ -82,16 +108,16 @@
             height: 400px;
         }
 
-        .scroll{
+        .scroll {
             color: lightgray;
         }
 
         .quantity {
-            border-style:solid; 
-            border-color:black; 
-            border-width:thin; 
-            width:114px; 
-            border-radius:10px
+            border-style: solid;
+            border-color: black;
+            border-width: thin;
+            width: 114px;
+            border-radius: 10px
         }
 
         .button-minus {
@@ -178,9 +204,9 @@
     </div>
     <div class="bike-components">
         <div class="tab">
-            <button class="tablinks" id ="bikeButton" onclick="openTab(event, 'Bike')">Bike</button>
-            <button class="tablinks" id ="partButton" onclick="openTab(event, 'Part')">Part</button>
-            <button class="tablinks" id ="matButton" onclick="openTab(event, 'Material')">Material</button>
+            <button class="tablinks" id="bikeButton" onclick="openTab(event, 'Bike')">Bike</button>
+            <button class="tablinks" id="partButton" onclick="openTab(event, 'Part')">Part</button>
+            <button class="tablinks" id="matButton" onclick="openTab(event, 'Material')">Material</button>
         </div>
         <!-- Tab content -->
         <div id="Bike" class="tabcontent">
@@ -188,29 +214,28 @@
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
-                    <td><u>Name</u></td>
-                    <td><u>Price</u></td>
-                    <td><u>Grade</u></td>
+                    <td><u>ItemId</u></td>
+                    <td><u>Type</u></td>
+                    <td><u>Warehouse</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
 
                 @foreach (var item in Model.BikeList)
                 {
                     <tr>
-                        <td>@item.ItemId</td>
                         <td>@item.InventoryId</td>
-                        <td>@item.Quantity</td>
+                        <td>@item.ItemId</td>
                         <td>@item.Type</td>
+                        <td>@item.Warehouse</td>
                         <td>
                             <div class="quantity">
-                                <button class="button-minus" onclick="">-</button>
-                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
-                                <button class="button-plus" onclick="">+</button>
+                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
+                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
                             </div>
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
 
@@ -219,29 +244,28 @@
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
-                    <td><u>Name</u></td>
-                    <td><u>Price</u></td>
-                    <td><u>Grade</u></td>
+                    <td><u>ItemId</u></td>
+                    <td><u>Type</u></td>
+                    <td><u>Warehouse</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
 
                 @foreach (var item in Model.PartList)
                 {
                     <tr>
-                        <td>@item.ItemId</td>
                         <td>@item.InventoryId</td>
-                        <td>@item.Quantity</td>
+                        <td>@item.ItemId</td>
                         <td>@item.Type</td>
+                        <td>@item.Warehouse</td>
                         <td>
                             <div class="quantity">
-                                <button class="button-minus" onclick="">-</button>
-                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
-                                <button class="button-plus" onclick="">+</button>
+                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
+                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
                             </div>
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
 
@@ -250,31 +274,30 @@
             <table class="table" width="100%">
                 <tr>
                     <td><u>Id</u></td>
-                    <td><u>Name</u></td>
-                    <td><u>Price</u></td>
-                    <td><u>Grade</u></td>
+                    <td><u>ItemId</u></td>
+                    <td><u>Type</u></td>
+                    <td><u>Warehouse</u></td>
                     <td><u>Quantity</u></td>
                 </tr>
 
                 @foreach (var item in Model.MaterialList)
                 {
                     <tr>
-                        <td>@item.ItemId</td>
                         <td>@item.InventoryId</td>
-                        <td>@item.Quantity</td>
+                        <td>@item.ItemId</td>
                         <td>@item.Type</td>
+                        <td>@item.Warehouse</td>
                         <td>
                             <div class="quantity">
-                                <button class="button-minus" onclick="">-</button>
-                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
-                                <button class="button-plus" onclick="">+</button>
+                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
+                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
                             </div>
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
-        
+
     </div>
 </div>

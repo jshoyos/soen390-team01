@@ -26,6 +26,7 @@ namespace soen390_team01.Services
         {
             return _context.Inventories
                                 .Where(inv => inv.Type.Equals("bike"))
+                                .OrderBy(inv => inv.InventoryId)
                                 .ToList();
         }
         /// <summary>
@@ -36,6 +37,7 @@ namespace soen390_team01.Services
         {
             return _context.Inventories
                                 .Where(inv => inv.Type.Equals("part"))
+                                .OrderBy(inv => inv.InventoryId)
                                 .ToList();
         }
         /// <summary>
@@ -46,6 +48,7 @@ namespace soen390_team01.Services
         {
             return _context.Inventories
                                 .Where(inv => inv.Type.Equals("material"))
+                                .OrderBy(inv => inv.InventoryId)
                                 .ToList();
         }
         /// <summary>
@@ -56,6 +59,11 @@ namespace soen390_team01.Services
         public void AddItem(Inventory item)
         {
             _context.Inventories.Add(item);
+        }
+        public void Update(Inventory updatedInventory)
+        {
+            _context.Inventories.Update(updatedInventory);
+            _context.SaveChanges();
         }
 
         public void Dispose()
