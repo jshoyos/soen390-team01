@@ -14,7 +14,7 @@ namespace soen390_team01.Controllers
     {
         #region fields
 
-        private readonly AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
+        private readonly AuthenticationFirebaseService _authService;
         #endregion
 
         public AuthenticationController(AuthenticationFirebaseService authService) 
