@@ -55,6 +55,7 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasMaxLength(4)
                     .HasColumnName("size");
+                entity.HasKey(e => e.ItemId);
             });
 
             modelBuilder.Entity<BikePart>(entity =>
@@ -127,6 +128,7 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Price)
                     .HasColumnType("money")
                     .HasColumnName("price");
+                entity.HasKey(e => e.ItemId);
             });
 
             modelBuilder.Entity<Part>(entity =>
@@ -155,6 +157,7 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasMaxLength(4)
                     .HasColumnName("size");
+                entity.HasKey(e => e.ItemId);
             });
 
             modelBuilder.Entity<PartMaterial>(entity =>

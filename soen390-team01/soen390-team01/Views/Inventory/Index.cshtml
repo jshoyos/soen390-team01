@@ -1,0 +1,280 @@
+﻿@model soen390_team01.Models.InventoryModel
+
+@{ViewData["Title"] = "Inventory View";}
+
+
+
+<head>
+    <style>
+        div.inventory-view::after { visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+        * html .clearfix {zoom: 1;}
+        *:first-child + html .clearfix {zoom: 1;}
+
+        div.quantity::after {visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+        * html .clearfix {zoom: 1;}
+        *:first-child + html .clearfix {zoom: 1;}
+
+        div.inventory-view {
+            border-style: solid;
+            border-width: thin;
+            border-color: lightgrey;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        div.bike-components {
+            float: left;
+        }
+
+        div.filer-data {
+            border-style: solid;
+            border-color: lightgrey;
+            padding: 10px;
+            border-width:thin;
+            float: right;
+        }
+
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+
+        #matButton {
+            background-color: white;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            width: 33.4%;
+        }
+
+        #bikeButton,#partButton {
+            background-color: white;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            width: 33.3%;
+        }
+
+        .bike-components {
+            width:78.7%;
+        }
+
+        #bikeButton:hover, #partButton:hover, #matButton:hover {
+            background-color: #ccc;
+        }
+
+        #bikeButton.active, #partButton.active, #matButton.active {
+            background-color: #ccc;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+            height: 400px;
+        }
+
+        .scroll{
+            color: lightgray;
+        }
+
+        .quantity {
+            border-style:solid; 
+            border-color:black; 
+            border-width:thin; 
+            width:114px; 
+            border-radius:10px
+        }
+
+        .button-minus {
+            float: left;
+            border: none;
+            height: 28px;
+            background-color: lightgray;
+            width: 28px;
+            border-bottom-left-radius: 10px;
+            border-top-left-radius: 10px
+        }
+
+        .button-plus {
+            float: left;
+            border: none;
+            height: 28px;
+            background-color: lightgray;
+            width: 28px;
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px
+        }
+
+        .quantity-text {
+            float: left;
+            height: 28px;
+            border: none;
+            text-align: center;
+            width: 56px;
+        }
+    </style>
+
+    <script>
+        function openTab(evt, tableName) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(tableName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</head>
+
+<div class="inventory-view">
+    <div class="filer-data" align="center">
+        <h1 class="display-4" align="center">Filter</h1>
+        <form action="">
+            <p><b>Price</b></p>
+            <span>50$</span>
+            <input class="scroll" type="range" min="50" max="500" value="250">
+            <span>500$</span>
+            <br /><br />
+            <p><b>Grade</b></p>
+            <select name="grade" id="grade" align="center">
+                <option value="grade b">Grade B</option>
+                <option value="grade c">Grade C</option>
+                <option value="high yield">High Yield</option>
+            </select>
+            <br><br />
+            <p><b>Name</b></p>
+            <select name="name" id="name">
+                <option value="road">Road bike</option>
+                <option value="mountain">Mountain bike</option>
+                <option value="hybrid">Hybrid bike</option>
+                <option value="cyclocross">Cyclocross bike</option>
+                <option value="folding">Folding bike</option>
+            </select>
+            <br><br />
+            <input type="submit" value="Filter">
+
+        </form>
+    </div>
+    <div class="bike-components">
+        <div class="tab">
+            <button class="tablinks" id ="bikeButton" onclick="openTab(event, 'Bike')">Bike</button>
+            <button class="tablinks" id ="partButton" onclick="openTab(event, 'Part')">Part</button>
+            <button class="tablinks" id ="matButton" onclick="openTab(event, 'Material')">Material</button>
+        </div>
+        <!-- Tab content -->
+        <div id="Bike" class="tabcontent">
+            <h3>Bikes</h3>
+            <table class="table" width="100%">
+                <tr>
+                    <td><u>Id</u></td>
+                    <td><u>Name</u></td>
+                    <td><u>Price</u></td>
+                    <td><u>Grade</u></td>
+                    <td><u>Quantity</u></td>
+                </tr>
+
+                @foreach (var item in Model.BikeList)
+                {
+                    <tr>
+                        <td>@item.ItemId</td>
+                        <td>@item.InventoryId</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Type</td>
+                        <td>
+                            <div class="quantity">
+                                <button class="button-minus" onclick="">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
+                                <button class="button-plus" onclick="">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div id="Part" class="tabcontent">
+            <h3>Parts</h3>
+            <table class="table" width="100%">
+                <tr>
+                    <td><u>Id</u></td>
+                    <td><u>Name</u></td>
+                    <td><u>Price</u></td>
+                    <td><u>Grade</u></td>
+                    <td><u>Quantity</u></td>
+                </tr>
+
+                @foreach (var item in Model.PartList)
+                {
+                    <tr>
+                        <td>@item.ItemId</td>
+                        <td>@item.InventoryId</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Type</td>
+                        <td>
+                            <div class="quantity">
+                                <button class="button-minus" onclick="">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
+                                <button class="button-plus" onclick="">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div id="Material" class="tabcontent">
+            <h3>Material</h3>
+            <table class="table" width="100%">
+                <tr>
+                    <td><u>Id</u></td>
+                    <td><u>Name</u></td>
+                    <td><u>Price</u></td>
+                    <td><u>Grade</u></td>
+                    <td><u>Quantity</u></td>
+                </tr>
+
+                @foreach (var item in Model.MaterialList)
+                {
+                    <tr>
+                        <td>@item.ItemId</td>
+                        <td>@item.InventoryId</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Type</td>
+                        <td>
+                            <div class="quantity">
+                                <button class="button-minus" onclick="">-</button>
+                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="7" maxlength="1" size="1">
+                                <button class="button-plus" onclick="">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+        
+    </div>
+</div>
