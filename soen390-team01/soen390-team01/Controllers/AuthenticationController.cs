@@ -1,21 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace soen390_team01.Controllers
 {
     public class AuthenticationController : Controller
     {
         #region fields
-        private string _email;
-        private string _password;
-        private AuthenticationFirebaseService _authService;
+
+        private readonly AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
         #endregion
 
         public AuthenticationController(AuthenticationFirebaseService authService) 
@@ -30,74 +29,73 @@ namespace soen390_team01.Controllers
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Get for the login
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult ForgotPassword()
-        {
-            return View("ForgotPassword");
-        }
         /// <summary>
-        /// Event handler when the user sends a password reset request
-        /// </summary>
-        /// <param name="model"></param>
-        public void SendPasswordRequest(LoginModel model)
-        {
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                _authService.RequestPasswordChange(model.Email);
-            }
-            ModelState.AddModelError(string.Empty, "Email cannot be empty");
-        }
-        /// <summary>
-        /// Event handler when the user presses the button to login.
-        /// Returns to the login page if there is an error with the Authentication otherwise it redirects to the home page
+        /// Post action for the login submit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IActionResult OnPost(LoginModel model)
+        [HttpPost]
+        public IActionResult Index(LoginModel model)
         {
-            if (ValidateInput(model) && ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _email = model.Email;
-                _password = model.Password;
-                var user = AuthenticateUser(_email, _password);
+                string email = model.Email;
+                string password = model.Password;
+                var user = AuthenticateUser(email, password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
-                    return View("Index");
+                    return View(model);
                 }
-                SetAuthCookie(_email, this.HttpContext);
+                SetAuthCookie(email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Error");
-                return View("Index");
+                return View(model);
             }
         }
+
         /// <summary>
-        /// Validates both the email and password fields
+        /// Get for the Forgot Password
         /// </summary>
-        /// <param name="email">User's email</param>
-        /// <param name="password">User's password</param>
-        /// <returns>true if inputs pass the validation false otherwise</returns>
-        private bool ValidateInput(LoginModel model)
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult ForgotPassword()
         {
-            if (!(string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password)))
+            return View();
+        }
+
+        /// <summary>
+        /// Post action for the forgot password
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(LoginModel model)
+        {
+            if (!string.IsNullOrEmpty(model.Email))
             {
-                return true;
+                await _authService.RequestPasswordChange(model.Email);
+                return LocalRedirect("/Authentication/Index");
             }
             else
             {
-                ModelState.AddModelError(string.Empty,string.IsNullOrEmpty(model.Email) 
-                    ? "Email field cannot be empty "
-                    : "Password Field cannot be empty");
-                return false;
+                //ModelState.AddModelError(string.Empty, "Email cannot be empty");
+                return View(model);
             }
         }
+
         /// <summary>
         /// Authenticates the user with the help of the firebase services
         /// </summary>
@@ -122,7 +120,7 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="email"></param>
         /// <param name="context"></param>
-        private async void SetAuthCookie(string email, HttpContext context)
+        private static async void SetAuthCookie(string email, HttpContext context)
         {
             var claims = new List<Claim>
             {
