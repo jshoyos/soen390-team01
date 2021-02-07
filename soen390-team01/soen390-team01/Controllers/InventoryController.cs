@@ -14,14 +14,15 @@ namespace soen390_team01.Controllers
         {
             _invService = invService;
         }
+
         [Authorize]
         [HttpGet]
         public IActionResult Index()
         {
-            return View(_invService.GetInventoryModel());
+            return View("Index", _invService.GetInventoryModel());
         }
         /// <summary>
-        ///     Action to add item to inventory
+        /// Action to add item to inventory
         /// </summary>
         /// <param name="model"></param>
 
@@ -36,12 +37,12 @@ namespace soen390_team01.Controllers
                 Type = model.Type,
                 Warehouse = model.Warehouse
             });
-            return View(model);
+            return View("Index", model);
         }
         /// <summary>
-        ///     Changes the quantity of an item
+        /// Changes the quantity of an item
         /// </summary>
-        /// <param name="inventory"></param>
+        /// <param name="inventory">updated inventory item</param>
         [HttpPost]
         public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {
