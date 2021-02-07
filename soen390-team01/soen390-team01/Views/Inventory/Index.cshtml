@@ -2,153 +2,25 @@
 
 @{ViewData["Title"] = "Inventory View";}
 
-
-
 <head>
-    <style>
-        div.inventory-view::after {
-            visibility: hidden;
-            display: block;
-            font-size: 0;
-            content: " ";
-            clear: both;
-            height: 0;
-        }
-
-        * html .clearfix {
-            zoom: 1;
-        }
-
-        *:first-child + html .clearfix {
-            zoom: 1;
-        }
-
-        div.quantity::after {
-            visibility: hidden;
-            display: block;
-            font-size: 0;
-            content: " ";
-            clear: both;
-            height: 0;
-        }
-
-        * html .clearfix {
-            zoom: 1;
-        }
-
-        *:first-child + html .clearfix {
-            zoom: 1;
-        }
-
-        div.inventory-view {
-            border-style: solid;
-            border-width: thin;
-            border-color: lightgrey;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        div.bike-components {
-            float: left;
-        }
-
-        div.filer-data {
-            border-style: solid;
-            border-color: lightgrey;
-            padding: 10px;
-            border-width: thin;
-            float: right;
-        }
-
-        .tab {
-            overflow: hidden;
-            border: 1px solid #ccc;
-            background-color: white;
-        }
-
-        #matButton {
-            background-color: white;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-            width: 33.4%;
-        }
-
-        #bikeButton, #partButton {
-            background-color: white;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-            width: 33.3%;
-        }
-
-        .bike-components {
-            width: 78.7%;
-        }
-
-        #bikeButton:hover, #partButton:hover, #matButton:hover {
-            background-color: #ccc;
-        }
-
-        #bikeButton.active, #partButton.active, #matButton.active {
-            background-color: #ccc;
-        }
-
-        .tabcontent {
-            display: none;
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            border-top: none;
-            height: 400px;
-        }
-
-        .scroll {
-            color: lightgray;
-        }
-
-        .quantity {
-            border-style: solid;
-            border-color: black;
-            border-width: thin;
-            width: 114px;
-            border-radius: 10px
-        }
-
-        .button-minus {
-            float: left;
-            border: none;
-            height: 28px;
-            background-color: lightgray;
-            width: 28px;
-            border-bottom-left-radius: 10px;
-            border-top-left-radius: 10px
-        }
-
-        .button-plus {
-            float: left;
-            border: none;
-            height: 28px;
-            background-color: lightgray;
-            width: 28px;
-            border-bottom-right-radius: 10px;
-            border-top-right-radius: 10px
-        }
-
-        .quantity-text {
-            float: left;
-            height: 28px;
-            border: none;
-            text-align: center;
-            width: 56px;
-        }
-    </style>
-
+    <link rel="stylesheet" href="\css\Inventory.css">
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function changeQuantity(inv, change) {
+            inv.Quantity += change;
+            $.ajax({
+                url: '@Url.Action("ChangeQuantity", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(inv),
+                dataType: 'html',
+                success: function (result) {
+                    $('.itemRow' + inv.InventoryId).html(result);
+                }
+            });
+        };
+    </script>
     <script>
         function openTab(evt, tableName) {
             // Declare all variables
@@ -204,99 +76,37 @@
     </div>
     <div class="bike-components">
         <div class="tab">
+            <button class="tablinks active" id="allButton" onclick="openTab(event, 'All')">All</button>
+        </div>
+        <div class="tab">
             <button class="tablinks" id="bikeButton" onclick="openTab(event, 'Bike')">Bike</button>
             <button class="tablinks" id="partButton" onclick="openTab(event, 'Part')">Part</button>
             <button class="tablinks" id="matButton" onclick="openTab(event, 'Material')">Material</button>
         </div>
+        <div id="All" class="tabcontent" style="display: block">
+
+            <h3>All</h3>
+
+            @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
+        </div>
         <!-- Tab content -->
         <div id="Bike" class="tabcontent">
-            <h3>Bikes</h3>
-            <table class="table" width="100%">
-                <tr>
-                    <td><u>Id</u></td>
-                    <td><u>ItemId</u></td>
-                    <td><u>Type</u></td>
-                    <td><u>Warehouse</u></td>
-                    <td><u>Quantity</u></td>
-                </tr>
 
-                @foreach (var item in Model.BikeList)
-                {
-                    <tr>
-                        <td>@item.InventoryId</td>
-                        <td>@item.ItemId</td>
-                        <td>@item.Type</td>
-                        <td>@item.Warehouse</td>
-                        <td>
-                            <div class="quantity">
-                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
-                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
-                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </table>
+            <h3>Bikes</h3>
+
+            @{await Html.RenderPartialAsync("InventoryTable", Model.BikeList);}
         </div>
 
         <div id="Part" class="tabcontent">
             <h3>Parts</h3>
-            <table class="table" width="100%">
-                <tr>
-                    <td><u>Id</u></td>
-                    <td><u>ItemId</u></td>
-                    <td><u>Type</u></td>
-                    <td><u>Warehouse</u></td>
-                    <td><u>Quantity</u></td>
-                </tr>
 
-                @foreach (var item in Model.PartList)
-                {
-                    <tr>
-                        <td>@item.InventoryId</td>
-                        <td>@item.ItemId</td>
-                        <td>@item.Type</td>
-                        <td>@item.Warehouse</td>
-                        <td>
-                            <div class="quantity">
-                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
-                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
-                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </table>
+            @{await Html.RenderPartialAsync("InventoryTable", Model.PartList);}
         </div>
 
         <div id="Material" class="tabcontent">
             <h3>Material</h3>
-            <table class="table" width="100%">
-                <tr>
-                    <td><u>Id</u></td>
-                    <td><u>ItemId</u></td>
-                    <td><u>Type</u></td>
-                    <td><u>Warehouse</u></td>
-                    <td><u>Quantity</u></td>
-                </tr>
 
-                @foreach (var item in Model.MaterialList)
-                {
-                    <tr>
-                        <td>@item.InventoryId</td>
-                        <td>@item.ItemId</td>
-                        <td>@item.Type</td>
-                        <td>@item.Warehouse</td>
-                        <td>
-                            <div class="quantity">
-                                <button class="button-minus" onclick="location.href='@Url.Action("Decrement", "Inventory", item )'">-</button>
-                                <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@item.Quantity" maxlength="1" size="1">
-                                <button class="button-plus" onclick="location.href='@Url.Action("Increment", "Inventory", item )'">+</button>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </table>
+            @{await Html.RenderPartialAsync("InventoryTable", Model.MaterialList);}
         </div>
 
     </div>

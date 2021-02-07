@@ -8,6 +8,7 @@ namespace soen390_team01.Models
 { 
     public class InventoryModel:Inventory
     {
+        public List<Inventory> AllList { get; set; }
         public List<Inventory> BikeList { get; set; }
         public List<Inventory> PartList { get; set; }
         public List<Inventory> MaterialList { get; set; }
