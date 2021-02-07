@@ -12,10 +12,6 @@ namespace soen390_team01Tests.Controllers
 {
     public class InventoryControllerTest
     {
-
-
-
-
         [Test]
         public void IndexTest()
         { 
