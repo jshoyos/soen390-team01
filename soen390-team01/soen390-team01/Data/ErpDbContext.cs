@@ -17,13 +17,19 @@ namespace soen390_team01.Data
             : base(options)
         {
         }
-
         public virtual DbSet<Bike> Bikes { get; set; }
         public virtual DbSet<BikePart> BikeParts { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Inventory> Inventories { get; set; }
         public virtual DbSet<Material> Materials { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<Part> Parts { get; set; }
         public virtual DbSet<PartMaterial> PartMaterials { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<Procurement> Procurements { get; set; }
+        public virtual DbSet<Vendor> Vendors { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +37,9 @@ namespace soen390_team01.Data
 
             modelBuilder.Entity<Bike>(entity =>
             {
+                entity.HasKey(e => e.ItemId)
+                    .HasName("bike_pkey");
+
                 entity.ToTable("bike");
 
                 entity.Property(e => e.ItemId)
@@ -55,14 +64,14 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasMaxLength(4)
                     .HasColumnName("size");
-                entity.HasKey(e => e.ItemId);
             });
 
             modelBuilder.Entity<BikePart>(entity =>
             {
-                entity.ToTable("bike_part");
+                entity.HasKey(e => new { e.BikeId, e.PartId })
+                    .HasName("bike_part_pkey");
 
-                entity.Property(e => e.BikePartId).HasColumnName("bike_part_id");
+                entity.ToTable("bike_part");
 
                 entity.Property(e => e.BikeId).HasColumnName("bike_id");
 
@@ -81,6 +90,28 @@ namespace soen390_team01.Data
                     .HasForeignKey(d => d.PartId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("bike_part_part_id_fkey");
+            });
+
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.ToTable("customer");
+
+                entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(32)
+                    .HasColumnName("address");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(32)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("phone_number");
             });
 
             modelBuilder.Entity<Inventory>(entity =>
@@ -109,6 +140,9 @@ namespace soen390_team01.Data
 
             modelBuilder.Entity<Material>(entity =>
             {
+                entity.HasKey(e => e.ItemId)
+                    .HasName("material_pkey");
+
                 entity.ToTable("material");
 
                 entity.Property(e => e.ItemId)
@@ -128,11 +162,65 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Price)
                     .HasColumnType("money")
                     .HasColumnName("price");
-                entity.HasKey(e => e.ItemId);
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.ToTable("order");
+
+                entity.Property(e => e.OrderId).HasColumnName("order_id");
+
+                entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+
+                entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("state");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("order_customer_id_fkey");
+
+                entity.HasOne(d => d.Payment)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.PaymentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("order_payment_id_fkey");
+            });
+
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.HasKey(e => new { e.Type, e.OrderId, e.ItemId })
+                    .HasName("order_item_pkey");
+
+                entity.ToTable("order_item");
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(8)
+                    .HasColumnName("type");
+
+                entity.Property(e => e.OrderId).HasColumnName("order_id");
+
+                entity.Property(e => e.ItemId).HasColumnName("item_id");
+
+                entity.Property(e => e.ItemQuantity).HasColumnName("item_quantity");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderItems)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("order_item_order_id_fkey");
             });
 
             modelBuilder.Entity<Part>(entity =>
             {
+                entity.HasKey(e => e.ItemId)
+                    .HasName("part_pkey");
+
                 entity.ToTable("part");
 
                 entity.Property(e => e.ItemId)
@@ -157,22 +245,16 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasMaxLength(4)
                     .HasColumnName("size");
-                entity.HasKey(e => e.ItemId);
             });
 
             modelBuilder.Entity<PartMaterial>(entity =>
             {
-                entity.HasKey(e => e.PartId)
+                entity.HasKey(e => new { e.PartId, e.MaterialId })
                     .HasName("part_material_pkey");
 
                 entity.ToTable("part_material");
 
-                entity.HasIndex(e => e.PartId, "unique_part_material")
-                    .IsUnique();
-
-                entity.Property(e => e.PartId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("part_id");
+                entity.Property(e => e.PartId).HasColumnName("part_id");
 
                 entity.Property(e => e.MaterialId).HasColumnName("material_id");
 
@@ -185,17 +267,102 @@ namespace soen390_team01.Data
                     .HasConstraintName("part_material_material_id_fkey");
 
                 entity.HasOne(d => d.Part)
-                    .WithOne(p => p.PartMaterial)
-                    .HasForeignKey<PartMaterial>(d => d.PartId)
+                    .WithMany(p => p.PartMaterials)
+                    .HasForeignKey(d => d.PartId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("part_material_part_id_fkey");
             });
 
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.ToTable("payment");
+
+                entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+
+                entity.Property(e => e.Amount)
+                    .HasColumnType("money")
+                    .HasColumnName("amount");
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("state");
+            });
+
+            modelBuilder.Entity<Procurement>(entity =>
+            {
+                entity.ToTable("procurement");
+
+                entity.Property(e => e.ProcurementId).HasColumnName("procurement_id");
+
+                entity.Property(e => e.ItemId).HasColumnName("item_id");
+
+                entity.Property(e => e.ItemQuantity).HasColumnName("item_quantity");
+
+                entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("state");
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .HasColumnName("type");
+
+                entity.Property(e => e.VendorId).HasColumnName("vendor_id");
+
+                entity.HasOne(d => d.Payment)
+                    .WithMany(p => p.Procurements)
+                    .HasForeignKey(d => d.PaymentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("procurement_payment_id_fkey");
+
+                entity.HasOne(d => d.Vendor)
+                    .WithMany(p => p.Procurements)
+                    .HasForeignKey(d => d.VendorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("procurement_vendor_id_fkey");
+            });
+
+            modelBuilder.Entity<Vendor>(entity =>
+            {
+                entity.ToTable("vendor");
+
+                entity.Property(e => e.VendorId).HasColumnName("vendor_id");
+
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(32)
+                    .HasColumnName("address");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(32)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("phone_number");
+            });
+
             modelBuilder.HasSequence("bike_id_seq");
+
+            modelBuilder.HasSequence("customer_customer_id_seq");
 
             modelBuilder.HasSequence("material_id_seq");
 
+            modelBuilder.HasSequence("order_order_id_seq");
+
             modelBuilder.HasSequence("part_id_seq");
+
+            modelBuilder.HasSequence("payment_payment_id_seq");
+
+            modelBuilder.HasSequence("procurement_procurement_id_seq");
+
+            modelBuilder.HasSequence("vendor_vendor_id_seq");
 
             OnModelCreatingPartial(modelBuilder);
         }
