@@ -174,3 +174,178 @@ ALTER TABLE ONLY public.part_material
 
 ALTER TABLE ONLY public.part_material
     ADD CONSTRAINT part_material_part_id_fkey FOREIGN KEY (part_id) REFERENCES public.part(item_id) NOT VALID;
+
+CREATE SEQUENCE public.customer_customer_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.customer_customer_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE SEQUENCE public.order_order_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.order_order_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE SEQUENCE public.payment_payment_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.payment_payment_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE SEQUENCE public.procurement_procurement_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.procurement_procurement_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE SEQUENCE public.vendor_vendor_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.vendor_vendor_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE TABLE public.customer
+(
+    customer_id bigint NOT NULL DEFAULT nextval('customer_customer_id_seq'::regclass),
+    name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    address character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    phone_number character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT customer_pkey PRIMARY KEY (customer_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.customer
+    OWNER to soen390team01devuser;
+
+CREATE TABLE public.vendor
+(
+    vendor_id bigint NOT NULL DEFAULT nextval('vendor_vendor_id_seq'::regclass),
+    name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    address character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    phone_number character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT vendor_pkey PRIMARY KEY (vendor_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.vendor
+    OWNER to soen390team01devuser;
+
+CREATE TABLE public.payment
+(
+    payment_id bigint NOT NULL DEFAULT nextval('payment_payment_id_seq'::regclass),
+    amount money NOT NULL,
+    state character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT payment_pkey PRIMARY KEY (payment_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.payment
+    OWNER to soen390team01devuser;
+
+CREATE TABLE public."order"
+(
+    order_id bigint NOT NULL DEFAULT nextval('order_order_id_seq'::regclass),
+    customer_id bigint NOT NULL,
+    state character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    payment_id bigint NOT NULL,
+    CONSTRAINT order_pkey PRIMARY KEY (order_id),
+    CONSTRAINT order_customer_id_fkey FOREIGN KEY (customer_id)
+        REFERENCES public.customer (customer_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT order_payment_id_fkey FOREIGN KEY (payment_id)
+        REFERENCES public.payment (payment_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public."order"
+    OWNER to soen390team01devuser;
+
+CREATE TABLE public.procurement
+(
+    procurement_id bigint NOT NULL DEFAULT nextval('procurement_procurement_id_seq'::regclass),
+    item_id bigint NOT NULL,
+    payment_id bigint NOT NULL,
+    item_quantity integer NOT NULL,
+    state character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    type character varying(8) COLLATE pg_catalog."default" NOT NULL,
+    vendor_id bigint NOT NULL,
+    CONSTRAINT procurement_pkey PRIMARY KEY (procurement_id),
+    CONSTRAINT procurement_payment_id_fkey FOREIGN KEY (payment_id)
+        REFERENCES public.payment (payment_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT procurement_vendor_id_fkey FOREIGN KEY (vendor_id)
+        REFERENCES public.vendor (vendor_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.procurement
+    OWNER to soen390team01devuser;
+
+CREATE TRIGGER procurement_item_trigger
+    BEFORE INSERT OR UPDATE 
+    ON public.procurement
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.inventory_item_check();
+
+CREATE TABLE public.order_item
+(
+    order_id bigint NOT NULL,
+    item_id bigint NOT NULL,
+    item_quantity integer NOT NULL,
+    type character varying(8) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT order_item_pkey PRIMARY KEY (type, order_id, item_id),
+    CONSTRAINT order_item_order_id_fkey FOREIGN KEY (order_id)
+        REFERENCES public."order" (order_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.order_item
+    OWNER to soen390team01devuser;
+
+CREATE TRIGGER order_item_trigger
+    BEFORE INSERT OR UPDATE 
+    ON public.order_item
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.inventory_item_check();
+
+
