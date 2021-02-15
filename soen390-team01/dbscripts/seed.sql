@@ -348,4 +348,25 @@ CREATE TRIGGER order_item_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE public.inventory_item_check();
 
+CREATE SEQUENCE public.user_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
+CREATE TABLE public."user"
+(
+    role character varying COLLATE pg_catalog."default" NOT NULL,
+    phone_number character varying COLLATE pg_catalog."default" NOT NULL,
+    last_name character varying COLLATE pg_catalog."default" NOT NULL,
+    first_name character varying COLLATE pg_catalog."default" NOT NULL,
+    email character varying COLLATE pg_catalog."default" NOT NULL,
+    user_id bigint NOT NULL DEFAULT nextval('user_user_id_seq'::regclass),
+    CONSTRAINT user_pkey PRIMARY KEY (user_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public."user"
+    OWNER to soen390team01devuser;

@@ -1,14 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
+using System;
 
 namespace soen390_team01.Controllers
 {
     public class RegisterController : Controller
     {
         #region fields
-        private readonly AuthenticationFirebaseService _authService = new AuthenticationFirebaseService();
+        private readonly AuthenticationFirebaseService _authService;
+        private readonly UserManagementService _userManagementService;
         #endregion
+
+        public RegisterController(AuthenticationFirebaseService authService, UserManagementService userManagementService, EncryptionService encryptionService)
+        {
+            _authService = authService;
+            _userManagementService = userManagementService;
+        }
 
         #region properties
         [BindProperty]
@@ -16,7 +25,6 @@ namespace soen390_team01.Controllers
         [TempData]
         public string StringErrorMessage { get; set; }
         #endregion
-
 
         #region Methods
         [HttpGet]
@@ -50,7 +58,11 @@ namespace soen390_team01.Controllers
         /// <returns></returns>
         private bool AddUser(RegisterModel model)
         {
-            return _authService.RegisterUser(model.Email, model.Password).Result;
+           if(_authService.RegisterUser(model.Email, model.Password).Result)
+            {
+                _userManagementService.AddUser(model);
+            }
+            return true;
         }
         #endregion
     }
