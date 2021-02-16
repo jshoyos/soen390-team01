@@ -1,4 +1,4 @@
-﻿@model soen390_team01.Models.RegisterModel
+﻿@model soen390_team01.Data.Entities.User
 
 <div class="modal fade" id="EditUser">
     <div class="modal-dialog">
@@ -11,7 +11,8 @@
             </div>
 
             <div class="modal-body">
-                <form action="GetUserById">
+                <form action="Register/EditUser">
+                    <input type="hidden" asp-for="UserId"/>
                     <div>
                         <label asp-for="FirstName">First Name</label>
                         <input asp-for="FirstName" class="form-control" />
@@ -41,8 +42,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+                <button class="btn btn-primary" data-save="modal">Update</button>
             </div>
         </div>
     </div>

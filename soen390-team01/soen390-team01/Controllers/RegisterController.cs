@@ -51,24 +51,22 @@ namespace soen390_team01.Controllers
             return View();
         }
 
-        public IActionResult GetUserById(long id)
+        public IActionResult GetUserById(long UserId)
         {
-            var user = _userManagementService.GetUserById(id);
+            var user = _userManagementService.GetUserById(UserId);
 
             if (user != null)
             {
-                RegisterModel model = new RegisterModel();
-                model.FirstName = user.FirstName;
-                model.LastName = user.LastName;
-                model.Role = user.Role;
-                model.PhoneNumber = user.PhoneNumber;
-                model.Email = user.Email;
-
-                return PartialView("_UserModalPartial", model);
+                return PartialView("_UserModalPartial", user);
             }
             return View("Index");
         }
 
+        [HttpPost]
+        public void EditUser(User user)
+        {
+            _userManagementService.EditUser(user);
+        }
         /// <summary>
         /// Add the user to the database and to the firebase authentication service
         /// </summary>

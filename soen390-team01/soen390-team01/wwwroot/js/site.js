@@ -18,7 +18,9 @@ $(function () {
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');
         var sendData = form.serialize();
-        $.post(actionUrl, sendData()).done(function (data) {
+        console.log(actionUrl);
+        console.log(sendData);
+        $.post(actionUrl, sendData).done(function (data) {
             PlaceHolderElement.find('.modal').modal('hide');
         })
     })

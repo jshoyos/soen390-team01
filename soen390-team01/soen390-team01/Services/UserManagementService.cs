@@ -30,15 +30,7 @@ namespace soen390_team01.Services
             using(var r = Rijndael.Create())
             {
                 r.GenerateIV(); 
-                _context.Users.Add(new User
-                {
-                    FirstName = _encryption.Encrypt(user.FirstName, r.IV),
-                    LastName = _encryption.Encrypt(user.LastName, r.IV),
-                    Email = _encryption.Encrypt(user.Email, r.IV),
-                    PhoneNumber = _encryption.Encrypt(user.PhoneNumber, r.IV),
-                    Role = user.Role,
-                    Iv = Convert.ToBase64String(r.IV)
-                });
+                _context.Users.Add(EncryptUser(user,r.IV));
             }
             try
             {
@@ -52,6 +44,14 @@ namespace soen390_team01.Services
             }
         }
 
+        public bool EditUser(User editedUser)
+        {
+            editedUser.Iv = _context.Users.Where(u => u.UserId == editedUser.UserId).Select(x => x.Iv).FirstOrDefault();
+
+            _context.Users.Update(EncryptUser(editedUser));
+            _context.SaveChanges();
+            return true;
+        }
         /// <summary>
         /// Retrieves all users from the User table
         /// </summary>
@@ -61,23 +61,36 @@ namespace soen390_team01.Services
             List<User> users = new List<User>();
             foreach(var user in _context.Users.ToList())
             {
-                byte[] IV = Convert.FromBase64String(user.Iv);
-                users.Add(new User
-                {
-                    FirstName = _encryption.Decrypt(user.FirstName, IV),
-                    LastName = _encryption.Decrypt(user.LastName, IV),
-                    Email = _encryption.Decrypt(user.Email, IV),
-                    PhoneNumber = _encryption.Decrypt(user.PhoneNumber, IV),
-                    Role = user.Role,
-                    Iv = Convert.ToBase64String(IV)
-                });
+                users.Add(DecryptUser(user));
             }
             return users;
         }
 
         public User GetUserById(long id)
         {
-            User user = _context.Users.Where(u => u.UserId == 68).FirstOrDefault();
+            User user = _context.Users.Where(u => u.UserId == id).FirstOrDefault();
+            return DecryptUser(user);
+        }
+
+        private User EncryptUser(User user, byte[] IV=null)
+        {
+
+            if (IV == null) {
+                IV = Convert.FromBase64String(user.Iv);
+            }
+            return new User
+            {
+                FirstName = _encryption.Encrypt(user.FirstName, IV),
+                LastName = _encryption.Encrypt(user.LastName, IV),
+                Email = _encryption.Encrypt(user.Email, IV),
+                PhoneNumber = _encryption.Encrypt(user.PhoneNumber, IV),
+                Role = user.Role,
+                Iv = Convert.ToBase64String(IV),
+                UserId = user.UserId
+            };
+        }
+        private User DecryptUser(User user)
+        {
             byte[] IV = Convert.FromBase64String(user.Iv);
             return new User
             {
