@@ -51,15 +51,14 @@ namespace soen390_team01.Controllers
         /// <summary>
         /// Uses the firebase service to add the user with email and password
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         private bool AddUser(RegisterModel model)
         {
-           if(_authService.RegisterUser(model.Email, model.Password).Result)
-            {
+            if(_authService.RegisterUser(model.Email, model.Password).Result)
+            { 
                 _userManagementService.AddUser(model);
-            }
+            } 
             return true;
         }
 

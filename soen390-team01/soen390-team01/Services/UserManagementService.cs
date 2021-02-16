@@ -19,21 +19,33 @@ namespace soen390_team01.Services
             _encryption = encryption;
         }
 
+        /// <summary>
+        /// Inserting encrypted user to the User table
+        /// </summary>
+        /// <param name="user"></param>
         public void AddUser(User user)
         {
-            using(Rijndael r = Rijndael.Create())
+            using(var r = Rijndael.Create())
             {
-                r.GenerateIV();
-                user.FirstName = _encryption.Encrypt(user.FirstName,r.IV);
-                user.LastName = _encryption.Encrypt(user.LastName, r.IV);
-                user.Email = _encryption.Encrypt(user.Email, r.IV);
-                user.PhoneNumber = _encryption.Encrypt(user.PhoneNumber, r.IV);
-                user.Iv = Convert.ToBase64String(r.IV);
+                r.GenerateIV(); 
+                _context.Users.Add(new User 
+                {
+                    FirstName = _encryption.Encrypt(user.FirstName, r.IV),
+                    LastName = _encryption.Encrypt(user.LastName, r.IV),
+                    Email = _encryption.Encrypt(user.Email, r.IV),
+                    PhoneNumber = _encryption.Encrypt(user.PhoneNumber, r.IV),
+                    Role = user.Role,
+                    Iv = Convert.ToBase64String(r.IV)
+                });
             }
-            _context.Users.Add(user);
+           
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Retrieves all users from the User table
+        /// </summary>
+        /// <returns>List of all users</returns>
         public List<User> GetAllUsers()
         {
             return _context.Users.ToList();
