@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System;
 
 namespace soen390_team01.Controllers
 {
@@ -13,7 +11,7 @@ namespace soen390_team01.Controllers
         private readonly UserManagementService _userManagementService;
         #endregion
 
-        public RegisterController(AuthenticationFirebaseService authService, UserManagementService userManagementService, EncryptionService encryptionService)
+        public RegisterController(AuthenticationFirebaseService authService, UserManagementService userManagementService)
         {
             _authService = authService;
             _userManagementService = userManagementService;
@@ -63,6 +61,11 @@ namespace soen390_team01.Controllers
                 _userManagementService.AddUser(model);
             }
             return true;
+        }
+
+        private void FetchDate()
+        {
+
         }
         #endregion
     }

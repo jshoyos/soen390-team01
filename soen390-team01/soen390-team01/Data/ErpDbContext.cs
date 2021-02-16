@@ -351,7 +351,8 @@ namespace soen390_team01.Data
             {
                 entity.ToTable("user");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id")
+                    .HasDefaultValueSql("nextval('user_user_id_seq'::regclass)");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -362,6 +363,11 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasColumnType("character varying")
                     .HasColumnName("first_name");
+
+                entity.Property(e => e.Iv)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("iv");
 
                 entity.Property(e => e.LastName)
                     .IsRequired()
@@ -376,7 +382,7 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Role)
                     .IsRequired()
                     .HasColumnType("character varying")
-                    .HasColumnName("role");
+                    .HasColumnName("user_role");
             });
 
             modelBuilder.HasSequence("bike_id_seq");

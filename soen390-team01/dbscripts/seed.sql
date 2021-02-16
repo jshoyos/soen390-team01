@@ -357,13 +357,15 @@ CREATE SEQUENCE public.user_user_id_seq
 
 CREATE TABLE public."user"
 (
-    role character varying COLLATE pg_catalog."default" NOT NULL,
+    user_role character varying COLLATE pg_catalog."default" NOT NULL,
     phone_number character varying COLLATE pg_catalog."default" NOT NULL,
     last_name character varying COLLATE pg_catalog."default" NOT NULL,
     first_name character varying COLLATE pg_catalog."default" NOT NULL,
     email character varying COLLATE pg_catalog."default" NOT NULL,
     user_id bigint NOT NULL DEFAULT nextval('user_user_id_seq'::regclass),
-    CONSTRAINT user_pkey PRIMARY KEY (user_id)
+    iv character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT user_pkey PRIMARY KEY (user_id),
+    CONSTRAINT email_unique UNIQUE (email)
 )
 
 TABLESPACE pg_default;

@@ -11,15 +11,13 @@ namespace soen390_team01.Services
     {
         #region fields
         private readonly byte[] _key;
-        private readonly byte[] _iv;
         #endregion
 
-        public EncryptionService(string key,string IV)
+        public EncryptionService(string key)
         {
             _key = Convert.FromBase64String(key);
-            _iv = Convert.FromBase64String(IV);
         }
-        public string Encrypt(string text)
+        public string Encrypt(string text, byte[] iv)
         {
             if (string.IsNullOrEmpty(text)) throw new ArgumentNullException();
 
@@ -28,7 +26,7 @@ namespace soen390_team01.Services
             using (Rijndael r = Rijndael.Create())
             {
                 r.Key = _key;
-                r.IV = _iv;
+                r.IV = iv;
 
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -46,7 +44,7 @@ namespace soen390_team01.Services
             return Convert.ToBase64String(edata);
         }
 
-        public string Decrypt(string cText)
+        public string Decrypt(string cText, byte[] iv)
         {
             if (cText == null || cText.Length <= 0) throw new ArgumentNullException();
 
@@ -56,7 +54,7 @@ namespace soen390_team01.Services
             using (Rijndael r = Rijndael.Create())
             {
                 r.Key = _key;
-                r.IV = _iv;
+                r.IV = iv;
 
                 using (MemoryStream ms = new MemoryStream(cTextBytes))
                 {

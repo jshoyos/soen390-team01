@@ -13,5 +13,6 @@ namespace soen390_team01.Data.Entities
         public virtual string FirstName { get; set; }
         public virtual string Email { get; set; }
         public long UserId { get; set; }
+        public string Iv { get; set; }
     }
 }
