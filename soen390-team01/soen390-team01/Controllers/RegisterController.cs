@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
+using System.Collections.Generic;
 
 namespace soen390_team01.Controllers
 {
@@ -28,6 +30,7 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            ViewData["Users"] = _userManagementService.GetAllUsers();
             return View();
         }
         /// <summary>
@@ -48,23 +51,32 @@ namespace soen390_team01.Controllers
             return View();
         }
 
+        public IActionResult GetUserById(long id)
+        {
+            var user = _userManagementService.GetUserById(id);
+
+            if (user != null)
+            {
+                RegisterModel model = new RegisterModel();
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName;
+                model.Role = user.Role;
+                model.PhoneNumber = user.PhoneNumber;
+                model.Email = user.Email;
+
+                return PartialView("_UserModalPartial", model);
+            }
+            return View("Index");
+        }
+
         /// <summary>
-        /// Uses the firebase service to add the user with email and password
+        /// Add the user to the database and to the firebase authentication service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         private bool AddUser(RegisterModel model)
         {
-            if(_authService.RegisterUser(model.Email, model.Password).Result)
-            { 
-                _userManagementService.AddUser(model);
-            } 
-            return true;
-        }
-
-        private void FetchDate()
-        {
-
+            return _userManagementService.AddUser(model) && _authService.RegisterUser(model.Email, model.Password).Result;
         }
         #endregion
     }

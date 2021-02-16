@@ -2,13 +2,14 @@
 
 @{
     ViewData["Title"] = "RegisterView";
-    string[] TableHeader = new string[] { "First Name", "Last Name", "Phone Number", "Role", "Email" };
+    string[] TableHeader = new string[] { "First Name", "Last Name", "Role", "Phone Number", "Email", "Action" };
 }
-
 <h1>Registration</h1>
 
-
 <hr />
+
+
+<div id="PlaceHolderHere"></div>
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
@@ -64,11 +65,21 @@
                         }
                     </tr>
                 </thead>
-                <tr>
-                    <td></td>
-                </tr>
+                @{
+                    var users = ViewData["Users"] as List<soen390_team01.Data.Entities.User>;
+                    foreach (var user in users)
+                    {
+                        <tr>
+                            <td>@user.FirstName</td>
+                            <td>@user.LastName</td>
+                            <td>@user.Role</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@user.Email</td>
+                            <td><button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#EditUser" data-url="@Url.Action($"GetUserById/{@user.UserId}")">Edit</button></td>
+                        </tr>
+                    }
+                }
                 <tbody>
-
                 </tbody>
             </table>
         </div>
