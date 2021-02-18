@@ -27,17 +27,17 @@ namespace soen390_team01.Services
         /// <param name="user"></param>
         public virtual bool AddUser(User user)
         {
-            using(var r = Rijndael.Create())
-            {
-                r.GenerateIV(); 
-                _context.Users.Add(EncryptUser(user,r.IV));
-            }
             try
             {
+                using (var r = Rijndael.Create())
+                {
+                    r.GenerateIV();
+                    _context.Users.Add(EncryptUser(user, r.IV));
+                }
                 _context.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //TODO: catch the error and handle it
                 return false;

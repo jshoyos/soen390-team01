@@ -16,7 +16,7 @@ namespace soen390_team01Tests.Unit.Controllers
         Mock<EncryptionService> encryptionServiceMock;
         Mock<UserManagementService> userManagementServiceMock;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             contextMock = new Mock<ErpDbContext>();
