@@ -13,6 +13,7 @@
             <div class="modal-body">
                 <form action="Register/EditUser">
                     <input type="hidden" asp-for="UserId"/>
+                    <input type="hidden" asp-for="Email"/>
                     <div>
                         <label asp-for="FirstName">First Name</label>
                         <input asp-for="FirstName" class="form-control" />
@@ -32,11 +33,6 @@
                         <label asp-for="Role"></label>
                         <input asp-for="Role" class="form-control" />
                         <span asp-validation-for="Role" class="text-danger"></span>
-                    </div>
-                    <div>
-                        <label asp-for="Email"></label>
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </form>
             </div>
