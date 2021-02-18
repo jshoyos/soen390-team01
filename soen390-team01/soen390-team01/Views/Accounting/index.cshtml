@@ -1,0 +1,80 @@
+﻿
+@{ViewData["Title"] = "Accounting View";}
+<html>
+<head>
+    <link rel="stylesheet" href="\css\Accounting.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8" id="table">
+                TABLE
+            </div>
+            <div class="col-lg-3 text-center justify-content-center" id="filter">
+                <h3>FILTER</h3>
+                <br />
+                <h5>STATUS</h5>
+
+                <input type="checkbox" name="pending" value="Pending" class="align-left" />
+                <label for="pending">Pending</label><br>
+
+                <input type="checkbox" name="completed" value="Completed" />
+                <label for="completed">Completed</label><br>
+
+                <input type="checkbox" name="canceled" value="Canceled" />
+                <label for="canceled">Canceled</label><br><br />
+
+
+                <h5>DATE</h5>
+                <div class="container"></div>
+                <div class="row elements">
+                    <div class="col mx-auto">
+                        From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                    </div>
+                    
+                   
+                </div>
+                    <div class="row elements">
+                        <div class="col mx-auto">
+                            To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                        </div>
+
+                        
+                        
+                    </div>
+                    
+                    <div class="row justify-content-center elements">
+                        <h5>CUSTOMER</h5>
+                    </div>
+                    <div class="row justify-content-center elements">
+                        <select name="customer" id="customer">
+                            <option value="c1">Customer</option>
+                            <option value="c2">Customer</option>
+                            <option value="c3">Customer</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row justify-content-center elements">
+                        <button class="btn btn-primary">GENERATE GRAPH</button>
+                    </div>
+                    
+                    
+
+            </div>
+
+        </div>
+        
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

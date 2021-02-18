@@ -1,0 +1,30 @@
+﻿#filter{
+    border: 1px solid black;
+    margin: 5px;
+    padding: 10px;
+}
+
+#table {
+    border: 1px solid black;
+    margin: 5px;
+}
+
+.generateGraph{
+    color: white;
+    padding: 3px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.generateGraph:hover {
+        background-color: #909090;
+
+}
+
+.elements{
+    margin: 10px 5px 5px 5px;
+    padding: 5px;
+}
+
+#custumer{
+    border-radius:3px;
+}
