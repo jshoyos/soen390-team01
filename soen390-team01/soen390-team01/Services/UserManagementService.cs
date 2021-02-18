@@ -25,7 +25,7 @@ namespace soen390_team01.Services
         /// Inserting encrypted user to the User table
         /// </summary>
         /// <param name="user"></param>
-        public bool AddUser(User user)
+        public virtual bool AddUser(User user)
         {
             using(var r = Rijndael.Create())
             {
@@ -44,7 +44,7 @@ namespace soen390_team01.Services
             }
         }
 
-        public bool EditUser(User editedUser)
+        public virtual bool EditUser(User editedUser)
         {
             editedUser.Iv = _context.Users.Where(u => u.UserId == editedUser.UserId).Select(x => x.Iv).FirstOrDefault();
 
@@ -56,7 +56,7 @@ namespace soen390_team01.Services
         /// Retrieves all users from the User table
         /// </summary>
         /// <returns>List of all users</returns>
-        public List<User> GetAllUsers()
+        public virtual List<User> GetAllUsers()
         {
             List<User> users = new List<User>();
             foreach(var user in _context.Users.ToList())
@@ -66,7 +66,7 @@ namespace soen390_team01.Services
             return users;
         }
 
-        public User GetUserById(long id)
+        public virtual User GetUserById(long id)
         {
             User user = _context.Users.Where(u => u.UserId == id).FirstOrDefault();
             return DecryptUser(user);
