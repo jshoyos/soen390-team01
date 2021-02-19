@@ -44,16 +44,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: cmd
-        run: |
-         echo on
-         powershell dotnet test soen390-team01/soen390-team01Tests /p:CollectCoverage=true /p:CoverletOutputFormat="opencover" /p:CoverletOutput="./TestResults/" --verbosity normal
-         .\.sonar\scanner\dotnet-sonarscanner begin /k:"soen390-team01" /o:"bakou912" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.exclusions="**/*.js, **/*.css" /d:sonar.coverage.exclusions="**/*.js, **/*.css" /d:sonar.cs.opencover.reportsPaths="soen390-team01/soen390-team01Tests/TestResults/coverage.opencover.xml"
+        shell: powershell
+        run: dotnet test soen390-team01/soen390-team01Tests /p:CollectCoverage=true /p:CoverletOutputFormat="opencover" /p:CoverletOutput="./TestResults/" --verbosity normal
       - name: Build
-        shell: cmd
+        shell: powershell
         run: |
-          echo on
-          powershell dotnet build soen390-team01/soen390-team01.sln
+           .\.sonar\scanner\dotnet-sonarscanner begin /k:"soen390-team01" /o:"bakou912" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.exclusions="**/*.js, **/*.css" /d:sonar.coverage.exclusions="**/*.js, **/*.css" /d:sonar.cs.opencover.reportsPaths="soen390-team01/soen390-team01Tests/TestResults/coverage.opencover.xml"
+           dotnet build soen390-team01/soen390-team01.sln
       - name: End Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
