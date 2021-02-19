@@ -1,11 +1,8 @@
-﻿using Firebase.Auth;
-using soen390_team01.Data;
+﻿using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using soen390_team01.Models;
 
 namespace soen390_team01.Services
@@ -20,10 +17,10 @@ namespace soen390_team01.Services
             _context = context;
         }
         /// <summary>
-        ///     Queries all the items in the inventory and splits the into an InventoryModel
+        /// Queries all the items in the inventory and splits the into an InventoryModel
         /// </summary>
         /// <returns>InventoryModel</returns>
-        public InventoryModel GetInventoryModel()
+        public virtual InventoryModel GetInventoryModel()
         {
             var model = new InventoryModel();
             var all = GetInventory();
@@ -34,18 +31,18 @@ namespace soen390_team01.Services
             return model;
         }
         /// <summary>
-        ///     Queries all the items in the inventory
+        /// Queries all the items in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Inventory> GetInventory()
+        public virtual List<Inventory> GetInventory()
         {
             return _context.Inventories.OrderBy(inv => inv.InventoryId).ToList();
         }
         /// <summary>
-        ///     Queries all the bikes in the inventory
+        /// Queries all the bikes in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Inventory> GetAllBikes()
+        public virtual List<Inventory> GetAllBikes()
         {
             return _context.Inventories
                                 .Where(inv => inv.Type.Equals("bike"))
@@ -53,10 +50,10 @@ namespace soen390_team01.Services
                                 .ToList();
         }
         /// <summary>
-        ///     Queries all the parts in the inventory
+        /// Queries all the parts in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Inventory> GetAllParts()
+        public virtual List<Inventory> GetAllParts()
         {
             return _context.Inventories
                                 .Where(inv => inv.Type.Equals("part"))
@@ -64,10 +61,10 @@ namespace soen390_team01.Services
                                 .ToList();
         }
         /// <summary>
-        ///     Queries all the materials in the inventory
+        /// Queries all the materials in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Inventory> GetAllMaterials()
+        public virtual List<Inventory> GetAllMaterials()
         {
             return _context.Inventories
                                 .Where(inv => inv.Type.Equals("material"))
@@ -75,15 +72,19 @@ namespace soen390_team01.Services
                                 .ToList();
         }
         /// <summary>
-        ///     adds an item to the respective table
+        /// Adds an inventory item to the Inventory table
         /// </summary>
         /// <param name="item"></param>
-
-        public void AddItem(Inventory item)
+        public virtual void AddItem(Inventory item)
         {
             _context.Inventories.Add(item);
+            _context.SaveChanges();
         }
-        public void Update(Inventory updatedInventory)
+        /// <summary>
+        /// Updates an inventory item
+        /// </summary>
+        /// <param name="updatedInventory">inventory item to update</param>
+        public virtual void Update(Inventory updatedInventory)
         {
             _context.Inventories.Update(updatedInventory);
             _context.SaveChanges();

@@ -16,6 +16,8 @@ services:
     - "5000:80"
     environment:
       DB_CONNECTION_STRING: "host=host.docker.internal;port=5431;database=soen390team01devdb;username=soen390team01devuser;password=soen390team01devpassword"
+      ENCRYPTED_KEY: "6hk2V97Vhgj4fhYqKtgdFZOtl8uu4E/3+udFPap+qTg="
+      ENCRYPTED_IV: "AYiCikByeIU//DNhVg5Bpg=="
     networks:
       - soen390-team01-network  
   
