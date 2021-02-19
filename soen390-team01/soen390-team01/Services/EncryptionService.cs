@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.IO;
 
@@ -23,22 +20,18 @@ namespace soen390_team01.Services
 
             byte[] edata;
 
-            using (Rijndael r = Rijndael.Create())
+            using (var r = Rijndael.Create())
             {
                 r.Key = _key;
                 r.IV = iv;
 
-                using (MemoryStream ms = new MemoryStream())
+                using var ms = new MemoryStream();
+                using var cs = new CryptoStream(ms, r.CreateEncryptor(r.Key, r.IV), CryptoStreamMode.Write);
+                using (var sw = new StreamWriter(cs))
                 {
-                    using (CryptoStream cs = new CryptoStream(ms, r.CreateEncryptor(r.Key, r.IV), CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter sw = new StreamWriter(cs))
-                        {
-                            sw.Write(text);
-                        }
-                        edata = ms.ToArray();
-                    }
+                    sw.Write(text);
                 }
+                edata = ms.ToArray();
             }
 
             return Convert.ToBase64String(edata);
@@ -51,22 +44,14 @@ namespace soen390_team01.Services
             string dData;
             byte[] cTextBytes = Convert.FromBase64String(cText);
 
-            using (Rijndael r = Rijndael.Create())
-            {
-                r.Key = _key;
-                r.IV = iv;
+            using var r = Rijndael.Create();
+            r.Key = _key;
+            r.IV = iv;
 
-                using (MemoryStream ms = new MemoryStream(cTextBytes))
-                {
-                    using (CryptoStream cs = new CryptoStream(ms, r.CreateDecryptor(r.Key, r.IV), CryptoStreamMode.Read))
-                    {
-                        using (StreamReader sr = new StreamReader(cs))
-                        {
-                            dData = sr.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            using var ms = new MemoryStream(cTextBytes);
+            using var cs = new CryptoStream(ms, r.CreateDecryptor(r.Key, r.IV), CryptoStreamMode.Read);
+            using var sr = new StreamReader(cs);
+            dData = sr.ReadToEnd();
 
             return dData;
         }

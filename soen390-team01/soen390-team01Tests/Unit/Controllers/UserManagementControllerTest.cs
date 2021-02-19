@@ -6,30 +6,30 @@ using NUnit.Framework;
 using soen390_team01.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data;
+using soen390_team01.Models;
 
 namespace soen390_team01Tests.Unit.Controllers
 {
-    public class RegisterControllerTest
+    public class UserManagementControllerTest
     {
-        Mock<ErpDbContext> contextMock;
-        Mock<AuthenticationFirebaseService> authenticationServiceMock;
-        Mock<EncryptionService> encryptionServiceMock;
-        Mock<UserManagementService> userManagementServiceMock;
+        Mock<ErpDbContext> _contextMock;
+        Mock<AuthenticationFirebaseService> _authenticationServiceMock;
+        Mock<EncryptionService> _encryptionServiceMock;
+        Mock<UserManagementService> _userManagementServiceMock;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            contextMock = new Mock<ErpDbContext>();
-            authenticationServiceMock = new Mock<AuthenticationFirebaseService>();
-            encryptionServiceMock = new Mock<EncryptionService>("xg05/WzFW88jHrFxuNGy3vIMC8SMdFBTr/S2r+EPTtY=");
-            userManagementServiceMock = new Mock<UserManagementService>(contextMock.Object, encryptionServiceMock.Object, authenticationServiceMock.Object);
+            _contextMock = new Mock<ErpDbContext>();
+            _authenticationServiceMock = new Mock<AuthenticationFirebaseService>();
+            _encryptionServiceMock = new Mock<EncryptionService>("xg05/WzFW88jHrFxuNGy3vIMC8SMdFBTr/S2r+EPTtY=");
+            _userManagementServiceMock = new Mock<UserManagementService>(_contextMock.Object, _encryptionServiceMock.Object);
         }
 
         [Test]
         public void IndexTest()
         {
-
-            List<User> users = new List<User>()
+            var users = new List<User>
             {
                 new User
                 {
@@ -43,13 +43,13 @@ namespace soen390_team01Tests.Unit.Controllers
                 }
             };
             // GetAllUsers should return the expected list
-            userManagementServiceMock.Setup(u => u.GetAllUsers()).Returns(users);
+            _userManagementServiceMock.Setup(u => u.GetAllUsers()).Returns(users);
 
-            RegisterController controller = new RegisterController(authenticationServiceMock.Object, userManagementServiceMock.Object);
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
             var result = controller.Index() as ViewResult;
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, (result.ViewData["users"] as List<User>).Count);
+            Assert.AreEqual(1, (result.Model as UserManagementModel).Users.Count);
 
             users.Add(
                 new User
@@ -64,13 +64,16 @@ namespace soen390_team01Tests.Unit.Controllers
                 }
             );
 
-            Assert.AreEqual(2, (result.ViewData["users"] as List<User>).Count);
+            result = controller.Index() as ViewResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, (result.Model as UserManagementModel).Users.Count);
         }
 
         [Test]
         public void GetUserByIdTest()
         {
-            userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l>0))).Returns(new User
+            _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l>0))).Returns(new User
             {
                 FirstName = "Juan",
                 LastName = "Se",
@@ -81,7 +84,7 @@ namespace soen390_team01Tests.Unit.Controllers
                 UserId = 2
             });
 
-            RegisterController controller = new RegisterController(authenticationServiceMock.Object, userManagementServiceMock.Object);
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
             var result = controller.GetUserById(5) as PartialViewResult;
 
             Assert.IsNotNull(result);

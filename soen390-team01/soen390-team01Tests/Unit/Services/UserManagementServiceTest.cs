@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Moq;
 using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
@@ -21,9 +20,7 @@ namespace soen390_team01Tests.Unit.Services
             builder.UseInMemoryDatabase("test_db");
             _context = new ErpDbContext(builder.Options);
             _encryptionService = new EncryptionService("xg05/WzFW88jHrFxuNGy3vIMC8SMdFBTr/S2r+EPTtY=");
-            var authenticationServiceMock = new Mock<AuthenticationFirebaseService>();
-            ///key used for testing: xg05/WzFW88jHrFxuNGy3vIMC8SMdFBTr/S2r+EPTtY=
-            _userManagementService = new UserManagementService(_context, _encryptionService, authenticationServiceMock.Object);
+            _userManagementService = new UserManagementService(_context, _encryptionService);
         }
 
         [OneTimeTearDown]
@@ -39,7 +36,7 @@ namespace soen390_team01Tests.Unit.Services
         [Test, Order(1)]
         public void AddUsersTest()
         {
-            Assert.IsTrue(_userManagementService.AddUser(new User
+            Assert.IsNotNull(_userManagementService.AddUser(new User
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -49,7 +46,7 @@ namespace soen390_team01Tests.Unit.Services
             }));
 
             // Should be false because the email should be unique
-            Assert.IsFalse(_userManagementService.AddUser(new User
+            Assert.IsNull(_userManagementService.AddUser(new User
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -64,7 +61,7 @@ namespace soen390_team01Tests.Unit.Services
         [Test, Order(2)]
         public void GetAllUsersTest()
         {
-            Assert.IsTrue(_userManagementService.AddUser(new User
+            Assert.IsNotNull(_userManagementService.AddUser(new User
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -87,14 +84,15 @@ namespace soen390_team01Tests.Unit.Services
         [Test]
         public void EditUserTest()
         {
-            var userToEdit = _userManagementService.GetUserById(_context.Users.ToList()[0].UserId);
-            string newFirstName = "Editing The User";
+            var userToEdit = _context.Users.ToList().ElementAt(0);
+            var newFirstName = "Editing The User";
             userToEdit.FirstName = newFirstName;
 
-            Assert.IsTrue(_userManagementService.EditUser(userToEdit));
+            Assert.IsNotNull(_userManagementService.EditUser(userToEdit));
             
             var editedUser = _userManagementService.GetUserById(_context.Users.ToList()[0].UserId);
-            Assert.IsTrue(editedUser.FirstName.Equals(newFirstName));
+            // Firstname update succeeded
+            Assert.AreEqual(newFirstName, editedUser.FirstName);
         }
 
         [Test]

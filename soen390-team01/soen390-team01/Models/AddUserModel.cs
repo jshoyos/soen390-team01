@@ -4,8 +4,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace soen390_team01.Models
 {
-    public class RegisterModel : User
+    public class AddUserModel : User
     {
+
+        public AddUserModel()
+        {
+            Email = "";
+            Role = "";
+            PhoneNumber = "";
+            LastName = "";
+            FirstName = "";
+            Password = "";
+            ConfirmPassword = "";
+        }
+
         [Required]
         [EmailAddress]
         public override string Email { get; set; }
