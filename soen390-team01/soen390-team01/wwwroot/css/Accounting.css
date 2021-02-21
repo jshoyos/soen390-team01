@@ -1,7 +1,43 @@
-﻿#filter{
+﻿@media only screen and (max-width: 600px) {
+    #filter {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    #filter-button {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    #generateG-button {
+        display: none;
+    }
+}
+
+#filter-button {
+    font-size: 12px;
+    margin: 1px;
+    padding:2px;
+    width: 100%;
+}
+
+#g-button {
+    font-size: 12px;
+    margin: 1px;
+    padding: 2px;
+    width: 100%;
+}
+
+#filter {
     border: 1px solid black;
     margin: 5px;
     padding: 10px;
+}
+
+#modal-filter{
+    text-align: left;
 }
 
 #table {
@@ -23,8 +59,18 @@
 .elements{
     margin: 10px 5px 5px 5px;
     padding: 5px;
+    display: inline-block;
+    text-align: center;
 }
 
 #custumer{
     border-radius:3px;
+}
+#checkboxes{
+    position: 
+}
+
+.form-check{
+    margin-right: auto;
+    margin-left: auto;
 }

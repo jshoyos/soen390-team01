@@ -1,5 +1,6 @@
 ﻿
 @{ViewData["Title"] = "Accounting View";}
+
 <html>
 <head>
     <link rel="stylesheet" href="\css\Accounting.css">
@@ -10,6 +11,95 @@
 </head>
 <body>
     <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" id="filter-button">FILTER</button>
+            </div>
+            <div class="col-8">
+                <button class="btn btn-outline-primary" id="generateG-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 100%;">GENERATE GRAPH</button>
+            </div>
+        </div>
+
+
+            <!-- Modal for filter in mobile mode-->
+            <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modal-filter">
+                            <h5 class="text-center">STATUS</h5>
+
+                            
+                            <div style="padding-left:30%; padding-right:30%;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                    <label class="form-check-label" for="pending">
+                                        Pending
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                    <label class="form-check-label" for="pending">
+                                        Completed
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                    <label class="form-check-label" for="pending">
+                                        Canceled
+                                    </label>
+                                </div>
+                            </div>
+
+                            
+
+
+
+                            <h5 class="text-center">DATE</h5>
+                            <div class="container"></div>
+
+                            <div class="row " style="padding-left:20%; padding-right:20%;">
+                                <div class="col-3 text-align: right;">
+                                    From:
+                                </div>
+                                <div class="col-8">
+                                    <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                                </div>
+                            </div>
+                                <div class="row " style="padding-left:20%; padding-right:20%;">
+                                    <div class="col-3 text-align: right;">
+                                        To:
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                                    </div>
+
+                                </div>
+
+                                <div class="row justify-content-center elements">
+                                    <h5>CUSTOMER</h5>
+                                </div>
+                                <div class="row justify-content-center elements">
+                                    <select name="customer" id="customer">
+                                        <option value="c1">Customer</option>
+                                        <option value="c2">Customer</option>
+                                        <option value="c3">Customer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
         <div class="row">
             <div class="col-lg-8" id="table">
                 TABLE
@@ -35,46 +125,43 @@
                     <div class="col mx-auto">
                         From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
                     </div>
-                    
-                   
-                </div>
-                    <div class="row elements">
-                        <div class="col mx-auto">
-                            To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-                        </div>
 
-                        
-                        
+
+                </div>
+                <div class="row elements">
+                    <div class="col mx-auto">
+                        To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
                     </div>
-                    
-                    <div class="row justify-content-center elements">
-                        <h5>CUSTOMER</h5>
-                    </div>
-                    <div class="row justify-content-center elements">
-                        <select name="customer" id="customer">
-                            <option value="c1">Customer</option>
-                            <option value="c2">Customer</option>
-                            <option value="c3">Customer</option>
-                        </select>
-                    </div>
-                    
-                    <div class="row justify-content-center elements">
-                        <button class="btn btn-primary">GENERATE GRAPH</button>
-                    </div>
-                    
-                    
+                </div>
+
+                <div class="row justify-content-center elements">
+                    <h5>CUSTOMER</h5>
+                </div>
+                <div class="row justify-content-center elements">
+                    <select name="customer" id="customer">
+                        <option value="c1">Customer</option>
+                        <option value="c2">Customer</option>
+                        <option value="c3">Customer</option>
+                    </select>
+                </div>
+
+                <div class="row justify-content-center elements">
+                    <button class="btn btn-primary">GENERATE GRAPH</button>
+                </div>
+
+
 
             </div>
 
         </div>
-        
+
     </div>
 
 
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
