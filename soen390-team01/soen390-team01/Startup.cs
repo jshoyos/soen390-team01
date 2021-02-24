@@ -31,6 +31,10 @@ namespace soen390_team01
         {
             services.AddScoped<AuthenticationFirebaseService>();
             services.AddScoped<InventoryService>();
+            services.AddSingleton<EncryptionService>(s => new EncryptionService(
+                Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
+                ));
+            services.AddScoped<UserManagementService>();
             services.AddDataProtection();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
