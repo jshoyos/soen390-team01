@@ -19,25 +19,30 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", _invService.GetInventoryModel());
+            return View(_invService.SetupModel());
         }
-        /// <summary>
-        /// Action to add item to inventory
-        /// </summary>
-        /// <param name="model"></param>
+        [HttpPost]
+        public IActionResult Refresh([FromBody] string selectedTab)
+        {
+            var model = _invService.SetupModel();
+            model.SelectedTab = selectedTab;
+
+            return PartialView("InventoryBody",model);
+        }
 
         [HttpPost]
-        public IActionResult AddItem([FromBody] InventoryModel model)
+        public IActionResult FilterProductTable([FromBody] ProductFilterInput input)
         {
-            _invService.AddItem(new Inventory
+            bool isFilterEmpty = input.Value.Equals("clear");
             {
-                InventoryId = model.InventoryId,
-                ItemId = model.ItemId,
-                Quantity = model.Quantity,
-                Type = model.Type,
-                Warehouse = model.Warehouse
-            });
-            return View("Index", model);
+                switch (input.Type)
+                {
+                    case "Bike": return PartialView("BikeTable", isFilterEmpty ? _invService.GetAllBikes() : _invService.GetFilteredProductList<Bike>(input));
+                    case "Part": return PartialView("PartTable", isFilterEmpty ? _invService.GetAllParts() : _invService.GetFilteredProductList<Part>(input));
+                    case "Material": return PartialView("MaterialTable", isFilterEmpty ? _invService.GetAllMaterials() : _invService.GetFilteredProductList<Material>(input));
+                }
+            }    
+            return View();
         }
         /// <summary>
         /// Changes the quantity of an item
@@ -54,7 +59,7 @@ namespace soen390_team01.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Quantity below 0");
             }
-
+            
             return PartialView("InventoryItem", inventory);
         }
     }

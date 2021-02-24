@@ -51,7 +51,13 @@ div.filer-data {
     border-width: thin;
     float: right;
 }
-
+input.filer-data {
+    border-style: solid;
+    border-color: lightgrey;
+    padding: 10px;
+    border-width: thin;
+    float: right;
+}
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;
