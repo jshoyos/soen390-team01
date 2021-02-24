@@ -46,7 +46,7 @@ namespace soen390_team01Tests.Unit.Controllers
             _userManagementServiceMock.Setup(u => u.GetAllUsers()).Returns(users);
 
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
-            var result = controller.Index() as ViewResult;
+            var result = controller.UserManagement() as ViewResult;
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as UserManagementModel).Users.Count);
@@ -64,7 +64,7 @@ namespace soen390_team01Tests.Unit.Controllers
                 }
             );
 
-            result = controller.Index() as ViewResult;
+            result = controller.UserManagement() as ViewResult;
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, (result.Model as UserManagementModel).Users.Count);
