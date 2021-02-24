@@ -21,10 +21,6 @@ namespace soen390_team01.Controllers
         }
 
         #region properties
-        [BindProperty]
-        public AddUserModel AddUserInput { get; set; }
-        [TempData]
-        public string StringErrorMessage { get; set; }
         #endregion
 
         #region Methods
@@ -62,20 +58,14 @@ namespace soen390_team01.Controllers
 
             if (user != null)
             {
-                return PartialView("_UserModalPartial", user);
+                return PartialView("_UserModalPartial", new EditUserModel(user));
             }
             return UserManagement();
         }
 
         [HttpPost]
-        public IActionResult EditUser(User user)
+        public IActionResult EditUser(EditUserModel user)
         {
-            ModelState["Password"].Errors.Clear();
-            ModelState["Password"].ValidationState = ModelValidationState.Valid;
-            ModelState["ConfirmPassword"].Errors.Clear();
-            ModelState["ConfirmPassword"].ValidationState = ModelValidationState.Valid;
-            ModelState["Email"].Errors.Clear();
-            ModelState["Email"].ValidationState = ModelValidationState.Valid;
             if (ModelState.IsValid)
             {
                 var editedUser = _userManagementService.EditUser(user);
@@ -88,9 +78,9 @@ namespace soen390_team01.Controllers
         {
             // Decrypted added user
             var addedUser = _userManagementService.AddUser(user);
-            if (addedUser != null && _authService.RegisterUser(addedUser.Email, user.Password).Result)
+            if (addedUser == null || !_authService.RegisterUser(addedUser.Email, user.Password).Result)
             {
-                _userManagementService.RemoveUser(user);
+                if(addedUser != null) _userManagementService.RemoveUser(user);
                 return false;
             }
             return true;
