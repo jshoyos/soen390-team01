@@ -56,7 +56,8 @@ namespace soen390_team01.Services
 
         public virtual void RemoveUser(User user)
         {
-            _context.Users.Remove(user);
+            _context.Users.Remove(_context.Users.FirstOrDefault(u => u.UserId == user.UserId));
+            _context.SaveChanges();
         }
         /// <summary>
         /// Updates a user from the User table
