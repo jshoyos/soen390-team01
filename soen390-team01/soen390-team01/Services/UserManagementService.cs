@@ -54,6 +54,11 @@ namespace soen390_team01.Services
             }
         }
 
+        public virtual void RemoveUser(User user)
+        {
+            _context.Users.Remove(_context.Users.FirstOrDefault(u => u.Email.Equals(user.Email)));
+            _context.SaveChanges();
+        }
         /// <summary>
         /// Updates a user from the User table
         /// </summary>
@@ -63,11 +68,16 @@ namespace soen390_team01.Services
         {
             try
             {
-                editedUser.Iv = _context.Users.Where(u => u.UserId == editedUser.UserId).Select(x => x.Iv).FirstOrDefault();
+                var user = _context.Users.Where(u => u.UserId == editedUser.UserId).FirstOrDefault();
+                user.FirstName = editedUser.FirstName;
+                user.LastName = editedUser.LastName;
+                user.PhoneNumber = editedUser.PhoneNumber;
+                user.Role = editedUser.Role;
+                user.Email = editedUser.Email;
 
-                _context.Users.Update(EncryptUser(editedUser));
+                _context.Users.Update(EncryptUser(user));
                 _context.SaveChanges();
-                return DecryptUser(editedUser);
+                return editedUser;
             }
             catch (Exception e)
             {
@@ -102,9 +112,7 @@ namespace soen390_team01.Services
             user.LastName = _encryption.Encrypt(user.LastName, iv);
             user.Email = _encryption.Encrypt(user.Email, iv);
             user.PhoneNumber = _encryption.Encrypt(user.PhoneNumber, iv);
-            user.Role = user.Role;
             user.Iv = Convert.ToBase64String(iv);
-            user.UserId = user.UserId;
 
             return user;
         }

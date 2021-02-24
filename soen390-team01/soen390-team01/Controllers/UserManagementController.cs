@@ -3,6 +3,7 @@ using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace soen390_team01.Controllers
 {
@@ -20,26 +21,20 @@ namespace soen390_team01.Controllers
         }
 
         #region properties
-        [BindProperty]
-        public AddUserModel AddUserInput { get; set; }
-        [TempData]
-        public string StringErrorMessage { get; set; }
         #endregion
 
         #region Methods
         [HttpGet]
         [Authorize]
-        public IActionResult Index()
+        public IActionResult UserManagement()
         {
-            ModelState.Clear();
-
             var model = new UserManagementModel
             {
                 Users = _userManagementService.GetAllUsers(),
                 AddUser = new AddUserModel()
             };
 
-            return View("Index", model);
+            return View(model);
         }
         /// <summary>
         /// Event Handler when the there is a request to add a new user
@@ -47,13 +42,15 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult AddUser(UserManagementModel model)
+        public IActionResult UserManagement(UserManagementModel model)
         {
-            if (!RegisterUser(model.AddUser))
+            if (!ModelState.IsValid || !RegisterUser(model.AddUser))
             {
-                ModelState.AddModelError(string.Empty, "Couldn't add user");
+                ModelState.AddModelError("Result", "Couldn't add user");
+                model.Users = _userManagementService.GetAllUsers();
+                return View(model);
             }
-            return Index();
+            return RedirectToAction("UserManagement");
         }
         public IActionResult GetUserById(long userId)
         {
@@ -61,24 +58,32 @@ namespace soen390_team01.Controllers
 
             if (user != null)
             {
-                return PartialView("_UserModalPartial", user);
+                return PartialView("_UserModalPartial", new EditUserModel(user));
             }
-            return Index();
+            return UserManagement();
         }
 
         [HttpPost]
-        public IActionResult EditUser(User user)
+        public IActionResult EditUser(EditUserModel user)
         {
-            var editedUser = _userManagementService.EditUser(user);
-
-            return PartialView("_UserRowPartial", editedUser);
+            if (ModelState.IsValid)
+            {
+                var editedUser = _userManagementService.EditUser(user);
+                return PartialView("_UserRowPartial", editedUser);
+            }
+            return PartialView("_UserModalPartial", user);
         }
 
         private bool RegisterUser(AddUserModel user)
         {
             // Decrypted added user
             var addedUser = _userManagementService.AddUser(user);
-            return addedUser != null && _authService.RegisterUser(addedUser.Email, user.Password).Result;
+            if (addedUser == null || !_authService.RegisterUser(addedUser.Email, user.Password).Result)
+            {
+                if(addedUser != null) _userManagementService.RemoveUser(user);
+                return false;
+            }
+            return true;
         }
 
         #endregion

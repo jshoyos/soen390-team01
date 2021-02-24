@@ -81,6 +81,17 @@ namespace soen390_team01Tests.Unit.Services
             Assert.IsTrue("admin2@hotmail.com".Equals(users[1].Email));
         }
 
+        [Test, Order(3)]
+        public void GetUserByIdTest()
+        {
+            var userId = _context.Users.ToList()[1].UserId;
+            var user = _userManagementService.GetUserById(userId);
+
+            Assert.NotNull(user);
+            Assert.IsTrue("admin2@hotmail.com".Equals(user.Email));
+            Assert.AreEqual(userId, user.UserId);
+        }
+
         [Test]
         public void EditUserTest()
         {
@@ -96,14 +107,11 @@ namespace soen390_team01Tests.Unit.Services
         }
 
         [Test]
-        public void GetUserByIdTest()
+        public void RemoveUser()
         {
-            var userId = _context.Users.ToList()[1].UserId;
-            var user = _userManagementService.GetUserById(userId);
-
-            Assert.NotNull(user);
-            Assert.IsTrue("admin2@hotmail.com".Equals(user.Email));
-            Assert.AreEqual(userId, user.UserId);
+            var user = _context.Users.ToList().ElementAt(1);
+            _userManagementService.RemoveUser(user);
+            Assert.AreEqual(1, _context.Users.ToList().Count);
         }
     }
 }
