@@ -10,8 +10,12 @@
     }
 }
 
-.collapButtons{
-    width: 45%;
+.collapButton1{
+    width: 25%;
+    margin: 1px;
+}
+.collapButton2 {
+    width: 65%;
     margin: 1px;
 }
 #filter {
