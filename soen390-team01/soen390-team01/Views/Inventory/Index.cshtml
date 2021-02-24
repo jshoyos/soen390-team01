@@ -1,10 +1,14 @@
 ﻿@model soen390_team01.Models.InventoryModel
+@using Newtonsoft.Json
 
-@{ViewData["Title"] = "Inventory View";}
+@{
+    ViewData["Title"] = "Inventory View";
+    ViewData["selectedTab"] = "";
+}
 
-<head>
+<head id="head">
     <link rel="stylesheet" href="\css\Inventory.css">
-    
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         function changeQuantity(inv, change) {
@@ -20,6 +24,34 @@
                 }
             });
         };
+        function passingFilter(type, name, value) {
+            console.log("test");
+            $.ajax({
+                url: '@Url.Action("FilterProductTable", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ "type": type, "name": name, "value": value}),
+                dataType: 'html',
+                success: function (result) {
+                    $(`.${type}-table`).html(result);
+                }
+            });
+        };
+         function refreshFilter(type) {
+           
+            $.ajax({
+                url: '@Url.Action("Refresh", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(type),
+                dataType: 'html',
+                success: function (result) {
+                    console.log(result);
+                    $('.inventory-view').html(result);
+                }
+            });
+        };
+
     </script>
     <script>
         function openTab(evt, tableName) {
@@ -41,73 +73,42 @@
             // Show the current tab, and add an "active" class to the button that opened the tab
             document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
+
+            switch (tableName) {
+
+                case "Bike":
+                    document.getElementById("Bike-filter").style.display = "block";
+                    document.getElementById("Part-filter").style.display = "none";
+                    document.getElementById("Material-filter").style.display = "none";
+                    break;
+                case "Material":
+                    document.getElementById("Bike-filter").style.display = "none";
+                    document.getElementById("Part-filter").style.display = "none";
+                    document.getElementById("Material-filter").style.display = "block";
+                    break;
+                case "Part":
+                    document.getElementById("Bike-filter").style.display = "none";
+                    document.getElementById("Part-filter").style.display = "block";
+                    document.getElementById("Material-filter").style.display = "none";
+                    break;
+            }
+        }
+        function hideFilter() {
+            // Declare all variables
+            var i, tabcontent;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("filer-data");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+        }
+        function showFilter(type) {
+            document.getElementById(type+"-filter").display = "block" ;
         }
     </script>
 </head>
 
 <div class="inventory-view">
-    <div class="filer-data" align="center">
-        <h1 class="display-4" align="center">Filter</h1>
-        <form action="">
-            <p><b>Price</b></p>
-            <span>50$</span>
-            <input class="scroll" type="range" min="50" max="500" value="250">
-            <span>500$</span>
-            <br /><br />
-            <p><b>Grade</b></p>
-            <select name="grade" id="grade" align="center">
-                <option value="grade b">Grade B</option>
-                <option value="grade c">Grade C</option>
-                <option value="high yield">High Yield</option>
-            </select>
-            <br><br />
-            <p><b>Name</b></p>
-            <select name="name" id="name">
-                <option value="road">Road bike</option>
-                <option value="mountain">Mountain bike</option>
-                <option value="hybrid">Hybrid bike</option>
-                <option value="cyclocross">Cyclocross bike</option>
-                <option value="folding">Folding bike</option>
-            </select>
-            <br><br />
-            <input type="submit" value="Filter">
-
-        </form>
-    </div>
-    <div class="bike-components">
-        <div class="tab">
-            <button class="tablinks active" id="allButton" onclick="openTab(event, 'All')">All</button>
-        </div>
-        <div class="tab">
-            <button class="tablinks" id="bikeButton" onclick="openTab(event, 'Bike')">Bike</button>
-            <button class="tablinks" id="partButton" onclick="openTab(event, 'Part')">Part</button>
-            <button class="tablinks" id="matButton" onclick="openTab(event, 'Material')">Material</button>
-        </div>
-        <div id="All" class="tabcontent" style="display: block">
-
-            <h3>All</h3>
-
-            @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
-        </div>
-        <!-- Tab content -->
-        <div id="Bike" class="tabcontent">
-
-            <h3>Bikes</h3>
-
-            @{await Html.RenderPartialAsync("InventoryTable", Model.BikeList);}
-        </div>
-
-        <div id="Part" class="tabcontent">
-            <h3>Parts</h3>
-
-            @{await Html.RenderPartialAsync("InventoryTable", Model.PartList);}
-        </div>
-
-        <div id="Material" class="tabcontent">
-            <h3>Material</h3>
-
-            @{await Html.RenderPartialAsync("InventoryTable", Model.MaterialList);}
-        </div>
-
-    </div>
+    @{await Html.RenderPartialAsync("InventoryBody", Model);}
 </div>
