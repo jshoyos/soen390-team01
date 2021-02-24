@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System.Collections.Generic;
 
 namespace soen390_team01.Controllers
 {

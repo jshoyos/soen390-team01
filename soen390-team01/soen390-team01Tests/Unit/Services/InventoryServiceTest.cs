@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
-using soen390_team01.Models;
 using soen390_team01.Services;
+using System.Linq;
 
 namespace soen390_team01Tests.Services
 {
@@ -153,19 +152,5 @@ namespace soen390_team01Tests.Services
             Inventory invItem = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
             Assert.AreEqual(model.Quantity, invItem.Quantity);
         }
-
-        //[Test]
-        //public void GetFilteredProductListTest()
-        //{
-        //    var input = new ProductFilterInput
-        //    {
-        //        Type = "Material",
-        //        Value = "Bike 1",
-        //        Name = "Grade"
-        //    };
-
-        //    //var test1 = ;
-        //    Assert.AreEqual(1, _inventoryService.GetFilteredProductList<Material>(input).Count());
-        //}
     }
 }

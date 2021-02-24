@@ -61,6 +61,8 @@ namespace soen390_team01.Services
             return model;
         }
 
+
+        //TODO: refactor
         public virtual SelectList GetFilter(string param,string table)
         {
             switch (table)
