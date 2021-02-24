@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewData["Title"] = "transfers";
+}
+<head>
+    <link rel="stylesheet" href="\css\Transfers.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function showVendor() {
+            document.getElementById("vendor").style.display = "";
+        }
+        function hideVendor() {
+            document.getElementById("vendor").style.display = "none";
+        }
+        function showButton() {
+            document.getElementById("procbutton").style.display = "";
+        }
+        function hideButton() {
+            document.getElementById("procbutton").style.display = "none";
+        }
+
+        function showLargeVendor() {
+            document.getElementById("largeVendor").style.display = "";
+        }
+
+        function hideLargeVendor() {
+            document.getElementById("largeVendor").style.display = "none";
+        }
+    </script>
+</head>
+
+<body>
+    <!--Buttons that only appear in mobile version-->
+    <div class="container justify-content-center">
+        <div class="row" id="mobileButtons">
+            <button class="btn btn-outline-primary collapButton1" data-toggle="modal" data-target="#filterModal">Filter</button>
+            <button class="btn btn-outline-primary collapButton2" style="display:none;" id="procbutton" data-toggle="modal" data-target="#procModal">Add Procurement</button>
+        </div>
+    </div>
+    <!--/Buttons that only appear in mobile version-->
+
+    <!-- Modal for filter in mobile mode-->
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-filter">
+
+                    <div id="orderFilter">
+                        <div class="row justify-content-center">
+                            <h3 class="text-center">FILTER</h3>
+                        </div>
+                        <div class="row justify-content-center pt-3">
+                            <h5 class="text-center">STATUS</h5>
+                        </div>
+                        <div class="row justify-content-center pt-3">
+                            <div class="col"></div>
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Pending
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Completed
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Canceled
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+                    <div class="pb-4 justify-content-center" id="vendor" style="display: none;">
+                        <div class="row justify-content-center pt-3">
+                            <h5 class="text-center">Vendor</h5>
+                        </div>
+                        <div class="row justify-content-center pt-3">
+                            <select class="form-select pl-auto" aria-label="Default select example">
+                                <option selected>Vendor</option>
+                                <option value="1">Vendor</option>
+                                <option value="2">Vendor</option>
+                                <option value="3">Vendor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal for filter in mobile mode-->
+
+    <div class="row">
+        <!--Table with tabs-->
+        <div class="col-lg-8 mx-lg-auto" id="LHS">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li style="width: 50%;text-align:center;">
+                    <a class="nav-link active" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor(); hideButton(); hideLargeVendor();">
+                        Order
+                    </a>
+                </li>
+                <li class="nav-item" style="width: 50%; text-align:center;">
+                    <a class="nav-link" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor(); showButton(); showLargeVendor();">
+                        Procurement
+                    </a>
+                </li>
+
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
+                    <div class="container">
+                        <div class="row pt-4 pb-4 h-100 text-center">
+                            <div class="col">ID</div>
+                            <div class="col">Status</div>
+                            <div class="col">Date</div>
+                            <div class="col">Customer</div>
+                            <div class="col">Item</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
+                    <div class="container">
+                        <div class="row pt-4 pb-4 h-100 text-center">
+                            <div class="col">ID</div>
+                            <div class="col">Status</div>
+                            <div class="col">Date</div>
+                            <div class="col">Vendor</div>
+                            <div class="col">Item</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Table with tabs-->
+        <!--Filter area-->
+        <div class="col-lg-3 pb-3" id="filter">
+            <div id="orderFilter">
+                <div class="row justify-content-center">
+                    <h3 class="text-center">FILTER</h3>
+                </div>
+                <div class="row justify-content-center pt-3">
+                    <h5 class="text-center">STATUS</h5>
+                </div>
+                <div class="row justify-content-center pt-3">
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Pending
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Completed
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Canceled
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
+            <!--/Filter area-->
+            <!-- Vendor info for procurement tab filter-->
+            <div class="pb-4 justify-content-center" id="largeVendor" style="display: none;">
+                <div class="row justify-content-center pt-3">
+                    <h5 class="text-center">Vendor</h5>
+                </div>
+                <div class="row justify-content-center pt-3">
+                    <select class="form-select pl-auto">
+                        <option selected>Vendor</option>
+                        <option value="1">Vendor</option>
+                        <option value="2">Vendor</option>
+                        <option value="3">Vendor</option>
+                    </select>
+                </div>
+                <div class="row justify-content-center pt-3">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#procModal">Add Procurement</button>
+                </div>
+            </div>
+            <!-- /Vendor info for procurement tab filter-->
+        </div>
+    </div>
+
+    <!-- Modal for proucrement tab-->
+    <div class="modal fade" id="procModal" tabindex="-1" role="dialog" aria-labelledby="procModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="procModalTitle">Add Procurement</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-procurement">
+                    <form>
+                        <div class="row">
+                            <div class="col-3 text-right">
+                                Item:
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" placeholder="Item" required>
+                            </div>
+                            <div class="col-3 text-right">
+                                Quantity:
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" placeholder="Quantity" required>
+                            </div>
+                            <div class="col-3 text-right">
+                                Item:
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control" placeholder="Vendor" required>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal for proucrement tab-->
+
+</body>
