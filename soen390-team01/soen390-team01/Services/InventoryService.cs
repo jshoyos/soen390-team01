@@ -20,9 +20,16 @@ namespace soen390_team01.Services
             _context = context;
         }
 
-        public List<T> GetFilteredProductList<T>(ProductFilterInput input) where T : Item
+        public virtual List<T> GetFilteredProductList<T>(ProductFilterInput input) where T : Item
         {
-            return _context.Set<T>("soen390_team01.Data.Entities."+ input.Type).FromSqlRaw(ProductFilterQueryBuilder.FilterProduct(input)).ToList();
+            try
+            {
+                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductFilterQueryBuilder.FilterProduct(input)).ToList();
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
         }
         public virtual InventoryModel SetupModel()
         {
@@ -54,7 +61,7 @@ namespace soen390_team01.Services
             return model;
         }
 
-        public SelectList GetFilter(string param,string table)
+        public virtual SelectList GetFilter(string param,string table)
         {
             switch (table)
             {
@@ -139,11 +146,20 @@ namespace soen390_team01.Services
         /// <summary>
         /// Updates an inventory item
         /// </summary>
-        /// <param name="updatedInventory">inventory item to update</param>
-        public virtual void Update(Inventory updatedInventory)
+        /// <param name="Inventory">inventory item to update</param>
+        public virtual bool Update(Inventory updatedInventory)
         {
-            _context.Inventories.Update(updatedInventory);
-            _context.SaveChanges();
+            try
+            {
+                _context.Inventories.Update(updatedInventory);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
         }
 
         public void Dispose()

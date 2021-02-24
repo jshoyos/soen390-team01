@@ -7,23 +7,17 @@
         @foreach (KeyValuePair<string, SelectList> pair in Model)
         {
             <p><b>@pair.Key</b></p>
-            @*@if (pair.Key.Equals("Name"))
-            {
-                <input onchange="passingFilter(@JsonConvert.SerializeObject(@Model.Type),@JsonConvert.SerializeObject(pair.Key),this.value)">
-            }
-            else
-            {*@
-                <select onchange="passingFilter(@JsonConvert.SerializeObject(@Model.Type),@JsonConvert.SerializeObject(pair.Key),this.value)">
-                    <option value="" selected disabled hidden>Choose here</option>
-                    @foreach (SelectListItem item in pair.Value)
-                    {
-                        <option value="@item.Text">@item.Text</option>
-                    }
-                </select>
-                <br /><br />
-            @*}*@
+            <select onchange="passingFilter(@JsonConvert.SerializeObject(@Model.Type),@JsonConvert.SerializeObject(pair.Key),this.value)">
+                <option value="" selected disabled hidden>Choose here</option>
+                @foreach (SelectListItem item in pair.Value)
+                {
+                    <option value="@item.Text">@item.Text</option>
+                }
+            </select>
+            <br /><br />
+
         }
         <br>
-       
+
     </form>
 </div>
