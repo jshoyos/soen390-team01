@@ -1,130 +1,28 @@
-﻿div.transfers-view::after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
+﻿@media only screen and (max-width: 1026px) {
+    #filter {
+        display: none;
+    }
 }
 
-* html .clearfix {
-    zoom: 1;
+@media only screen and (min-width: 1026px) {
+    #mobileButtons {
+        display: none;
+    }
 }
 
-*:first-child + html .clearfix {
-    zoom: 1;
+.collapButtons{
+    width: 45%;
+    margin: 1px;
+}
+#filter {
+    border: 1px solid #5680A9;
+    padding: 15px;
+    border-radius: 5px;
 }
 
-div.quantity::after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
-}
-
-* html .clearfix {
-    zoom: 1;
-}
-
-*:first-child + html .clearfix {
-    zoom: 1;
-}
-
-div.inventory-view {
-    border-style: solid;
-    border-width: thin;
-    border-color: lightgrey;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-div.bike-components {
-    float: left;
-}
-
-div.filer-data {
-    border-style: solid;
-    border-color: lightgrey;
-    padding: 10px;
-    border-width: thin;
-    float: right;
-}
-
-.tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: white;
-}
-
-.tablinks {
-    background-color: white;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    width: 33%;
-}
-
-.bike-components {
-    width: 78.7%;
-}
-
-.tablinks:hover {
-    background-color: #ccc;
-}
-
-.tablinks.active {
-    background-color: #ccc;
-}
-
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
-    height: 400px;
-}
-
-.scroll {
-    color: lightgray;
-}
-
-.quantity {
-    border-style: solid;
-    border-color: black;
-    border-width: thin;
-    width: 114px;
-    border-radius: 10px
-}
-
-.button-minus {
-    float: left;
-    border: none;
-    height: 28px;
-    background-color: lightgray;
-    width: 28px;
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px
-}
-
-.button-plus {
-    float: left;
-    border: none;
-    height: 28px;
-    background-color: lightgray;
-    width: 28px;
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px
-}
-
-.quantity-text {
-    float: left;
-    height: 28px;
-    border: none;
-    text-align: center;
-    width: 56px;
+#LHS {
+    border: 1px solid #5680A9;
+    margin: 2px;
+    padding: 0 0 5px 0;
+    border-radius: 5px;
 }

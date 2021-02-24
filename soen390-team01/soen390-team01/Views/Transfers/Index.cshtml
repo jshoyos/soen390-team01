@@ -3,42 +3,108 @@
     ViewData["Title"] = "transfers";
 }
 <head>
-    <link rel="stylesheet" href="~/css/Transfers.css">
-    
+    <link rel="stylesheet" href="\css\Transfers.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function showVendor() {
+            document.getElementById("vendor").style.display = "";
+        }
+        function hideVendor() {
+            document.getElementById("vendor").style.display = "none";
+        }
+    </script>
 </head>
 
-<div class="transfers-view">
-    <div class="filer-data" align="center">
-        <h1 class="display-4" align="center">Filter</h1>
-        <form action="">
-            <p>Status</p>
-            <input type="checkbox" id="pending" name="pending" value="pending">
-            <label for="pending">Pending</label><br>
-            <input type="checkbox" id="completed" name="completed" value="completed">
-            <label for="completed">Completed</label><br>
-            <input type="checkbox" id="cancelled" name="cancelled" value="cancelled">
-            <label for="cancelled">Cancelled</label><br>
-            <h6>Date</h6>
-            <label for="From">From:</label>
-            <input type="date" id="From" name="From">
-            <br>
-            <label for="To">To:</label>
-            <input type="date" id="To" name="To">
-            <p>Customer</p>
-            <select name="customer" id="customer" align="center">
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-            </select>
-            <br><br />
-            <input type="submit" value="Generate Graph">
-        </form>
+<body>
+    <div class="container justify-content-center">
+        <div class="row" id="mobileButtons">
+                <button class="btn btn-outline-primary collapButtons">Filter</button>
+                <button class="btn btn-outline-primary collapButtons">Place Order</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-lg-auto" id="LHS">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li style="width: 50%;text-align:center;">
+                        <a class="nav-link active" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor();">
+                        Order</a>
+                    </li>
+                    <li class="nav-item" style="width: 50%; text-align:center;">
+                        <a class="nav-link" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor();">
+                        Procurement</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
+                        <div class="container">
+                            <div class="row pt-4 pb-4 h-100 text-center">
+                                <div class="col">ID</div>
+                                <div class="col">Status</div>
+                                <div class="col">Date</div>
+                                <div class="col">Customer</div>
+                                <div class="col">Item</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
+                        <div class="container">
+                            <div class="row pt-4 pb-4 h-100 text-center">
+                                <div class="col">ID</div>
+                                <div class="col">Status</div>
+                                <div class="col">Date</div>
+                                <div class="col">Vendor</div>
+                                <div class="col">Item</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 pb-3" id="filter">
+                <div id="orderFilter">
+                    <h3 class="text-center">FILTER</h3>
+                    <br />
+                    <h5 class="text-center">STATUS</h5>
+                    <br />
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Pending
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Completed
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Canceled
+                            </label>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                </div>
+                <div class="pb-4" id="vendor" style="display: none;">
+                    <h5 class="text-center">Vendor</h5><br />
+                        <select class="form-select pl-auto" aria-label="Default select example">
+                            <option selected>Vendor</option>
+                            <option value="1">Vendor</option>
+                            <option value="2">Vendor</option>
+                            <option value="3">Vendor</option>
+                        </select>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="tab">
-        <button class="tablinks" id="bikeButton" onclick="openTab(event, 'AllItem')">All</button>
-        <button class="tablinks" id="partButton" onclick="openTab(event, 'Payable')">Payable</button>
-        <button class="tablinks" id="matButton" onclick="openTab(event, 'Receivable')">Receivable</button>
-    </div>
-</div>
 
 
+
+</body>
