@@ -21,90 +21,147 @@
 <body>
     <div class="container justify-content-center">
         <div class="row" id="mobileButtons">
-                <button class="btn btn-outline-primary collapButtons">Filter</button>
-                <button class="btn btn-outline-primary collapButtons">Place Order</button>
-            </div>
+            <button class="btn btn-outline-primary collapButtons" data-toggle="modal" data-target="#filterModal">Filter</button>
+            <button class="btn btn-outline-primary collapButtons">Place Order</button>
         </div>
-        <div class="row">
-            <div class="col-lg-8 mx-lg-auto" id="LHS">
-                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                    <li style="width: 50%;text-align:center;">
-                        <a class="nav-link active" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor();">
-                        Order</a>
-                    </li>
-                    <li class="nav-item" style="width: 50%; text-align:center;">
-                        <a class="nav-link" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor();">
-                        Procurement</a>
-                    </li>
+    </div>
 
-                </ul>
-                <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
-                        <div class="container">
-                            <div class="row pt-4 pb-4 h-100 text-center">
-                                <div class="col">ID</div>
-                                <div class="col">Status</div>
-                                <div class="col">Date</div>
-                                <div class="col">Customer</div>
-                                <div class="col">Item</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
-                        <div class="container">
-                            <div class="row pt-4 pb-4 h-100 text-center">
-                                <div class="col">ID</div>
-                                <div class="col">Status</div>
-                                <div class="col">Date</div>
-                                <div class="col">Vendor</div>
-                                <div class="col">Item</div>
-                            </div>
-                        </div>
-                    </div>
+
+    <!-- Modal for filter in mobile mode-->
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-            <div class="col-lg-3 pb-3" id="filter">
-                <div id="orderFilter">
-                    <h3 class="text-center">FILTER</h3>
-                    <br />
-                    <h5 class="text-center">STATUS</h5>
-                    <br />
-                    <div class="col"></div>
-                    <div class="col">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Pending
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Completed
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Canceled
-                            </label>
-                        </div>
+                <div class="modal-body" id="modal-filter">
+                    <div id="orderFilter">
+                        <h5 class="text-center">STATUS</h5>
+                        <br />
                         <div class="col"></div>
+                        <div style="padding-right: 30%; padding-left: 30%;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Pending
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Completed
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Canceled
+                                </label>
+                            </div>
+                            <div class="col"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="pb-4" id="vendor" style="display: none;">
-                    <h5 class="text-center">Vendor</h5><br />
+                    <div class="pb-4" id="vendor" style="display: none;">
+                        <h5 class="text-center">Vendor</h5><br />
                         <select class="form-select pl-auto" aria-label="Default select example">
                             <option selected>Vendor</option>
                             <option value="1">Vendor</option>
                             <option value="2">Vendor</option>
                             <option value="3">Vendor</option>
                         </select>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Filter</button>
                 </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-8 mx-lg-auto" id="LHS">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li style="width: 50%;text-align:center;">
+                    <a class="nav-link active" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor();">
+                        Order
+                    </a>
+                </li>
+                <li class="nav-item" style="width: 50%; text-align:center;">
+                    <a class="nav-link" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor();">
+                        Procurement
+                    </a>
+                </li>
 
-
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
+                    <div class="container">
+                        <div class="row pt-4 pb-4 h-100 text-center">
+                            <div class="col">ID</div>
+                            <div class="col">Status</div>
+                            <div class="col">Date</div>
+                            <div class="col">Customer</div>
+                            <div class="col">Item</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
+                    <div class="container">
+                        <div class="row pt-4 pb-4 h-100 text-center">
+                            <div class="col">ID</div>
+                            <div class="col">Status</div>
+                            <div class="col">Date</div>
+                            <div class="col">Vendor</div>
+                            <div class="col">Item</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 pb-3" id="filter">
+            <div id="orderFilter">
+                <h3 class="text-center">FILTER</h3>
+                <br />
+                <h5 class="text-center">STATUS</h5>
+                <br />
+                <div class="col"></div>
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Pending
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Completed
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Canceled
+                        </label>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
+            <div class="pb-4" id="vendor" style="display: none;">
+                <h5 class="text-center">Vendor</h5><br />
+                <select class="form-select pl-auto" aria-label="Default select example">
+                    <option selected>Vendor</option>
+                    <option value="1">Vendor</option>
+                    <option value="2">Vendor</option>
+                    <option value="3">Vendor</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
 </body>
