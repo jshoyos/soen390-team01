@@ -24,7 +24,7 @@ namespace soen390_team01.Services
         {
             return _context.Set<T>("soen390_team01.Data.Entities."+ input.Type).FromSqlRaw(ProductFilterQueryBuilder.FilterProduct(input)).ToList();
         }
-        public InventoryModel SetupModel()
+        public virtual InventoryModel SetupModel()
         {
             var model = GetInventoryModel();
             model.BikeFilters.Add("Name", GetFilter("name","bike"));
@@ -39,11 +39,10 @@ namespace soen390_team01.Services
             return model;
         }
         /// <summary>
-        ///     Queries all the items in the inventory and splits the into an InventoryModel
+        /// Queries all the items in the inventory and splits the into an InventoryModel
         /// </summary>
         /// <returns>InventoryModel</returns>
-        /// 
-        public InventoryModel GetInventoryModel()
+        public virtual InventoryModel GetInventoryModel()
         {
 
             var model = new InventoryModel();
@@ -106,43 +105,42 @@ namespace soen390_team01.Services
         }
 
         /// <summary>
-        ///     Queries all the items in the inventory
+        /// Queries all the items in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Inventory> GetInventory()
+        public virtual List<Inventory> GetInventory()
         {
             return _context.Inventories.OrderBy(inv => inv.InventoryId).ToList();
         }
         /// <summary>
-        ///     Queries all the bikes in the inventory
+        /// Queries all the bikes in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Bike> GetAllBikes()
+        public virtual List<Bike> GetAllBikes()
         {
             return _context.Bikes.OrderBy(bike => bike.ItemId).ToList();
         }
         /// <summary>
-        ///     Queries all the parts in the inventory
+        /// Queries all the parts in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Part> GetAllParts()
+        public virtual List<Part> GetAllParts()
         {
             return _context.Parts.OrderBy(part => part.ItemId).ToList();
         }
         /// <summary>
-        ///     Queries all the materials in the inventory
+        /// Queries all the materials in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
-        public List<Material> GetAllMaterials()
+        public virtual List<Material> GetAllMaterials()
         {
             return _context.Materials.OrderBy(mat => mat.ItemId).ToList();
         }
         /// <summary>
-        ///     adds an item to the respective table
+        /// Updates an inventory item
         /// </summary>
-        /// <param name="item"></param>
-
-        public void Update(Inventory updatedInventory)
+        /// <param name="updatedInventory">inventory item to update</param>
+        public virtual void Update(Inventory updatedInventory)
         {
             _context.Inventories.Update(updatedInventory);
             _context.SaveChanges();

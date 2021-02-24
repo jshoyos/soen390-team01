@@ -66,6 +66,11 @@ namespace soen390_team01.Controllers
             }
         }
 
+        public IActionResult Logout()
+        {
+            RemoveAuthCookie(this.HttpContext);
+            return LocalRedirect("/Authentication/Index");
+        }
         /// <summary>
         /// Get for the Forgot Password
         /// </summary>
@@ -136,11 +141,11 @@ namespace soen390_team01.Controllers
 
             await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
-        // this method might go in another controller later on
-        //private async void removeAuthCookie(HttpContext context)
-        //{
-        //    await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
-        //}
+
+        private static async void RemoveAuthCookie(HttpContext context)
+        {
+            await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
+        }
         #endregion
     }
 }

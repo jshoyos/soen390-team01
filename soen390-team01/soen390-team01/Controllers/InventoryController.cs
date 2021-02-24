@@ -15,6 +15,7 @@ namespace soen390_team01.Controllers
         {
             _invService = invService;
         }
+
         [Authorize]
         [HttpGet]
         public IActionResult Index()
@@ -44,24 +45,10 @@ namespace soen390_team01.Controllers
             }    
             return View();
         }
-
-
-        //[HttpPost]
-        //public IActionResult RefreshFilterPartialView(string type)
-        //{
-        //    var model = _invService.SetupModel();
-        //    switch (type)
-        //    {
-        //        case "Bike": return PartialView("Filter",model.BikeFilters );
-        //        case "Part": return PartialView("Filter", model.PartFilters);
-        //        case "Material": return PartialView("Filter", model.MaterialFilters);
-        //    }
-        //}
-
         /// <summary>
-        ///     Changes the quantity of an item
+        /// Changes the quantity of an item
         /// </summary>
-        /// <param name="inventory"></param>
+        /// <param name="inventory">updated inventory item</param>
         [HttpPost]
         public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {

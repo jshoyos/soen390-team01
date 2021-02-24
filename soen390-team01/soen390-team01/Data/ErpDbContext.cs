@@ -29,7 +29,7 @@ namespace soen390_team01.Data
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Procurement> Procurements { get; set; }
         public virtual DbSet<Vendor> Vendors { get; set; }
-
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -346,6 +346,43 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasMaxLength(10)
                     .HasColumnName("phone_number");
+            });
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("user");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id")
+                    .HasDefaultValueSql("nextval('user_user_id_seq'::regclass)");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("email");
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("first_name");
+
+                entity.Property(e => e.Iv)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("iv");
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("last_name");
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("phone_number");
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("user_role");
             });
 
             modelBuilder.HasSequence("bike_id_seq");
