@@ -1,16 +1,14 @@
 ﻿using soen390_team01.Data;
 using soen390_team01.Data.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public class InventoryService : IDisposable
+    public class InventoryService : DisposableService
     {
         private readonly ErpDbContext _context;
-        private bool _disposed;
 
         public InventoryService(ErpDbContext context)
         {
@@ -88,15 +86,6 @@ namespace soen390_team01.Services
         {
             _context.Inventories.Update(updatedInventory);
             _context.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            _disposed = true;
         }
     }
 }
