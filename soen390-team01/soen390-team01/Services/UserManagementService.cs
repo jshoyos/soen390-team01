@@ -1,16 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using soen390_team01.Data;
+﻿using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
+using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public class UserManagementService
+    public class UserManagementService : DisposableService
     {
         private readonly ErpDbContext _context;
         private readonly EncryptionService _encryption;

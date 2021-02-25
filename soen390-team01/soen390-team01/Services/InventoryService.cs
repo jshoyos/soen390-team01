@@ -1,6 +1,6 @@
-﻿using soen390_team01.Data;
+﻿using System;
+using soen390_team01.Data;
 using soen390_team01.Data.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using soen390_team01.Models;
@@ -10,10 +10,9 @@ using soen390_team01.Data.Queries;
 
 namespace soen390_team01.Services
 {
-    public class InventoryService : IDisposable
+    public class InventoryService : DisposableService
     {
         private readonly ErpDbContext _context;
-        private bool _disposed;
 
         public InventoryService(ErpDbContext context)
         {
@@ -24,7 +23,7 @@ namespace soen390_team01.Services
         {
             try
             {
-                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductFilterQueryBuilder.FilterProduct(input)).ToList();
+                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductQueryBuilder.FilterProduct(input)).ToList();
             }
             catch(Exception e)
             {
@@ -45,6 +44,7 @@ namespace soen390_team01.Services
             model.MaterialFilters.Add("Price", GetFilter("price", "material"));
             return model;
         }
+
         /// <summary>
         /// Queries all the items in the inventory and splits the into an InventoryModel
         /// </summary>
@@ -162,15 +162,6 @@ namespace soen390_team01.Services
                 return false;
             }
 
-        }
-
-        public void Dispose()
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            _disposed = true;
         }
     }
 }
