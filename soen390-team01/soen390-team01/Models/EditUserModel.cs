@@ -5,6 +5,14 @@ namespace soen390_team01.Models
 {
     public class EditUserModel : User
     {
+        public EditUserModel()
+        {
+            Email = "";
+            Role = "";
+            PhoneNumber = "";
+            LastName = "";
+            FirstName = "";
+        }
         public EditUserModel(User user)
         {
             Email = user.Email;
