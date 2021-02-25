@@ -19,7 +19,33 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(_transfersService.GetTransfersModel());
+            var model = _transfersService.GetTransfersModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult AddProcurement(TransfersModel model)
+        {
+            bool showModal = false;
+            if (ModelState.IsValid)
+            {
+                switch (model.AddProcurement.ItemType)
+                {
+                    case "Bike": _transfersService.AddProcurement<Bike>(model.AddProcurement); break;
+                    case "Part": _transfersService.AddProcurement<Part>(model.AddProcurement); break;
+                    case "Material": _transfersService.AddProcurement<Material>(model.AddProcurement); break;
+                }
+            }
+            else
+            {
+                showModal = true;
+            }
+
+            model = _transfersService.GetTransfersModel();
+            model.SelectedTab = "Procurement";
+            model.ShowModal = showModal;
+
+            return View("Index", model);
         }
     }
 }

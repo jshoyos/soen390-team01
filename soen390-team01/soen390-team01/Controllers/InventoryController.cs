@@ -42,7 +42,7 @@ namespace soen390_team01.Controllers
                     case "Material": return PartialView("MaterialTable", isFilterEmpty ? _invService.GetAllMaterials() : _invService.GetFilteredProductList<Material>(input));
                 }
             }    
-            return View();
+            return Index();
         }
         /// <summary>
         /// Changes the quantity of an item

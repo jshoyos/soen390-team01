@@ -3,6 +3,8 @@ using soen390_team01.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 
 namespace soen390_team01.Services
@@ -42,8 +44,15 @@ namespace soen390_team01.Services
         {
             return new()
             {
-                Orders = _context.Orders.ToList(),
-                Procurements = _context.Procurements.ToList()
+                Orders = _context.Orders
+                    .Include(o => o.OrderItems)
+                    .Include(o => o.Payment)
+                    .Include(o => o.Customer)
+                    .ToList(),
+                Procurements = _context.Procurements
+                    .Include(p => p.Payment)
+                    .Include(p => p.Vendor)
+                    .ToList()
             };
         }
 
@@ -65,7 +74,7 @@ namespace soen390_team01.Services
                 _context.SaveChanges();
                 return order;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO: add exception handling to be able to create error messages
                 return null;
@@ -95,6 +104,62 @@ namespace soen390_team01.Services
                 // TODO: propagate custom exceptions instead of returning null
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Inserting a new procurement
+        /// </summary>
+        /// <typeparam name="T">Item type</typeparam>
+        /// <param name="addProcurement">procurement insertion input</param>
+        /// <returns></returns>
+        public virtual Procurement AddProcurement<T>(AddProcurementModel addProcurement) where T : Item
+        {
+            // TODO: Implementing custom exceptions for steps in the insertion of procurements
+
+            T item;
+            Payment payment;
+
+            try
+            {
+                item = _context.Set<T>("soen390_team01.Data.Entities." + addProcurement.ItemType)
+                    .FromSqlRaw(ProductQueryBuilder.GetProduct(addProcurement.ItemType, addProcurement.ItemId))
+                    .First();
+
+                payment = new Payment
+                {
+                    Amount = item.Price * addProcurement.ItemQuantity,
+                    State = "pending"
+                };
+
+                _context.Payments.Add(payment);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            var procurement = new Procurement
+            {
+                ItemId = item.ItemId,
+                Type = addProcurement.ItemType.ToLower(),
+                ItemQuantity = addProcurement.ItemQuantity,
+                VendorId = addProcurement.VendorId,
+                PaymentId = payment.PaymentId,
+                State = "pending"
+            };
+
+            try
+            {
+                _context.Procurements.Add(procurement);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return procurement;
         }
 
         private void ValidateState(string state)

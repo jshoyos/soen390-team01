@@ -22,12 +22,39 @@ namespace soen390_team01Tests.Services
 
             for (var i = 1; i <= 5; i++)
             {
+                _context.Payments.Add(new Payment
+                {
+                    PaymentId = i,
+                    Amount = i,
+                    State = "pending"
+                });
+                _context.Customers.Add(new Customer
+                {
+                    CustomerId = i,
+                    Name = "name" + i,
+                    Address = "address" + i,
+                    PhoneNumber = "1234567890"
+                });
+                _context.OrderItems.Add(new OrderItem
+                {
+                    OrderId = i,
+                    ItemId = i,
+                    ItemQuantity = i,
+                    Type = "bike"
+                });
                 _context.Orders.Add(new Order
                 {
                     OrderId = i,
                     CustomerId = i,
                     State = "pending",
                     PaymentId = i
+                });
+                _context.Vendors.Add(new Vendor
+                {
+                    VendorId = i,
+                    Name = "name" + i,
+                    Address = "address" + i,
+                    PhoneNumber = "1234567890"
                 });
                 _context.Procurements.Add(new Procurement
                 {
@@ -49,6 +76,10 @@ namespace soen390_team01Tests.Services
         [OneTimeTearDown]
         public void Teardown()
         {
+            foreach (var entity in _context.OrderItems)
+            {
+                _context.OrderItems.Remove(entity);
+            }
             foreach (var entity in _context.Orders)
             {
                 _context.Orders.Remove(entity);
@@ -56,6 +87,18 @@ namespace soen390_team01Tests.Services
             foreach (var entity in _context.Procurements)
             {
                 _context.Procurements.Remove(entity);
+            }
+            foreach (var entity in _context.Customers)
+            {
+                _context.Customers.Remove(entity);
+            }
+            foreach (var entity in _context.Vendors)
+            {
+                _context.Vendors.Remove(entity);
+            }
+            foreach (var entity in _context.Payments)
+            {
+                _context.Payments.Remove(entity);
             }
             _context.SaveChanges();
         }
@@ -93,7 +136,6 @@ namespace soen390_team01Tests.Services
             var transfersModel = _transfersService.GetTransfersModel();
 
             var orderToChange = transfersModel.Orders.ElementAt(0);
-
             Assert.Null(_transfersService.ChangeOrderState(orderToChange.OrderId, "invalid_state"));
 
             var procurementToChange = transfersModel.Procurements.ElementAt(0);

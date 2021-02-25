@@ -1,4 +1,5 @@
-﻿using soen390_team01.Data;
+﻿using System;
+using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace soen390_team01.Services
         {
             try
             {
-                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductFilterQueryBuilder.FilterProduct(input)).ToList();
+                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductQueryBuilder.FilterProduct(input)).ToList();
             }
             catch(Exception e)
             {
@@ -43,6 +44,7 @@ namespace soen390_team01.Services
             model.MaterialFilters.Add("Price", GetFilter("price", "material"));
             return model;
         }
+
         /// <summary>
         /// Queries all the items in the inventory and splits the into an InventoryModel
         /// </summary>

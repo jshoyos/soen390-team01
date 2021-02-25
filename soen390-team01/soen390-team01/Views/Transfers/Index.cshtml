@@ -1,4 +1,5 @@
-﻿@model soen390_team01.Models.TransfersModel
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model soen390_team01.Models.TransfersModel
 
 @{
     ViewData["Title"] = "transfers";
@@ -60,7 +61,7 @@
                             <h3 class="text-center">FILTER</h3>
                         </div>
                         <div class="row justify-content-center pt-3">
-                            <h5 class="text-center">STATUS</h5>
+                            <h5 class="text-center">State</h5>
                         </div>
                         <div class="row justify-content-center pt-3">
                             <div class="col"></div>
@@ -116,38 +117,58 @@
         <div class="col-lg-8 mx-lg-auto" id="LHS">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 50%;text-align:center;">
-                    <a class="nav-link active" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor(); hideButton(); hideLargeVendor();">
+                    <a class="nav-link @(Model.SelectedTab == "Order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor(); hideButton(); hideLargeVendor();">
+
                         Order
                     </a>
                 </li>
                 <li class="nav-item" style="width: 50%; text-align:center;">
-                    <a class="nav-link" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor(); showButton(); showLargeVendor();">
+                    <a class="nav-link @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor(); showButton(); showLargeVendor();">
                         Procurement
                     </a>
                 </li>
 
             </ul>
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
+                <div class="tab-pane fade show @(Model.SelectedTab == "Order" ? "active" : "")" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
                     <div class="container">
                         <div class="row pt-4 pb-4 h-100 text-center">
-                            <div class="col">ID</div>
-                            <div class="col">Status</div>
-                            <div class="col">Date</div>
-                            <div class="col">Customer</div>
-                            <div class="col">Item</div>
+                            <div class="col"><u>ID</u></div>
+                            <div class="col"><u>State</u></div>
+                            <div class="col"><u>Customer</u></div>
                         </div>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <div class="row pt-4 pb-4 h-100 text-center">
+                                <div class="col">@order.OrderId</div>
+                                <div class="col">@order.State</div>
+                                <div class="col">@order.Customer.Name</div>
+                            </div>
+                        }
                     </div>
                 </div>
-                <div class="tab-pane fade" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
+                <div class="tab-pane fade show @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
                     <div class="container">
                         <div class="row pt-4 pb-4 h-100 text-center">
-                            <div class="col">ID</div>
-                            <div class="col">Status</div>
-                            <div class="col">Date</div>
-                            <div class="col">Vendor</div>
-                            <div class="col">Item</div>
+                            
+                            <div class="col"><u>ID</u></div>
+                            <div class="col"><u>State</u></div>
+                            <div class="col"><u>Vendor</u></div>
+                            <div class="col"><u>Item Id</u></div>
+                            <div class="col"><u>Quantity</u></div>
+                            <div class="col"><u>Price</u></div>
                         </div>
+                        @foreach (var procurement in Model.Procurements)
+                        {
+                            <div class="row pt-4 pb-4 h-100 text-center">
+                                <div class="col">@procurement.ProcurementId</div>
+                                <div class="col">@procurement.State</div>
+                                <div class="col">@procurement.Vendor.Name</div>
+                                <div class="col">@procurement.ItemId</div>
+                                <div class="col">@procurement.ItemQuantity</div>
+                                <div class="col">@procurement.Payment.Amount</div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -209,8 +230,8 @@
         </div>
     </div>
 
-    <!-- Modal for proucrement tab-->
-    <div class="modal fade" id="procModal" tabindex="-1" role="dialog" aria-labelledby="procModalTitle" aria-hidden="true">
+    <!-- Modal for procurement tab-->
+    <div class="modal fade" id="procModal" tabindex="-1" role="dialog" aria-labelledby="procModalTitle" aria-hidden="@(Model.ShowModal ? "false" : "true")">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -220,33 +241,41 @@
                     </button>
                 </div>
                 <div class="modal-body" id="modal-procurement">
-                    <form>
+                    <form method="post" asp-controller="Transfers" asp-action="AddProcurement">
                         <div class="row">
-                            <div class="col-3 text-right">
-                                Item:
-                            </div>
-                            <div class="col-8">
-                                <input type="text" class="form-control" placeholder="Item" required>
-                            </div>
-                            <div class="col-3 text-right">
-                                Quantity:
-                            </div>
-                            <div class="col-8">
-                                <input type="text" class="form-control" placeholder="Quantity" required>
-                            </div>
-                            <div class="col-3 text-right">
-                                Item:
-                            </div>
-                            <div class="col-8">
-                                <input type="text" class="form-control" placeholder="Vendor" required>
-                            </div>
+                                <div class="col-4 text-right">
+                                    <label asp-for="AddProcurement.ItemId">Item ID</label>
+                                </div>
+                                <div class="col-6">
+                                    <input asp-for="AddProcurement.ItemId" class="form-control" />
+                                    <span asp-validation-for="AddProcurement.ItemId" class="text-danger"></span>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <label asp-for="AddProcurement.ItemType">Item Type</label>
+                                </div>
+                                <div class="col-6">
+                                    <input asp-for="AddProcurement.ItemType" class="form-control" />
+                                    <span asp-validation-for="AddProcurement.ItemType" class="text-danger"></span>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <label asp-for="AddProcurement.ItemQuantity">Item Quantity</label>
+                                </div>
+                                <div class="col-6">
+                                    <input asp-for="AddProcurement.ItemQuantity" class="form-control" />
+                                    <span asp-validation-for="AddProcurement.ItemQuantity" class="text-danger"></span>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <label asp-for="AddProcurement.VendorId">Vendor Id</label>
+                                </div>
+                                <div class="col-6">
+                                    <input asp-for="AddProcurement.VendorId" class="form-control" />
+                                    <span asp-validation-for="AddProcurement.VendorId" class="text-danger"></span>
+                                </div>
                         </div>
-                    </form>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                        <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+                    </form>
                 </div>
             </div>
         </div>
