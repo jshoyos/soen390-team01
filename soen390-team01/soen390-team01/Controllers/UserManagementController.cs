@@ -1,31 +1,43 @@
-﻿using System;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: UserManagementController.cs
+// Project: soen390-team01
+// Created: 02/24/2021
+// 
+
+#endregion
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using soen390_team01.Data.Exceptions;
 
 namespace soen390_team01.Controllers
 {
     public class UserManagementController : Controller
     {
-        #region fields
-        private readonly AuthenticationFirebaseService _authService;
-        private readonly UserManagementService _userManagementService;
-        #endregion
-
-        public UserManagementController(AuthenticationFirebaseService authService, UserManagementService userManagementService)
+        public UserManagementController(AuthenticationFirebaseService authService,
+            UserManagementService userManagementService)
         {
             _authService = authService;
             _userManagementService = userManagementService;
         }
 
+        #region fields
+
+        private readonly AuthenticationFirebaseService _authService;
+        private readonly UserManagementService _userManagementService;
+
+        #endregion
+
         #region properties
+
         #endregion
 
         #region Methods
+
         [HttpGet]
         [Authorize]
         public IActionResult UserManagement()
@@ -38,8 +50,9 @@ namespace soen390_team01.Controllers
 
             return View(model);
         }
+
         /// <summary>
-        /// Event Handler when the there is a request to add a new user
+        ///     Event Handler when the there is a request to add a new user
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -57,8 +70,10 @@ namespace soen390_team01.Controllers
                     TempData["errorMessage"] = e.ToString();
                 }
             }
+
             return UserManagement();
         }
+
         public IActionResult GetUserById(long userId)
         {
             var user = _userManagementService.GetUserById(userId);
@@ -67,6 +82,7 @@ namespace soen390_team01.Controllers
             {
                 return PartialView("_UserModalPartial", new EditUserModel(user));
             }
+
             return UserManagement();
         }
 
@@ -78,6 +94,7 @@ namespace soen390_team01.Controllers
                 var editedUser = _userManagementService.EditUser(user);
                 return PartialView("_UserRowPartial", editedUser);
             }
+
             return PartialView("_UserModalPartial", user);
         }
 
@@ -88,13 +105,17 @@ namespace soen390_team01.Controllers
             var addedUser = _userManagementService.AddUser(user);
             if (addedUser == null || !_authService.RegisterUser(addedUser.Email, user.Password).Result)
             {
-                if(addedUser != null) _userManagementService.RemoveUser(user);
+                if (addedUser != null)
+                {
+                    _userManagementService.RemoveUser(user);
+                }
+
                 return false;
             }
+
             return true;
         }
 
         #endregion
     }
-
 }

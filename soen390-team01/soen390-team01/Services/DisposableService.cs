@@ -1,7 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: DisposableService.cs
+// Project: soen390-team01
+// Created: 02/25/2021
+// 
+
+#endregion
+
+using System;
 
 namespace soen390_team01.Models
 {
@@ -15,6 +22,7 @@ namespace soen390_team01.Models
             {
                 return;
             }
+
             _disposed = true;
         }
     }

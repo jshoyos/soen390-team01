@@ -1,12 +1,22 @@
-﻿using System;
-using soen390_team01.Data;
-using soen390_team01.Data.Entities;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: InventoryService.cs
+// Project: soen390-team01
+// Created: 02/25/2021
+// 
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using soen390_team01.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using soen390_team01.Data;
+using soen390_team01.Data.Entities;
 using soen390_team01.Data.Queries;
+using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
@@ -23,17 +33,19 @@ namespace soen390_team01.Services
         {
             try
             {
-                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductQueryBuilder.FilterProduct(input)).ToList();
+                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type)
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(input)).ToList();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }
         }
+
         public virtual InventoryModel SetupModel()
         {
             var model = GetInventoryModel();
-            model.BikeFilters.Add("Name", GetFilter("name","bike"));
+            model.BikeFilters.Add("Name", GetFilter("name", "bike"));
             model.BikeFilters.Add("Grade", GetFilter("grade", "bike"));
             model.BikeFilters.Add("Price", GetFilter("price", "bike"));
             model.PartFilters.Add("Name", GetFilter("name", "part"));
@@ -46,12 +58,11 @@ namespace soen390_team01.Services
         }
 
         /// <summary>
-        /// Queries all the items in the inventory and splits the into an InventoryModel
+        ///     Queries all the items in the inventory and splits the into an InventoryModel
         /// </summary>
         /// <returns>InventoryModel</returns>
         public virtual InventoryModel GetInventoryModel()
         {
-
             var model = new InventoryModel();
             var all = GetInventory();
             model.AllList = all;
@@ -63,90 +74,103 @@ namespace soen390_team01.Services
 
 
         //TODO: refactor
-        public virtual SelectList GetFilter(string param,string table)
+        public virtual SelectList GetFilter(string param, string table)
         {
             switch (table)
             {
                 case "bike":
                     switch (param)
                     {
-                        case "grade": return new SelectList(_context.Bikes.Select(bike => bike.Grade).Distinct().ToList());
-                        case "name": return new SelectList(_context.Bikes.Select(bike => bike.Name).Distinct().ToList());
+                        case "grade":
+                            return new SelectList(_context.Bikes.Select(bike => bike.Grade).Distinct().ToList());
+                        case "name":
+                            return new SelectList(_context.Bikes.Select(bike => bike.Name).Distinct().ToList());
                         case "price":
-                            List<string> stringList = new List<string>();
+                            var stringList = new List<string>();
                             foreach (double d in _context.Bikes.Select(bike => bike.Price).Distinct().ToList())
                             {
                                 stringList.Add(d.ToString());
                             }
+
                             return new SelectList(stringList);
                         default: return null;
                     }
                 case "part":
                     switch (param)
                     {
-                        case "grade": return new SelectList(_context.Parts.Select(bike => bike.Grade).Distinct().ToList());
-                        case "name": return new SelectList(_context.Parts.Select(bike => bike.Name).Distinct().ToList());
+                        case "grade":
+                            return new SelectList(_context.Parts.Select(bike => bike.Grade).Distinct().ToList());
+                        case "name":
+                            return new SelectList(_context.Parts.Select(bike => bike.Name).Distinct().ToList());
                         case "price":
-                            List<string> stringList = new List<string>();
+                            var stringList = new List<string>();
                             foreach (double d in _context.Parts.Select(bike => bike.Price).Distinct().ToList())
                             {
                                 stringList.Add(d.ToString());
                             }
+
                             return new SelectList(stringList);
                         default: return null;
                     }
                 case "material":
                     switch (param)
                     {
-                        case "grade": return new SelectList(_context.Materials.Select(bike => bike.Grade).Distinct().ToList());
-                        case "name": return new SelectList(_context.Materials.Select(bike => bike.Name).Distinct().ToList());
+                        case "grade":
+                            return new SelectList(_context.Materials.Select(bike => bike.Grade).Distinct().ToList());
+                        case "name":
+                            return new SelectList(_context.Materials.Select(bike => bike.Name).Distinct().ToList());
                         case "price":
-                            List<string> stringList = new List<string>();
+                            var stringList = new List<string>();
                             foreach (double d in _context.Materials.Select(bike => bike.Price).Distinct().ToList())
                             {
                                 stringList.Add(d.ToString());
                             }
+
                             return new SelectList(stringList);
                         default: return null;
                     }
                 default: return null;
-            }     
+            }
         }
 
         /// <summary>
-        /// Queries all the items in the inventory
+        ///     Queries all the items in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
         public virtual List<Inventory> GetInventory()
         {
             return _context.Inventories.OrderBy(inv => inv.InventoryId).ToList();
         }
+
         /// <summary>
-        /// Queries all the bikes in the inventory
+        ///     Queries all the bikes in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
         public virtual List<Bike> GetAllBikes()
         {
             return _context.Bikes.OrderBy(bike => bike.ItemId).ToList();
         }
+
         /// <summary>
-        /// Queries all the parts in the inventory
+        ///     Queries all the parts in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
         public virtual List<Part> GetAllParts()
         {
             return _context.Parts.OrderBy(part => part.ItemId).ToList();
         }
+
         /// <summary>
-        /// Queries all the materials in the inventory
+        ///     Queries all the materials in the inventory
         /// </summary>
         /// <returns>List of inventory items</returns>
         public virtual List<Material> GetAllMaterials()
         {
             return _context.Materials.OrderBy(mat => mat.ItemId).ToList();
         }
+
         /// <summary>
-        /// Updates an inventory item
+        ///     Updates an inventory item
         /// </summary>
         /// <param name="Inventory">inventory item to update</param>
         public virtual bool Update(Inventory updatedInventory)
@@ -161,7 +185,6 @@ namespace soen390_team01.Services
             {
                 return false;
             }
-
         }
     }
 }

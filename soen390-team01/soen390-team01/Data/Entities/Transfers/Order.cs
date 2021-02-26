@@ -1,11 +1,20 @@
-﻿using System;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: Order.cs
+// Project: soen390-team01
+// Created: 02/16/2021
+// 
+
+#endregion
+
 using System.Collections.Generic;
 
 #nullable disable
 
 namespace soen390_team01.Data.Entities
 {
-    public partial class Order
+    public class Order
     {
         public Order()
         {

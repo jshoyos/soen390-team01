@@ -1,7 +1,17 @@
-﻿using Firebase.Auth;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: AuthenticationFirebaseService.cs
+// Project: soen390-team01
+// Created: 02/23/2021
+// 
+
+#endregion
+
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Firebase.Auth;
 
 namespace soen390_team01.Services
 {
@@ -15,8 +25,18 @@ namespace soen390_team01.Services
             _ap = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD_HlK6kr9gptfYidc7_4Egn7uHwHes2pI"));
         }
 
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+        }
+
         /// <summary>
-        /// Method used to expose the firebase service of authentication through email and password
+        ///     Method used to expose the firebase service of authentication through email and password
         /// </summary>
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
@@ -28,15 +48,14 @@ namespace soen390_team01.Services
                 var auth = await _ap.SignInWithEmailAndPasswordAsync(email, password);
                 return auth.User != null;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
-
         }
 
         /// <summary>
-        /// Method to expose the firebase service to create an account with email and password
+        ///     Method to expose the firebase service to create an account with email and password
         /// </summary>
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
@@ -56,7 +75,7 @@ namespace soen390_team01.Services
         }
 
         /// <summary>
-        /// Method to expose the firebase service to request a password change via email
+        ///     Method to expose the firebase service to request a password change via email
         /// </summary>
         /// <param name="email">user's email</param>
         /// <returns></returns>
@@ -71,15 +90,6 @@ namespace soen390_team01.Services
             {
                 return false;
             }
-        }
-
-        public void Dispose()
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            _disposed = true;
         }
     }
 }

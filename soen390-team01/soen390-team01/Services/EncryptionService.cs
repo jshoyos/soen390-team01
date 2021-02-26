@@ -1,22 +1,38 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: EncryptionService.cs
+// Project: soen390-team01
+// Created: 02/23/2021
+// 
+
+#endregion
+
+using System;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace soen390_team01.Services
 {
     public class EncryptionService
     {
         #region fields
+
         private readonly byte[] _key;
+
         #endregion
 
         public EncryptionService(string key)
         {
             _key = Convert.FromBase64String(key);
         }
+
         public string Encrypt(string text, byte[] iv)
         {
-            if (string.IsNullOrEmpty(text)) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentNullException();
+            }
 
             byte[] edata;
 
@@ -31,6 +47,7 @@ namespace soen390_team01.Services
                 {
                     sw.Write(text);
                 }
+
                 edata = ms.ToArray();
             }
 
@@ -39,10 +56,13 @@ namespace soen390_team01.Services
 
         public string Decrypt(string cText, byte[] iv)
         {
-            if (cText == null || cText.Length <= 0) throw new ArgumentNullException();
+            if (cText == null || cText.Length <= 0)
+            {
+                throw new ArgumentNullException();
+            }
 
             string dData;
-            byte[] cTextBytes = Convert.FromBase64String(cText);
+            var cTextBytes = Convert.FromBase64String(cText);
 
             using var r = Rijndael.Create();
             r.Key = _key;

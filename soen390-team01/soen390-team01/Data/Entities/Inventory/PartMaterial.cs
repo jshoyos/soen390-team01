@@ -1,12 +1,18 @@
-﻿using soen390_team01.Data.Entities;
-using System;
-using System.Collections.Generic;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: PartMaterial.cs
+// Project: soen390-team01
+// Created: 02/16/2021
+// 
+
+#endregion
 
 #nullable disable
 
 namespace soen390_team01.Data.Entities
 {
-    public partial class PartMaterial
+    public class PartMaterial
     {
         public long PartId { get; set; }
         public long MaterialId { get; set; }

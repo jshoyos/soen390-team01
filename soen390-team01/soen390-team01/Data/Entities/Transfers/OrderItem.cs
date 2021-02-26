@@ -1,11 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: OrderItem.cs
+// Project: soen390-team01
+// Created: 02/16/2021
+// 
+
+#endregion
 
 #nullable disable
 
 namespace soen390_team01.Data.Entities
 {
-    public partial class OrderItem
+    public class OrderItem
     {
         public long OrderId { get; set; }
         public long ItemId { get; set; }

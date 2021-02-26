@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿#region Header
+
+// Author: Tommy Andrews
+// File: AuthenticationController.cs
+// Project: soen390-team01
+// Created: 02/23/2021
+// 
+
+#endregion
+
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace soen390_team01.Controllers
 {
@@ -15,22 +25,26 @@ namespace soen390_team01.Controllers
         #region fields
 
         private readonly AuthenticationFirebaseService _authService;
+
         #endregion
 
-        public AuthenticationController(AuthenticationFirebaseService authService) 
+        public AuthenticationController(AuthenticationFirebaseService authService)
         {
             _authService = authService;
         }
+
         #region properties
-        [BindProperty]
-        public LoginModel Input { get; set; }
-        [TempData]
-        public string StringErrorMessage { get; set; }
+
+        [BindProperty] public LoginModel Input { get; set; }
+
+        [TempData] public string StringErrorMessage { get; set; }
+
         #endregion
 
         #region Methods
+
         /// <summary>
-        /// Get for the login
+        ///     Get for the login
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -38,8 +52,9 @@ namespace soen390_team01.Controllers
         {
             return View();
         }
+
         /// <summary>
-        /// Post action for the login submit
+        ///     Post action for the login submit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -48,31 +63,31 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                string email = model.Email;
-                string password = model.Password;
+                var email = model.Email;
+                var password = model.Password;
                 var user = AuthenticateUser(email, password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View(model);
                 }
-                SetAuthCookie(email, this.HttpContext);
+
+                SetAuthCookie(email, HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error");
-                return View(model);
-            }
+
+            ModelState.AddModelError(string.Empty, "Error");
+            return View(model);
         }
 
         public IActionResult Logout()
         {
-            RemoveAuthCookie(this.HttpContext);
+            RemoveAuthCookie(HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
+
         /// <summary>
-        /// Get for the Forgot Password
+        ///     Get for the Forgot Password
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -82,7 +97,7 @@ namespace soen390_team01.Controllers
         }
 
         /// <summary>
-        /// Post action for the forgot password
+        ///     Post action for the forgot password
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -94,15 +109,13 @@ namespace soen390_team01.Controllers
                 await _authService.RequestPasswordChange(model.Email);
                 return LocalRedirect("/Authentication/Index");
             }
-            else
-            {
-                //ModelState.AddModelError(string.Empty, "Email cannot be empty");
-                return View(model);
-            }
+
+            //ModelState.AddModelError(string.Empty, "Email cannot be empty");
+            return View(model);
         }
 
         /// <summary>
-        /// Authenticates the user with the help of the firebase services
+        ///     Authenticates the user with the help of the firebase services
         /// </summary>
         /// <param name="email">User's email</param>
         /// <param name="password">User's password</param>
@@ -114,14 +127,12 @@ namespace soen390_team01.Controllers
                 //TODO: return more than just a string
                 return "User";
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
-        /// Sets the authentication cookie so user is remembered in the browser
+        ///     Sets the authentication cookie so user is remembered in the browser
         /// </summary>
         /// <param name="email"></param>
         /// <param name="context"></param>
@@ -139,13 +150,15 @@ namespace soen390_team01.Controllers
                 AllowRefresh = true,
             };
 
-            await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            await context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
         private static async void RemoveAuthCookie(HttpContext context)
         {
-            await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
+            await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
+
         #endregion
     }
 }

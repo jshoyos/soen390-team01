@@ -4,6 +4,7 @@ using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using soen390_team01.Services;
 using System.Linq;
+using soen390_team01.Data.Exceptions;
 
 namespace soen390_team01Tests.Unit.Services
 {
@@ -34,31 +35,42 @@ namespace soen390_team01Tests.Unit.Services
         }
 
         [Test, Order(1)]
-        public void AddUsersTest()
+        public void AddUserValidTest()
         {
-            Assert.IsNotNull(_userManagementService.AddUser(new User
+            var addedUser = _userManagementService.AddUser(new User
             {
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "admin@hotmail.com",
                 PhoneNumber = "4385146677",
                 Role = "admin"
-            }));
-
-            // Should be false because the email should be unique
-            Assert.IsNull(_userManagementService.AddUser(new User
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "admin@hotmail.com",
-                PhoneNumber = "4385146677",
-                Role = "admin"
-            }));
+            });
 
             Assert.AreEqual(1, _context.Users.ToList().Count);
+            Assert.IsNotNull(addedUser);
+            Assert.AreEqual("John", addedUser.FirstName);
         }
 
         [Test, Order(2)]
+        public void AddUserInvalidTest()
+        { 
+            Assert.Throws<NonUniqueValueException>(() => _userManagementService.AddUser(new User {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "admin@hotmail.com",
+                PhoneNumber = "4385146677",
+                Role = "admin"
+            }));
+            
+            Assert.Throws<NullValueException>(() => _userManagementService.AddUser(new User {
+                LastName = "Doe",
+                Email = "different_admin@hotmail.com",
+                PhoneNumber = "4385146677",
+                Role = "admin"
+            }));
+        }
+
+        [Test, Order(3)]
         public void GetAllUsersTest()
         {
             Assert.IsNotNull(_userManagementService.AddUser(new User
@@ -81,7 +93,7 @@ namespace soen390_team01Tests.Unit.Services
             Assert.IsTrue("admin2@hotmail.com".Equals(users[1].Email));
         }
 
-        [Test, Order(3)]
+        [Test, Order(4)]
         public void GetUserByIdTest()
         {
             var userId = _context.Users.ToList()[1].UserId;
@@ -92,7 +104,7 @@ namespace soen390_team01Tests.Unit.Services
             Assert.AreEqual(userId, user.UserId);
         }
 
-        [Test]
+        [Test, Order(5)]
         public void EditUserTest()
         {
             var userToEdit = _context.Users.ToList().ElementAt(0);
@@ -106,7 +118,7 @@ namespace soen390_team01Tests.Unit.Services
             Assert.AreEqual(newFirstName, editedUser.FirstName);
         }
 
-        [Test]
+        [Test, Order(6)]
         public void RemoveUser()
         {
             var user = _context.Users.ToList().ElementAt(1);

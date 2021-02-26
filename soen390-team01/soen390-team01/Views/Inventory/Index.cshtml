@@ -1,5 +1,4 @@
-﻿@model soen390_team01.Models.InventoryModel
-@using Newtonsoft.Json
+﻿@model InventoryModel
 
 @{
     ViewData["Title"] = "Inventory View";
@@ -19,33 +18,35 @@
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(inv),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     $('.itemRow' + inv.InventoryId).html(result);
                 }
             });
         };
+
         function passingFilter(type, name, value) {
             console.log("test");
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ "type": type, "name": name, "value": value}),
+                data: JSON.stringify({ "type": type, "name": name, "value": value }),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     $(`.${type}-table`).html(result);
                 }
             });
         };
-         function refreshFilter(type) {
-           
+
+        function refreshFilter(type) {
+
             $.ajax({
                 url: '@Url.Action("Refresh", "Inventory")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(type),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     console.log(result);
                     $('.inventory-view').html(result);
                 }
@@ -75,24 +76,24 @@
             evt.currentTarget.className += " active";
 
             switch (tableName) {
-
-                case "Bike":
-                    document.getElementById("Bike-filter").style.display = "block";
-                    document.getElementById("Part-filter").style.display = "none";
-                    document.getElementById("Material-filter").style.display = "none";
-                    break;
-                case "Material":
-                    document.getElementById("Bike-filter").style.display = "none";
-                    document.getElementById("Part-filter").style.display = "none";
-                    document.getElementById("Material-filter").style.display = "block";
-                    break;
-                case "Part":
-                    document.getElementById("Bike-filter").style.display = "none";
-                    document.getElementById("Part-filter").style.display = "block";
-                    document.getElementById("Material-filter").style.display = "none";
-                    break;
+            case "Bike":
+                document.getElementById("Bike-filter").style.display = "block";
+                document.getElementById("Part-filter").style.display = "none";
+                document.getElementById("Material-filter").style.display = "none";
+                break;
+            case "Material":
+                document.getElementById("Bike-filter").style.display = "none";
+                document.getElementById("Part-filter").style.display = "none";
+                document.getElementById("Material-filter").style.display = "block";
+                break;
+            case "Part":
+                document.getElementById("Bike-filter").style.display = "none";
+                document.getElementById("Part-filter").style.display = "block";
+                document.getElementById("Material-filter").style.display = "none";
+                break;
             }
         }
+
         function hideFilter() {
             // Declare all variables
             var i, tabcontent;
@@ -103,12 +104,13 @@
                 tabcontent[i].style.display = "none";
             }
         }
+
         function showFilter(type) {
-            document.getElementById(type+"-filter").display = "block" ;
+            document.getElementById(type + "-filter").display = "block";
         }
     </script>
 </head>
 
 <div class="inventory-view">
-    @{await Html.RenderPartialAsync("InventoryBody", Model);}
+    @{ await Html.RenderPartialAsync("InventoryBody", Model); }
 </div>
