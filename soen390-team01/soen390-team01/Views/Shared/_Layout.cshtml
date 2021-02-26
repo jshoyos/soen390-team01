@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] Downhill</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    @RenderSection("Stylesheets", false)
+    @await RenderSectionAsync("Stylesheets", false)
 </head>
 <body>
     <header>
@@ -44,8 +44,7 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
+<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - soen390_team01
         </div>
@@ -54,5 +53,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @if (TempData["errorMessage"] != null)
+    {
+        await Html.RenderPartialAsync("_ErrorMessage", TempData["errorMessage"]);
+    }
 </body>
 </html>

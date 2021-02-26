@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using soen390_team01.Data.Exceptions;
 
 namespace soen390_team01.Controllers
 {
@@ -44,13 +46,18 @@ namespace soen390_team01.Controllers
         [HttpPost]
         public IActionResult UserManagement(UserManagementModel model)
         {
-            if (!ModelState.IsValid || !RegisterUser(model.AddUser))
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("Result", "Couldn't add user");
-                model.Users = _userManagementService.GetAllUsers();
-                return View(model);
+                try
+                {
+                    RegisterUser(model.AddUser);
+                }
+                catch (DbContextException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
+                }
             }
-            return RedirectToAction("UserManagement");
+            return UserManagement();
         }
         public IActionResult GetUserById(long userId)
         {
@@ -77,6 +84,7 @@ namespace soen390_team01.Controllers
         private bool RegisterUser(AddUserModel user)
         {
             // Decrypted added user
+
             var addedUser = _userManagementService.AddUser(user);
             if (addedUser == null || !_authService.RegisterUser(addedUser.Email, user.Password).Result)
             {
