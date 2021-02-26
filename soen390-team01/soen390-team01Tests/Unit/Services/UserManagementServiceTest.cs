@@ -53,16 +53,18 @@ namespace soen390_team01Tests.Unit.Services
 
         [Test, Order(2)]
         public void AddUserInvalidTest()
-        { 
-            Assert.Throws<NonUniqueValueException>(() => _userManagementService.AddUser(new User {
+        {
+            Assert.Throws<NonUniqueValueException>(() => _userManagementService.AddUser(new User
+            {
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "admin@hotmail.com",
                 PhoneNumber = "4385146677",
                 Role = "admin"
             }));
-            
-            Assert.Throws<NullValueException>(() => _userManagementService.AddUser(new User {
+
+            Assert.Throws<NullValueException>(() => _userManagementService.AddUser(new User
+            {
                 LastName = "Doe",
                 Email = "different_admin@hotmail.com",
                 PhoneNumber = "4385146677",
@@ -112,7 +114,7 @@ namespace soen390_team01Tests.Unit.Services
             userToEdit.FirstName = newFirstName;
 
             Assert.IsNotNull(_userManagementService.EditUser(userToEdit));
-            
+
             var editedUser = _userManagementService.GetUserById(_context.Users.ToList()[0].UserId);
             // Firstname update succeeded
             Assert.AreEqual(newFirstName, editedUser.FirstName);

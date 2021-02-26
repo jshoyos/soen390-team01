@@ -1,14 +1,4 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: TransfersController.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Models;
@@ -36,20 +26,14 @@ namespace soen390_team01.Controllers
         [HttpPost]
         public IActionResult AddProcurement(TransfersModel model)
         {
-            var showModal = false;
+            bool showModal = false;
             if (ModelState.IsValid)
             {
                 switch (model.AddProcurement.ItemType)
                 {
-                    case "Bike":
-                        _transfersService.AddProcurement<Bike>(model.AddProcurement);
-                        break;
-                    case "Part":
-                        _transfersService.AddProcurement<Part>(model.AddProcurement);
-                        break;
-                    case "Material":
-                        _transfersService.AddProcurement<Material>(model.AddProcurement);
-                        break;
+                    case "Bike": _transfersService.AddProcurement<Bike>(model.AddProcurement); break;
+                    case "Part": _transfersService.AddProcurement<Part>(model.AddProcurement); break;
+                    case "Material": _transfersService.AddProcurement<Material>(model.AddProcurement); break;
                 }
             }
             else

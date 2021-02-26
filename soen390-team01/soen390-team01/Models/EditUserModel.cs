@@ -1,15 +1,5 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: EditUserModel.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
+﻿using soen390_team01.Data.Entities;
 using System.ComponentModel.DataAnnotations;
-using soen390_team01.Data.Entities;
 
 namespace soen390_team01.Models
 {
@@ -23,7 +13,6 @@ namespace soen390_team01.Models
             LastName = "";
             FirstName = "";
         }
-
         public EditUserModel(User user)
         {
             Email = user.Email;
@@ -31,22 +20,19 @@ namespace soen390_team01.Models
             PhoneNumber = user.PhoneNumber;
             LastName = user.LastName;
             FirstName = user.FirstName;
-            UserId = user.UserId;
+            base.UserId = user.UserId;
         }
-
-        [Required] public override string Role { get; set; }
-
+        [Required]
+        public override string Role { get; set; }
         [Display(Name = "Phone Number")]
         [Required]
         [StringLength(10)]
         [DisplayFormat(DataFormatString = "{0:###-###-####}", ApplyFormatInEditMode = true)]
         [DataType(DataType.PhoneNumber)]
         public override string PhoneNumber { get; set; }
-
         [Display(Name = "Last Name")]
         [Required]
         public override string LastName { get; set; }
-
         [Display(Name = "First Name")]
         [Required]
         public override string FirstName { get; set; }

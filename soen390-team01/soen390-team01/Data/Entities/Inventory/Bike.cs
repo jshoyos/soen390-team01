@@ -1,20 +1,12 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: Bike.cs
-// Project: soen390-team01
-// Created: 02/16/2021
-// 
-
-#endregion
-
+﻿using System;
 using System.Collections.Generic;
+using soen390_team01.Data;
 
 #nullable disable
 
 namespace soen390_team01.Data.Entities
 {
-    public class Bike : Item
+    public partial class Bike : Item
     {
         public Bike()
         {

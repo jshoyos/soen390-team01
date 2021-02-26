@@ -1,14 +1,7 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: DbContextException.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace soen390_team01.Data.Exceptions
 {

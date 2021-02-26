@@ -1,23 +1,13 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: User.cs
-// Project: soen390-team01
-// Created: 02/23/2021
-// 
-
-#endregion
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
 namespace soen390_team01.Data.Entities
 {
-    public class User
+    public partial class User
     {
-        public User()
-        {
-        }
-
+        public User() { }
         public User(User u)
         {
             Role = u.Role;

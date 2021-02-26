@@ -1,4 +1,4 @@
-﻿@model LoginModel
+﻿@model soen390_team01.Models.LoginModel
 
 @{
     ViewData["Title"] = "LoginView";
@@ -15,19 +15,21 @@
             <form method="post" asp-controller="Authentication" asp-action="Index" asp-route-returnurl="">
                 <div class="row" style="padding: 10px;">
                     <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control"/>
+                    <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-                <div class="row" style="padding: 10px;">
+                <div class="row"  style="padding: 10px;">
                     <label asp-for="Password"></label>
-                    <input asp-for="Password" class="form-control"/>
+                    <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <div class="row" style="margin-top: 10px;">
-                    <input class="btn btn-primary" type="submit" value="Login" style="margin: 10px;"/>
+                <div class="row" style="margin-top:10px;">
+                    <input class="btn btn-primary" type="submit" value="Login" style="margin: 10px;" />
                     <a class=" btn btn-outline-primary" asp-controller="Authentication" asp-action="ForgotPassword" style="margin: 10px;">Forgot Password</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+

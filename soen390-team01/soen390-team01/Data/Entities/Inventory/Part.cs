@@ -1,20 +1,11 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: Part.cs
-// Project: soen390-team01
-// Created: 02/16/2021
-// 
-
-#endregion
-
+﻿using System;
 using System.Collections.Generic;
 
 #nullable disable
 
 namespace soen390_team01.Data.Entities
 {
-    public class Part : Item
+    public partial class Part : Item
     {
         public Part()
         {

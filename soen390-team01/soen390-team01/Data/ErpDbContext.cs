@@ -1,22 +1,13 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: ErpDbContext.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using soen390_team01.Data.Entities;
 
 #nullable disable
 
 namespace soen390_team01.Data
 {
-    public class ErpDbContext : DbContext
+    public partial class ErpDbContext : DbContext
     {
         public ErpDbContext()
         {
@@ -26,7 +17,6 @@ namespace soen390_team01.Data
             : base(options)
         {
         }
-
         public virtual DbSet<Bike> Bikes { get; set; }
         public virtual DbSet<BikePart> BikeParts { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
@@ -78,7 +68,7 @@ namespace soen390_team01.Data
 
             modelBuilder.Entity<BikePart>(entity =>
             {
-                entity.HasKey(e => new {e.BikeId, e.PartId})
+                entity.HasKey(e => new { e.BikeId, e.PartId })
                     .HasName("bike_part_pkey");
 
                 entity.ToTable("bike_part");
@@ -128,7 +118,7 @@ namespace soen390_team01.Data
             {
                 entity.ToTable("inventory");
 
-                entity.HasIndex(e => new {e.ItemId, e.Type}, "inventory_item_id_type_key")
+                entity.HasIndex(e => new { e.ItemId, e.Type }, "inventory_item_id_type_key")
                     .IsUnique();
 
                 entity.Property(e => e.InventoryId).HasColumnName("inventory_id");
@@ -180,7 +170,7 @@ namespace soen390_team01.Data
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id")
                     .HasDefaultValueSql("nextval('order_order_id_seq'::regclass)");
-                ;
+                    ;
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
@@ -206,7 +196,7 @@ namespace soen390_team01.Data
 
             modelBuilder.Entity<OrderItem>(entity =>
             {
-                entity.HasKey(e => new {e.Type, e.OrderId, e.ItemId})
+                entity.HasKey(e => new { e.Type, e.OrderId, e.ItemId })
                     .HasName("order_item_pkey");
 
                 entity.ToTable("order_item");
@@ -261,7 +251,7 @@ namespace soen390_team01.Data
 
             modelBuilder.Entity<PartMaterial>(entity =>
             {
-                entity.HasKey(e => new {e.PartId, e.MaterialId})
+                entity.HasKey(e => new { e.PartId, e.MaterialId })
                     .HasName("part_material_pkey");
 
                 entity.ToTable("part_material");
@@ -418,9 +408,6 @@ namespace soen390_team01.Data
             OnModelCreatingPartial(modelBuilder);
         }
 
-        private void OnModelCreatingPartial(ModelBuilder modelBuilder)
-        {
-            throw new NotImplementedException();
-        }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

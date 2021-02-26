@@ -1,25 +1,19 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: SelectFilters.cs
-// Project: soen390-team01
-// Created: 02/24/2021
-// 
-
-#endregion
-
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace soen390_team01.Models
 {
-    public class SelectFilters : Dictionary<string, SelectList>
+    public class SelectFilters: Dictionary<string, SelectList>
     {
+        public string Type { get; set; }
+        
+
         public SelectFilters(string type)
         {
-            Type = type;
+            this.Type = type;
         }
-
-        public string Type { get; set; }
     }
 }

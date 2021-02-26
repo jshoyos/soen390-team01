@@ -1,17 +1,9 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: HomeController.cs
-// Project: soen390-team01
-// Created: 02/04/2021
-// 
-
-#endregion
-
-using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Models;
+using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace soen390_team01.Controllers
 {
@@ -22,7 +14,6 @@ namespace soen390_team01.Controllers
         {
             return View();
         }
-
         [Authorize]
         public IActionResult Privacy()
         {
@@ -32,7 +23,7 @@ namespace soen390_team01.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

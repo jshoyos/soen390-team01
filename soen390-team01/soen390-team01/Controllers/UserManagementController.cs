@@ -1,14 +1,4 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: UserManagementController.cs
-// Project: soen390-team01
-// Created: 02/24/2021
-// 
-
-#endregion
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;

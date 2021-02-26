@@ -1,22 +1,13 @@
-﻿@model List<soen390_team01.Data.Entities.Bike>
+﻿@using Newtonsoft.Json
+@model List<soen390_team01.Data.Entities.Bike>
 
 <table class="table" width="100%">
     <tr>
-        <td>
-            <u>ItemId</u>
-        </td>
-        <td>
-            <u>Name</u>
-        </td>
-        <td>
-            <u>Price</u>
-        </td>
-        <td>
-            <u>Grade</u>
-        </td>
-        <td>
-            <u>Size</u>
-        </td>
+        <td><u>ItemId</u></td>
+        <td><u>Name</u></td>
+        <td><u>Price</u></td>
+        <td><u>Grade</u></td>
+        <td><u>Size</u></td>
     </tr>
     @foreach (var item in Model)
     {

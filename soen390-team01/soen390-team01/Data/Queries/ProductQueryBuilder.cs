@@ -1,14 +1,8 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: ProductQueryBuilder.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
-using soen390_team01.Models;
+﻿using soen390_team01.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace soen390_team01.Data.Queries
 {

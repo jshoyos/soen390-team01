@@ -1,14 +1,4 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: UserManagementService.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;

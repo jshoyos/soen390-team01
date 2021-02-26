@@ -1,19 +1,9 @@
-﻿#region Header
-
-// Author: Tommy Andrews
-// File: TransfersService.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
+﻿using soen390_team01.Data;
+using soen390_team01.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using soen390_team01.Data;
-using soen390_team01.Data.Entities;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 
@@ -22,7 +12,6 @@ namespace soen390_team01.Services
     public class TransferState
     {
         private static readonly List<string> _states;
-
         static TransferState()
         {
             _states = new List<string>
@@ -47,9 +36,8 @@ namespace soen390_team01.Services
         {
             _context = context;
         }
-
         /// <summary>
-        ///     Queries all orders and procurements and adds them to a TransfersModel
+        /// Queries all orders and procurements and adds them to a TransfersModel
         /// </summary>
         /// <returns>InventoryModel</returns>
         public virtual TransfersModel GetTransfersModel()
@@ -69,12 +57,12 @@ namespace soen390_team01.Services
         }
 
         /// <summary>
-        ///     Updates an order's status
+        /// Updates an order's status
         /// </summary>
         /// <param name="orderId"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public virtual Order ChangeOrderState(long orderId, string state)
+        public virtual Order ChangeOrderState(long orderId, string state) 
         {
             try
             {
@@ -94,7 +82,7 @@ namespace soen390_team01.Services
         }
 
         /// <summary>
-        ///     Updates a procurement's status
+        /// Updates a procurement's status
         /// </summary>
         /// <param name="procurementId"></param>
         /// <param name="state"></param>
@@ -119,7 +107,7 @@ namespace soen390_team01.Services
         }
 
         /// <summary>
-        ///     Inserting a new procurement
+        /// Inserting a new procurement
         /// </summary>
         /// <typeparam name="T">Item type</typeparam>
         /// <param name="addProcurement">procurement insertion input</param>

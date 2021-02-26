@@ -1,15 +1,6 @@
-#region Header
-
-// Author: Tommy Andrews
-// File: TransfersModel.cs
-// Project: soen390-team01
-// Created: 02/25/2021
-// 
-
-#endregion
-
-using System.Collections.Generic;
+using System;
 using soen390_team01.Data.Entities;
+using System.Collections.Generic;
 
 namespace soen390_team01.Models
 {

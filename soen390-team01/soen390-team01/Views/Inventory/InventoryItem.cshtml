@@ -7,8 +7,8 @@
 <td>@Model.Warehouse</td>
 <td>
     <div class="quantity">
-        <button class="button-minus" onclick="changeQuantity(@JsonConvert.SerializeObject(Model), -1)">-</button>
+        <button class="button-minus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), -1)">-</button>
         <input type="text" class="quantity-text" name="french-hens" id="french-hens" value="@Model.Quantity" maxlength="1" size="1">
-        <button class="button-plus" onclick="changeQuantity(@JsonConvert.SerializeObject(Model), 1)">+</button>
+        <button class="button-plus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), 1)">+</button>
     </div>
 </td>
