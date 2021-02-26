@@ -82,7 +82,7 @@ namespace soen390_team01.Services
             }
             catch (DbUpdateException e)
             {
-                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
@@ -110,7 +110,7 @@ namespace soen390_team01.Services
             }
             catch (DbUpdateException e)
             {
-                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
@@ -150,7 +150,7 @@ namespace soen390_team01.Services
             }
             catch (DbUpdateException e)
             {
-                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 

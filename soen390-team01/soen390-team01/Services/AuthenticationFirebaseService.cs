@@ -41,7 +41,7 @@ namespace soen390_team01.Services
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
         /// <returns>boolean wether the account was succesfully created</returns>
-        public async Task<bool> RegisterUser(string email, string password)
+        public virtual async Task<bool> RegisterUser(string email, string password)
         {
             try
             {

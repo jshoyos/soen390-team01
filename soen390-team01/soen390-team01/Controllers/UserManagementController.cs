@@ -8,6 +8,11 @@ namespace soen390_team01.Controllers
 {
     public class UserManagementController : Controller
     {
+        #region fields
+        private readonly AuthenticationFirebaseService _authService;
+        private readonly UserManagementService _userManagementService;
+        #endregion
+
         public UserManagementController(AuthenticationFirebaseService authService,
             UserManagementService userManagementService)
         {
@@ -15,22 +20,12 @@ namespace soen390_team01.Controllers
             _userManagementService = userManagementService;
         }
 
-        #region fields
-
-        private readonly AuthenticationFirebaseService _authService;
-        private readonly UserManagementService _userManagementService;
-
-        #endregion
-
-        #region properties
-
-        #endregion
 
         #region Methods
 
         [HttpGet]
         [Authorize]
-        public IActionResult UserManagement()
+        public IActionResult Index()
         {
             var model = new UserManagementModel
             {
@@ -47,7 +42,7 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult UserManagement(UserManagementModel model)
+        public IActionResult AddUser(UserManagementModel model)
         {
             if (ModelState.IsValid)
             {
@@ -55,13 +50,13 @@ namespace soen390_team01.Controllers
                 {
                     RegisterUser(model.AddUser);
                 }
-                catch (DbContextException e)
+                catch (DataAccessException e)
                 {
                     TempData["errorMessage"] = e.ToString();
                 }
             }
 
-            return UserManagement();
+            return Index();
         }
 
         public IActionResult GetUserById(long userId)
@@ -73,7 +68,7 @@ namespace soen390_team01.Controllers
                 return PartialView("_UserModalPartial", new EditUserModel(user));
             }
 
-            return UserManagement();
+            return Index();
         }
 
         [HttpPost]
@@ -88,22 +83,16 @@ namespace soen390_team01.Controllers
             return PartialView("_UserModalPartial", user);
         }
 
-        private bool RegisterUser(AddUserModel user)
+        private void RegisterUser(AddUserModel user)
         {
-            // Decrypted added user
-
-            var addedUser = _userManagementService.AddUser(user);
-            if (addedUser == null || !_authService.RegisterUser(addedUser.Email, user.Password).Result)
+            _userManagementService.AddUser(user);
+            if (_authService.RegisterUser(user.Email, user.Password).Result)
             {
-                if (addedUser != null)
-                {
-                    _userManagementService.RemoveUser(user);
-                }
-
-                return false;
+                return;
             }
 
-            return true;
+            _userManagementService.RemoveUser(user);
+            throw new AccountRegistrationException();
         }
 
         #endregion

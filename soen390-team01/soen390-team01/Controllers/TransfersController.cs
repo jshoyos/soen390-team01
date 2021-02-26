@@ -39,7 +39,7 @@ namespace soen390_team01.Controllers
                         case "Material": _transfersService.AddProcurement<Material>(model.AddProcurement); break;
                     }
                 }
-                catch (DbContextException e)
+                catch (DataAccessException e)
                 {
                     TempData["errorMessage"] = e.ToString();
                 }

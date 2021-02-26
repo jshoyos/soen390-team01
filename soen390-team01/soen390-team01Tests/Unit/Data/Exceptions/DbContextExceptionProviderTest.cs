@@ -11,16 +11,16 @@ namespace soen390_team01Tests.Services
         {
             Assert.IsInstanceOf(
                 typeof(NullValueException),
-                DbContextExceptionProvider.Provide(new PostgresException("", "", "", "23502"))
+                DbAccessExceptionProvider.Provide(new PostgresException("", "", "", "23502"))
                 );
 
             Assert.IsInstanceOf(
                 typeof(NonUniqueValueException),
-                DbContextExceptionProvider.Provide(new PostgresException("", "", "", "23505"))
+                DbAccessExceptionProvider.Provide(new PostgresException("", "", "", "23505"))
             );
             Assert.IsInstanceOf(
-                typeof(UnexpectedDbContextException),
-                DbContextExceptionProvider.Provide(new PostgresException("", "", "", "12345"))
+                typeof(UnexpectedDataAccessException),
+                DbAccessExceptionProvider.Provide(new PostgresException("", "", "", "12345"))
             );
         }
     }

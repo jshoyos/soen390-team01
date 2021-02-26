@@ -50,7 +50,7 @@ namespace soen390_team01.Services
             }
             catch (DbUpdateException e)
             {
-                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
             catch (ArgumentNullException)
             {
@@ -60,7 +60,7 @@ namespace soen390_team01.Services
 
         public virtual void RemoveUser(User user)
         {
-            _context.Users.Remove(_context.Users.FirstOrDefault(u => u.Email.Equals(user.Email)));
+            _context.Users.Remove(_context.Users.FirstOrDefault(u => u.Email.Equals(user.Email))!);
             _context.SaveChanges();
         }
 
@@ -86,7 +86,7 @@ namespace soen390_team01.Services
             }
             catch (DbUpdateException e)
             {
-                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
