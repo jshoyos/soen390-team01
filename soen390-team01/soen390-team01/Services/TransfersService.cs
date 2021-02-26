@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 
@@ -68,16 +70,19 @@ namespace soen390_team01.Services
             {
                 ValidateState(state);
                 var order = _context.Orders.FirstOrDefault(o => o.OrderId == orderId);
+                if (order == null)
+                {
+                    throw new NotFoundException("Order", "ID", orderId.ToString());
+                }
                 order.State = state;
 
                 _context.Orders.Update(order);
                 _context.SaveChanges();
                 return order;
             }
-            catch (Exception)
+            catch (DbUpdateException e)
             {
-                // TODO: add exception handling to be able to create error messages
-                return null;
+                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
@@ -93,16 +98,19 @@ namespace soen390_team01.Services
             {
                 ValidateState(state);
                 var procurement = _context.Procurements.FirstOrDefault(o => o.ProcurementId == procurementId);
+                if (procurement == null)
+                {
+                    throw new NotFoundException("Procurement", "ID", procurementId.ToString());
+                }
                 procurement.State = state;
 
                 _context.Procurements.Update(procurement);
                 _context.SaveChanges();
                 return procurement;
             }
-            catch (Exception e)
+            catch (DbUpdateException e)
             {
-                // TODO: propagate custom exceptions instead of returning null
-                return null;
+                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
@@ -114,18 +122,13 @@ namespace soen390_team01.Services
         /// <returns></returns>
         public virtual Procurement AddProcurement<T>(AddProcurementModel addProcurement) where T : Item
         {
-            // TODO: Implementing custom exceptions for steps in the insertion of procurements
-
-            T item;
-            Payment payment;
-
             try
             {
-                item = _context.Set<T>("soen390_team01.Data.Entities." + addProcurement.ItemType)
+                var item = _context.Set<T>("soen390_team01.Data.Entities." + addProcurement.ItemType)
                     .FromSqlRaw(ProductQueryBuilder.GetProduct(addProcurement.ItemType, addProcurement.ItemId))
                     .First();
 
-                payment = new Payment
+                var payment = new Payment
                 {
                     Amount = item.Price * addProcurement.ItemQuantity,
                     State = "pending"
@@ -133,41 +136,29 @@ namespace soen390_team01.Services
 
                 _context.Payments.Add(payment);
                 _context.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
 
-            var procurement = new Procurement
-            {
-                ItemId = item.ItemId,
-                Type = addProcurement.ItemType.ToLower(),
-                ItemQuantity = addProcurement.ItemQuantity,
-                VendorId = addProcurement.VendorId,
-                PaymentId = payment.PaymentId,
-                State = "pending"
-            };
-
-            try
-            {
-                _context.Procurements.Add(procurement);
-                _context.SaveChanges();
+                var procurement = new Procurement
+                {
+                    ItemId = item.ItemId,
+                    Type = addProcurement.ItemType.ToLower(),
+                    ItemQuantity = addProcurement.ItemQuantity,
+                    VendorId = addProcurement.VendorId,
+                    PaymentId = payment.PaymentId,
+                    State = "pending"
+                };
+                return procurement;
             }
-            catch (Exception)
+            catch (DbUpdateException e)
             {
-                return null;
+                throw DbContextExceptionProvider.Provide(e.InnerException as PostgresException);
             }
-
-            return procurement;
         }
 
         private void ValidateState(string state)
         {
             if (!TransferState.In(state))
             {
-                // TODO: create custom exception for propagation
-                throw new Exception();
+                throw new InvalidValueException("state", state);
             }
         }
     }

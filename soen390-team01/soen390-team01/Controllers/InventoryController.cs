@@ -57,7 +57,7 @@ namespace soen390_team01.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Quantity below 0");
+                TempData["errorMessage"] = "Quantity below 0";
             }
             
             return PartialView("InventoryItem", inventory);

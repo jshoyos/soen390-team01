@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
 
@@ -26,14 +27,21 @@ namespace soen390_team01.Controllers
         [HttpPost]
         public IActionResult AddProcurement(TransfersModel model)
         {
-            bool showModal = false;
+            var showModal = false;
             if (ModelState.IsValid)
             {
-                switch (model.AddProcurement.ItemType)
+                try
                 {
-                    case "Bike": _transfersService.AddProcurement<Bike>(model.AddProcurement); break;
-                    case "Part": _transfersService.AddProcurement<Part>(model.AddProcurement); break;
-                    case "Material": _transfersService.AddProcurement<Material>(model.AddProcurement); break;
+                    switch (model.AddProcurement.ItemType)
+                    {
+                        case "Bike": _transfersService.AddProcurement<Bike>(model.AddProcurement); break;
+                        case "Part": _transfersService.AddProcurement<Part>(model.AddProcurement); break;
+                        case "Material": _transfersService.AddProcurement<Material>(model.AddProcurement); break;
+                    }
+                }
+                catch (DbContextException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
                 }
             }
             else

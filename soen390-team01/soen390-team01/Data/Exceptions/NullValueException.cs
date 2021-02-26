@@ -24,7 +24,7 @@ namespace soen390_team01.Data.Exceptions
 
         protected new static string BuildMessage(string field)
         {
-            return "Field " + field;
+            return field + " field is missing";
         }
     }
 }

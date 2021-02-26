@@ -33,9 +33,7 @@ namespace soen390_team01.Services
                 throw new UnauthorizedInsertionException("User");
             }
 
-            if (_context.Users.Any() && _context.Users
-                .Select(u => _encryption.Decrypt(u.Email, Convert.FromBase64String(u.Iv))).ToList()
-                .Contains(user.Email))
+            if (_context.Users.Any() && _context.Users.Select(u => _encryption.Decrypt(u.Email, Convert.FromBase64String(u.Iv))).ToList().Contains(user.Email))
             {
                 throw new NonUniqueValueException("Email");
             }

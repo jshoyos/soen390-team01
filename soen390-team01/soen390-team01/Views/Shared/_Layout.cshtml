@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     @await RenderSectionAsync("Stylesheets", false)
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <header>
@@ -38,6 +42,10 @@
                 </div>
             </div>
         </nav>
+        @if (TempData["errorMessage"] != null)
+        {
+            await Html.RenderPartialAsync("_ErrorMessage", TempData["errorMessage"]);
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -49,13 +57,5 @@
             &copy; 2021 - soen390_team01
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-    @if (TempData["errorMessage"] != null)
-    {
-        await Html.RenderPartialAsync("_ErrorMessage", TempData["errorMessage"]);
-    }
 </body>
 </html>
