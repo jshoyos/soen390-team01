@@ -146,6 +146,10 @@ namespace soen390_team01.Services
                     PaymentId = payment.PaymentId,
                     State = "pending"
                 };
+                _context.Procurements.Add(procurement);
+
+                _context.SaveChanges();
+
                 return procurement;
             }
             catch (DbUpdateException e)
@@ -154,7 +158,7 @@ namespace soen390_team01.Services
             }
         }
 
-        private void ValidateState(string state)
+        private static void ValidateState(string state)
         {
             if (!TransferState.In(state))
             {

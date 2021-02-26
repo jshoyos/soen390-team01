@@ -33,7 +33,7 @@ namespace soen390_team01.Controllers
                 AddUser = new AddUserModel()
             };
 
-            return View(model);
+            return View("Index", model);
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace soen390_team01.Controllers
 
         private void RegisterUser(AddUserModel user)
         {
-            _userManagementService.AddUser(user);
-            if (_authService.RegisterUser(user.Email, user.Password).Result)
+            var addedUser = _userManagementService.AddUser(user);
+            if (_authService.RegisterUser(addedUser.Email, user.Password).Result)
             {
                 return;
             }
