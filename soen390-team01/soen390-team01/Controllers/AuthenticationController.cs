@@ -48,27 +48,26 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                string email = model.Email;
-                string password = model.Password;
+                var email = model.Email;
+                var password = model.Password;
                 var user = AuthenticateUser(email, password);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View(model);
                 }
-                SetAuthCookie(email, this.HttpContext);
+                SetAuthCookie(email, HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error");
-                return View(model);
-            }
+
+            ModelState.AddModelError(string.Empty, "Error");
+            return View(model);
+            
         }
 
         public IActionResult Logout()
         {
-            RemoveAuthCookie(this.HttpContext);
+            RemoveAuthCookie(HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>
@@ -94,12 +93,9 @@ namespace soen390_team01.Controllers
                 await _authService.RequestPasswordChange(model.Email);
                 return LocalRedirect("/Authentication/Index");
             }
-            else
-            {
-                //ModelState.AddModelError(string.Empty, "Email cannot be empty");
-                return View(model);
+
+            return View(model);
             }
-        }
 
         /// <summary>
         /// Authenticates the user with the help of the firebase services
@@ -114,10 +110,8 @@ namespace soen390_team01.Controllers
                 //TODO: return more than just a string
                 return "User";
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>

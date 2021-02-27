@@ -41,7 +41,6 @@ namespace soen390_team01
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/Authentication/index";
-                    //options.LogoutPath = "";
                 });
             services.AddDbContext<ErpDbContext>(options =>
                 options.UseNpgsql(

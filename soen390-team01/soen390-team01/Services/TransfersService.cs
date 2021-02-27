@@ -1,6 +1,5 @@
 ﻿using soen390_team01.Data;
 using soen390_team01.Data.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +10,12 @@ using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public class TransferState
+    public static class TransferState
     {
-        private static readonly List<string> _states;
+        private static readonly List<string> States;
         static TransferState()
         {
-            _states = new List<string>
+            States = new List<string>
             {
                 "pending",
                 "completed",
@@ -26,7 +25,7 @@ namespace soen390_team01.Services
 
         public static bool In(string value)
         {
-            return _states.Contains(value);
+            return States.Contains(value);
         }
     }
 
