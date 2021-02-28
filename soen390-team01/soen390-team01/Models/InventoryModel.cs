@@ -15,9 +15,9 @@ namespace soen390_team01.Models
         public List<Material> MaterialList { get; set; }
 
         //List parameter Filters
-        public SelectFilters BikeFilters = new SelectFilters("Bike");
-        public SelectFilters PartFilters = new SelectFilters("Part");
-        public SelectFilters MaterialFilters = new SelectFilters("Material");
+        public SelectFilters BikeFilters { get; set; } =  new SelectFilters("Bike");
+        public SelectFilters PartFilters { get; set; } = new SelectFilters("Part");
+        public SelectFilters MaterialFilters { get; set; } = new SelectFilters("Material");
 
         public string SelectedTab { get; set; } = "All";
     }
