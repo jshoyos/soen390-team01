@@ -1,8 +1,8 @@
 ﻿@using Newtonsoft.Json
 @model SelectFilters
 
-<div id="@Model.Type-filter" class="filter-data" align="center">
-    <h1 class="display-4" align="center">Filter</h1>
+<div id="@Model.Type-filter" class="filter-data">
+    <h1 class="display-4">Filter</h1>
     <form method="post" asp-controller="Inventory" asp-action="Index" asp-route-returnurl="">
         @foreach (KeyValuePair<string, SelectList> pair in Model)
         {

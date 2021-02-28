@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,8 +48,8 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                string email = model.Email;
-                string password = model.Password;
+                var email = model.Email;
+                var password = model.Password;
                 var user = AuthenticateUser(email, password);
                 if (user == null)
                 {
@@ -60,11 +59,8 @@ namespace soen390_team01.Controllers
                 await SetAuthCookie(email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error");
-                return View(model);
-            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> LogoutAsync()
@@ -95,11 +91,8 @@ namespace soen390_team01.Controllers
                 await _authService.RequestPasswordChange(model.Email);
                 return LocalRedirect("/Authentication/Index");
             }
-            else
-            {
-                //ModelState.AddModelError(string.Empty, "Email cannot be empty");
-                return View(model);
-            }
+
+            return View(model);
         }
 
         /// <summary>
@@ -115,10 +108,7 @@ namespace soen390_team01.Controllers
                 //TODO: return more than just a string
                 return "User";
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         /// <summary>

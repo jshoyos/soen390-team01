@@ -2,7 +2,7 @@
 
 namespace soen390_team01.Data.Queries
 {
-    public class ProductQueryBuilder
+    public static class ProductQueryBuilder
     {
         public static string FilterProduct(ProductFilterInput input)
         {

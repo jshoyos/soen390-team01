@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace soen390_team01.Models
 {
@@ -11,11 +8,13 @@ namespace soen390_team01.Models
 
         public void Dispose()
         {
-            if (_disposed)
-            {
-                return;
-            }
-            _disposed = true;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _disposed = disposing;
         }
     }
 }
