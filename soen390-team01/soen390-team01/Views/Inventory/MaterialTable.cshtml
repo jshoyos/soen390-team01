@@ -1,0 +1,19 @@
+﻿@using Newtonsoft.Json
+@model List<soen390_team01.Data.Entities.Material>
+<table class="table" aria-label="Material">
+    <tr>
+        <th scope="col"><u>ItemId</u></th>
+        <th scope="col"><u>Name</u></th>
+        <th scope="col"><u>Price</u></th>
+        <th scope="col"><u>Grade</u></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr class="@("itemRow" + item.ItemId)">
+            <td>@item.ItemId</td>
+            <td>@item.Name</td>
+            <td>@item.Price</td>
+            <td>@item.Grade</td>
+        </tr>
+    }
+</table>

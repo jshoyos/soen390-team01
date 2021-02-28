@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
 
@@ -19,25 +20,37 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", _invService.GetInventoryModel());
+            return View(_invService.SetupModel());
         }
-        /// <summary>
-        /// Action to add item to inventory
-        /// </summary>
-        /// <param name="model"></param>
+        [HttpPost]
+        public IActionResult Refresh([FromBody] string selectedTab)
+        {
+            var model = _invService.SetupModel();
+            model.SelectedTab = selectedTab;
+
+            return PartialView("InventoryBody",model);
+        }
 
         [HttpPost]
-        public IActionResult AddItem([FromBody] InventoryModel model)
+        public IActionResult FilterProductTable([FromBody] ProductFilterInput input)
         {
-            _invService.AddItem(new Inventory
+            var isFilterEmpty = input.Value.Equals("clear");
             {
-                InventoryId = model.InventoryId,
-                ItemId = model.ItemId,
-                Quantity = model.Quantity,
-                Type = model.Type,
-                Warehouse = model.Warehouse
-            });
-            return View("Index", model);
+                try
+                {
+                    switch (input.Type)
+                    {
+                        case "Bike": return PartialView("BikeTable", isFilterEmpty ? _invService.GetAllBikes() : _invService.GetFilteredProductList<Bike>(input));
+                        case "Part": return PartialView("PartTable", isFilterEmpty ? _invService.GetAllParts() : _invService.GetFilteredProductList<Part>(input));
+                        case "Material": return PartialView("MaterialTable", isFilterEmpty ? _invService.GetAllMaterials() : _invService.GetFilteredProductList<Material>(input));
+                    }
+                }
+                catch (DataAccessException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
+                }
+            }    
+            return Index();
         }
         /// <summary>
         /// Changes the quantity of an item
@@ -48,13 +61,20 @@ namespace soen390_team01.Controllers
         {
             if (inventory.Quantity >= 0)
             {
-                _invService.Update(inventory);
+                try
+                {
+                    _invService.Update(inventory);
+                }
+                catch (DataAccessException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
+                }
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Quantity below 0");
+                inventory.Quantity = 0;
             }
-
+            
             return PartialView("InventoryItem", inventory);
         }
     }

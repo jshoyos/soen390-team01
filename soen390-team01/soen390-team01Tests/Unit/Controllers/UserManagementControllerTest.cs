@@ -1,10 +1,14 @@
 ﻿using soen390_team01.Controllers;
 using Moq;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using soen390_team01.Services;
 using NUnit.Framework;
 using soen390_team01.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using soen390_team01.Data;
 using soen390_team01.Models;
 
@@ -89,6 +93,23 @@ namespace soen390_team01Tests.Unit.Controllers
 
             Assert.IsNotNull(result);
             Assert.IsNotNull((result.Model as User));
+        }
+
+        [Test]
+        public void AddUserTest()
+        {
+            _authenticationServiceMock.Setup(a => a.RegisterUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(false));
+            _userManagementServiceMock.Setup(u => u.AddUser(It.IsAny<User>())).Returns(new User());
+            var model = new UserManagementModel
+            {
+                AddUser = new AddUserModel()
+            };
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            Assert.IsNotNull(controller.AddUser(model));
+            Assert.AreEqual("Account registration failed: Try again later.", controller.TempData["errorMessage"]);
         }
     }
 }

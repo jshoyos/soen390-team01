@@ -1,0 +1,23 @@
+﻿@using Newtonsoft.Json
+@model SelectFilters
+
+<div id="@Model.Type-filter" class="filter-data">
+    <h1 class="display-4">Filter</h1>
+    <form method="post" asp-controller="Inventory" asp-action="Index" asp-route-returnurl="">
+        @foreach (KeyValuePair<string, SelectList> pair in Model)
+        {
+            <p><strong>@pair.Key</strong></p>
+            <select onchange="passingFilter(@JsonConvert.SerializeObject(@Model.Type),@JsonConvert.SerializeObject(pair.Key),this.value)">
+                <option value="" selected disabled hidden>Choose here</option>
+                @foreach (SelectListItem item in pair.Value)
+                {
+                    <option value="@item.Text">@item.Text</option>
+                }
+            </select>
+            <br /><br />
+
+        }
+        <br>
+
+    </form>
+</div>

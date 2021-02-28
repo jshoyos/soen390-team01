@@ -2,13 +2,13 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public class AuthenticationFirebaseService : IDisposable
+    public class AuthenticationFirebaseService : DisposableService
     {
         private readonly FirebaseAuthProvider _ap;
-        private bool _disposed;
 
         public AuthenticationFirebaseService()
         {
@@ -41,7 +41,7 @@ namespace soen390_team01.Services
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
         /// <returns>boolean wether the account was succesfully created</returns>
-        public async Task<bool> RegisterUser(string email, string password)
+        public virtual async Task<bool> RegisterUser(string email, string password)
         {
             try
             {
@@ -71,15 +71,6 @@ namespace soen390_team01.Services
             {
                 return false;
             }
-        }
-
-        public void Dispose()
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            _disposed = true;
         }
     }
 }
