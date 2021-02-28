@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
@@ -73,7 +72,7 @@ namespace soen390_team01.Controllers
             }
             else
             {
-                TempData["errorMessage"] = "Quantity below 0";
+                inventory.Quantity = 0;
             }
             
             return PartialView("InventoryItem", inventory);
