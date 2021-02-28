@@ -44,7 +44,7 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Index(LoginModel model)
+        public async Task<IActionResult> IndexAsync(LoginModel model)
         {
             if (ModelState.IsValid)
             {
@@ -56,18 +56,16 @@ namespace soen390_team01.Controllers
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View(model);
                 }
-                SetAuthCookie(email, HttpContext);
+                await SetAuthCookie(email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
 
-            ModelState.AddModelError(string.Empty, "Error");
             return View(model);
-            
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
-            RemoveAuthCookie(HttpContext);
+            await RemoveAuthCookie(this.HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>
@@ -95,7 +93,7 @@ namespace soen390_team01.Controllers
             }
 
             return View(model);
-            }
+        }
 
         /// <summary>
         /// Authenticates the user with the help of the firebase services
@@ -110,7 +108,6 @@ namespace soen390_team01.Controllers
                 //TODO: return more than just a string
                 return "User";
             }
-
             return null;
         }
 
@@ -119,7 +116,7 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="email"></param>
         /// <param name="context"></param>
-        private static async void SetAuthCookie(string email, HttpContext context)
+        private static async Task SetAuthCookie(string email, HttpContext context)
         {
             var claims = new List<Claim>
             {
@@ -136,7 +133,7 @@ namespace soen390_team01.Controllers
             await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
-        private static async void RemoveAuthCookie(HttpContext context)
+        private static async Task RemoveAuthCookie(HttpContext context)
         {
             await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
         }

@@ -1,17 +1,17 @@
 ﻿@using Newtonsoft.Json
 @model List<soen390_team01.Data.Entities.Bike>
 
-<table class="table" width="100%">
+<table class="table" aria-label="Bikes">
     <tr>
-        <td><u>ItemId</u></td>
-        <td><u>Name</u></td>
-        <td><u>Price</u></td>
-        <td><u>Grade</u></td>
-        <td><u>Size</u></td>
+        <th scope="col"><u>ItemId</u></th>
+        <th scope="col"><u>Name</u></th>
+        <th scope="col"><u>Price</u></th>
+        <th scope="col"><u>Grade</u></th>
+        <th scope="col"><u>Size</u></th>
     </tr>
     @foreach (var item in Model)
     {
-        <tr >
+        <tr>
             <td>@item.ItemId</td>
             <td>@item.Name</td>
             <td>@item.Price</td>

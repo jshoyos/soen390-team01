@@ -140,3 +140,7 @@ input.filer-data {
     -webkit-appearance: none !important;
     margin: 0 !important;
 }
+
+.filter-data {
+    text-align: center
+}

@@ -20,7 +20,7 @@ namespace soen390_team01.Models
             PhoneNumber = user.PhoneNumber;
             LastName = user.LastName;
             FirstName = user.FirstName;
-            base.UserId = user.UserId;
+            UserId = user.UserId;
         }
         [Required]
         public override string Role { get; set; }

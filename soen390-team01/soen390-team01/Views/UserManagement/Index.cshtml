@@ -4,7 +4,10 @@
     ViewData["Title"] = "User Management";
     string[] TableHeader = new string[] { "Action", "First Name", "Last Name", "Role", "Phone Number", "Email" };
 }
-<head><link rel="stylesheet" href="\css\UserManagement.css"></head>
+<head>
+    <title>User Management</title>
+    <link rel="stylesheet" href="\css\UserManagement.css">
+</head>
 
 <h1>User Management</h1>
 
@@ -56,17 +59,15 @@
     </div>
     <div class="col-md-6">
         <div class="table">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        @{
-                            foreach (var head in TableHeader)
-                            {
-                                <th>@head</th>
-                            }
+            <table class="table table-bordered table-hover" aria-label="Tables">
+                <tr>
+                    @{
+                        foreach (var head in TableHeader)
+                        {
+                            <th>@head</th>
                         }
-                    </tr>
-                </thead>
+                    }
+                </tr>
                 @{
                     var users = ViewData["Users"] as List<soen390_team01.Data.Entities.User>;
                     foreach (var user in Model.Users)
@@ -76,8 +77,6 @@
                         </tr>
                     }
                 }
-                <tbody>
-                </tbody>
             </table>
         </div>
     </div>
