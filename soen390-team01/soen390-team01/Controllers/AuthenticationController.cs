@@ -45,7 +45,7 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Index(LoginModel model)
+        public async Task<IActionResult> IndexAsync(LoginModel model)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +57,7 @@ namespace soen390_team01.Controllers
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View(model);
                 }
-                SetAuthCookie(email, this.HttpContext);
+                await SetAuthCookie(email, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
             else
@@ -67,9 +67,9 @@ namespace soen390_team01.Controllers
             }
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
-            RemoveAuthCookie(this.HttpContext);
+            await RemoveAuthCookie(this.HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>
