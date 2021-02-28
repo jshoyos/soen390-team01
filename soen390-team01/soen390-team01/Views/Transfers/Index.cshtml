@@ -2,16 +2,14 @@
 @model soen390_team01.Models.TransfersModel
 
 @{
-    ViewData["Title"] = "transfers";
+    ViewData["Title"] = "Transfers";
 }
 <head>
     <title>Transfers</title>
 
     <link rel="stylesheet" href="\css\Transfers.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <meta name="viewport" content="width=device-width"/>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+
     <script>
         function showVendor() {
             document.getElementById("vendor").style.display = "";
@@ -236,7 +234,7 @@
     </div>
 
     <!-- Modal for procurement tab-->
-    <div class="modal fade" id="procModal" tabindex="-1" role="dialog" aria-labelledby="procModalTitle" aria-hidden="@(Model.ShowModal ? "false" : "true")">
+    <div class="modal fade" id="procModal" tabindex="-1" role="dialog" aria-labelledby="procModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">

@@ -26,10 +26,10 @@ namespace soen390_team01
             services.AddScoped<AuthenticationFirebaseService>();
             services.AddScoped<InventoryService>();
             services.AddScoped<TransfersService>();
+            services.AddScoped<UserManagementService>();
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
                 ));
-            services.AddScoped<UserManagementService>();
             services.AddDataProtection();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
@@ -41,7 +41,6 @@ namespace soen390_team01
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/Authentication/index";
-                    //options.LogoutPath = "";
                 });
             services.AddDbContext<ErpDbContext>(options =>
                 options.UseNpgsql(

@@ -6,6 +6,8 @@ using System.Linq;
 using soen390_team01.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 
 namespace soen390_team01.Services
@@ -25,9 +27,9 @@ namespace soen390_team01.Services
             {
                 return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductQueryBuilder.FilterProduct(input)).ToList();
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                return null;
+                throw new NotFoundException(input.Type, input.Name, input.Value);
             }
         }
         public virtual InventoryModel SetupModel()
@@ -148,18 +150,17 @@ namespace soen390_team01.Services
         /// <summary>
         /// Updates an inventory item
         /// </summary>
-        /// <param name="Inventory">inventory item to update</param>
-        public virtual bool Update(Inventory updatedInventory)
+        /// <param name="updatedInventory">inventory item to update</param>
+        public virtual void Update(Inventory updatedInventory)
         {
             try
             {
                 _context.Inventories.Update(updatedInventory);
                 _context.SaveChanges();
-                return true;
             }
-            catch (Exception e)
+            catch (DbUpdateException e)
             {
-                return false;
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
 
         }

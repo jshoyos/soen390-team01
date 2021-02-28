@@ -146,10 +146,10 @@ namespace soen390_team01Tests.Services
         [Test]
         public void UpdateTest()
         {
-            Inventory model = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
+            var model = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
             model.Quantity = 10;
             _inventoryService.Update(model);
-            Inventory invItem = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
+            var invItem = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
             Assert.AreEqual(model.Quantity, invItem.Quantity);
         }
     }

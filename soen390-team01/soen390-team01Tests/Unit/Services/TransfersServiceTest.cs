@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Services;
 
 namespace soen390_team01Tests.Services
@@ -134,12 +135,14 @@ namespace soen390_team01Tests.Services
         public void ChangeTransferStateInvalidTest()
         {
             var transfersModel = _transfersService.GetTransfersModel();
-
+            const int INVALID_ID = 12345;
             var orderToChange = transfersModel.Orders.ElementAt(0);
-            Assert.Null(_transfersService.ChangeOrderState(orderToChange.OrderId, "invalid_state"));
+            Assert.Throws<InvalidValueException>(() => _transfersService.ChangeOrderState(orderToChange.OrderId, "invalid_state"));
+            Assert.Throws<NotFoundException>(() => _transfersService.ChangeOrderState(INVALID_ID, "pending"));
 
             var procurementToChange = transfersModel.Procurements.ElementAt(0);
-            Assert.Null(_transfersService.ChangeProcurementState(procurementToChange.ProcurementId, "invalid_state"));
+            Assert.Throws<InvalidValueException>(() => _transfersService.ChangeProcurementState(procurementToChange.ProcurementId, "invalid_state"));
+            Assert.Throws<NotFoundException>(() => _transfersService.ChangeProcurementState(INVALID_ID, "pending"));
         }
     }
 }

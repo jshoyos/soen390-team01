@@ -7,7 +7,7 @@ using soen390_team01.Data.Entities;
 
 namespace soen390_team01.Data
 {
-    public partial class ErpDbContext : DbContext
+    public class ErpDbContext : DbContext
     {
         public ErpDbContext()
         {
@@ -404,10 +404,6 @@ namespace soen390_team01.Data
             modelBuilder.HasSequence("procurement_procurement_id_seq");
 
             modelBuilder.HasSequence("vendor_vendor_id_seq");
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

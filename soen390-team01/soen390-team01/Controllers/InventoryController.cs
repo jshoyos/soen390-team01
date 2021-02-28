@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
 
@@ -33,13 +34,20 @@ namespace soen390_team01.Controllers
         [HttpPost]
         public IActionResult FilterProductTable([FromBody] ProductFilterInput input)
         {
-            bool isFilterEmpty = input.Value.Equals("clear");
+            var isFilterEmpty = input.Value.Equals("clear");
             {
-                switch (input.Type)
+                try
                 {
-                    case "Bike": return PartialView("BikeTable", isFilterEmpty ? _invService.GetAllBikes() : _invService.GetFilteredProductList<Bike>(input));
-                    case "Part": return PartialView("PartTable", isFilterEmpty ? _invService.GetAllParts() : _invService.GetFilteredProductList<Part>(input));
-                    case "Material": return PartialView("MaterialTable", isFilterEmpty ? _invService.GetAllMaterials() : _invService.GetFilteredProductList<Material>(input));
+                    switch (input.Type)
+                    {
+                        case "Bike": return PartialView("BikeTable", isFilterEmpty ? _invService.GetAllBikes() : _invService.GetFilteredProductList<Bike>(input));
+                        case "Part": return PartialView("PartTable", isFilterEmpty ? _invService.GetAllParts() : _invService.GetFilteredProductList<Part>(input));
+                        case "Material": return PartialView("MaterialTable", isFilterEmpty ? _invService.GetAllMaterials() : _invService.GetFilteredProductList<Material>(input));
+                    }
+                }
+                catch (DataAccessException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
                 }
             }    
             return Index();
@@ -53,11 +61,18 @@ namespace soen390_team01.Controllers
         {
             if (inventory.Quantity >= 0)
             {
-                _invService.Update(inventory);
+                try
+                {
+                    _invService.Update(inventory);
+                }
+                catch (DataAccessException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
+                }
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Quantity below 0");
+                inventory.Quantity = 0;
             }
             
             return PartialView("InventoryItem", inventory);

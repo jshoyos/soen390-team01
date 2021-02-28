@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
-            <form method="post" asp-controller="UserManagement" asp-action="UserManagement">
+            <form method="post" asp-controller="UserManagement" asp-action="AddUser">
                 <div>
                     <label asp-for="AddUser.FirstName">First Name</label>
                     <input asp-for="AddUser.FirstName" class="form-control" />
@@ -64,7 +64,7 @@
                     @{
                         foreach (var head in TableHeader)
                         {
-                            <th>@head</th>
+                            <th scope="col">@head</th>
                         }
                     }
                 </tr>

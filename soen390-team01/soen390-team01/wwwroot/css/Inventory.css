@@ -133,6 +133,12 @@ input.filer-data {
     border: none;
     text-align: center;
     width: 56px;
+    -moz-appearance: textfield !important;
+}
+
+.quantity-text::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
 }
 
 .filter-data {

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace soen390_team01.Controllers
 {
@@ -12,19 +13,19 @@ namespace soen390_team01.Controllers
         private readonly UserManagementService _userManagementService;
         #endregion
 
-        public UserManagementController(AuthenticationFirebaseService authService, UserManagementService userManagementService)
+        public UserManagementController(AuthenticationFirebaseService authService,
+            UserManagementService userManagementService)
         {
             _authService = authService;
             _userManagementService = userManagementService;
         }
 
-        #region properties
-        #endregion
 
         #region Methods
+
         [HttpGet]
         [Authorize]
-        public IActionResult UserManagement()
+        public IActionResult Index()
         {
             var model = new UserManagementModel
             {
@@ -32,24 +33,32 @@ namespace soen390_team01.Controllers
                 AddUser = new AddUserModel()
             };
 
-            return View(model);
+            return View("Index", model);
         }
+
         /// <summary>
-        /// Event Handler when the there is a request to add a new user
+        ///     Event Handler when the there is a request to add a new user
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult UserManagement(UserManagementModel model)
+        public IActionResult AddUser(UserManagementModel model)
         {
-            if (!ModelState.IsValid || !RegisterUser(model.AddUser))
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("Result", "Couldn't add user");
-                model.Users = _userManagementService.GetAllUsers();
-                return View(model);
+                try
+                {
+                    RegisterUser(model.AddUser);
+                }
+                catch (DataAccessException e)
+                {
+                    TempData["errorMessage"] = e.ToString();
+                }
             }
-            return RedirectToAction("UserManagement");
+
+            return Index();
         }
+
         public IActionResult GetUserById(long userId)
         {
             var user = _userManagementService.GetUserById(userId);
@@ -58,7 +67,8 @@ namespace soen390_team01.Controllers
             {
                 return PartialView("_UserModalPartial", new EditUserModel(user));
             }
-            return UserManagement();
+
+            return Index();
         }
 
         [HttpPost]
@@ -69,22 +79,22 @@ namespace soen390_team01.Controllers
                 var editedUser = _userManagementService.EditUser(user);
                 return PartialView("_UserRowPartial", editedUser);
             }
+
             return PartialView("_UserModalPartial", user);
         }
 
-        private bool RegisterUser(AddUserModel user)
+        private void RegisterUser(AddUserModel user)
         {
-            // Decrypted added user
             var addedUser = _userManagementService.AddUser(user);
-            if (addedUser == null || !_authService.RegisterUser(addedUser.Email, user.Password).Result)
+            if (_authService.RegisterUser(addedUser.Email, user.Password).Result)
             {
-                if(addedUser != null) _userManagementService.RemoveUser(user);
-                return false;
+                return;
             }
-            return true;
+
+            _userManagementService.RemoveUser(user);
+            throw new AccountRegistrationException();
         }
 
         #endregion
     }
-
 }

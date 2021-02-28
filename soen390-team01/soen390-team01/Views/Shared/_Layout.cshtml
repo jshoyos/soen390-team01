@@ -6,7 +6,11 @@
     <title>@ViewData["Title"] Downhill</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    @RenderSection("Stylesheets", false)
+    @await RenderSectionAsync("Stylesheets", false)
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <header>
@@ -23,7 +27,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="UserManagement" asp-action="UserManagement">User Management</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="UserManagement" asp-action="Index">User Management</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Inventory" asp-action="Index">Inventory</a>
@@ -38,21 +42,20 @@
                 </div>
             </div>
         </nav>
+        @if (TempData["errorMessage"] != null)
+        {
+            await Html.RenderPartialAsync("_ErrorMessage", TempData["errorMessage"]);
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
+<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - soen390_team01
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
