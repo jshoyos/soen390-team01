@@ -2,11 +2,13 @@
 @using Newtonsoft.Json
 
 @{
-    ViewData["Title"] = "Inventory View";
+    ViewData["Title"] = "Inventory";
     ViewData["selectedTab"] = "";
 }
 
 <head id="head">
+    <title>Inventory</title>
+
     <link rel="stylesheet" href="\css\Inventory.css">
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -37,7 +39,7 @@
                 }
             });
         };
-         function refreshFilter(type) {
+        function refreshFilter(type) {
            
             $.ajax({
                 url: '@Url.Action("Refresh", "Inventory")',
@@ -76,21 +78,21 @@
 
             switch (tableName) {
 
-                case "Bike":
-                    document.getElementById("Bike-filter").style.display = "block";
-                    document.getElementById("Part-filter").style.display = "none";
-                    document.getElementById("Material-filter").style.display = "none";
-                    break;
-                case "Material":
-                    document.getElementById("Bike-filter").style.display = "none";
-                    document.getElementById("Part-filter").style.display = "none";
-                    document.getElementById("Material-filter").style.display = "block";
-                    break;
-                case "Part":
-                    document.getElementById("Bike-filter").style.display = "none";
-                    document.getElementById("Part-filter").style.display = "block";
-                    document.getElementById("Material-filter").style.display = "none";
-                    break;
+            case "Bike":
+                document.getElementById("Bike-filter").style.display = "block";
+                document.getElementById("Part-filter").style.display = "none";
+                document.getElementById("Material-filter").style.display = "none";
+                break;
+            case "Material":
+                document.getElementById("Bike-filter").style.display = "none";
+                document.getElementById("Part-filter").style.display = "none";
+                document.getElementById("Material-filter").style.display = "block";
+                break;
+            case "Part":
+                document.getElementById("Bike-filter").style.display = "none";
+                document.getElementById("Part-filter").style.display = "block";
+                document.getElementById("Material-filter").style.display = "none";
+                break;
             }
         }
         function hideFilter() {

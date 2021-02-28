@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace soen390_team01.Controllers
 {

@@ -6,7 +6,7 @@
     <form method="post" asp-controller="Inventory" asp-action="Index" asp-route-returnurl="">
         @foreach (KeyValuePair<string, SelectList> pair in Model)
         {
-            <p><b>@pair.Key</b></p>
+            <p><strong>@pair.Key</strong></p>
             <select onchange="passingFilter(@JsonConvert.SerializeObject(@Model.Type),@JsonConvert.SerializeObject(pair.Key),this.value)">
                 <option value="" selected disabled hidden>Choose here</option>
                 @foreach (SelectListItem item in pair.Value)
