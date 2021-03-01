@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
+using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 using soen390_team01.Services;
 
@@ -10,47 +11,64 @@ namespace soen390_team01.Controllers
     public class InventoryController : Controller
     {
         private readonly InventoryService _invService;
+        private InventoryModel _model;
 
         public InventoryController(InventoryService invService)
         {
             _invService = invService;
+            _model = _invService.SetupModel();
         }
 
         [Authorize]
         [HttpGet]
         public IActionResult Index()
         {
-            return View(_invService.SetupModel());
+            return View("Index", _model);
         }
         [HttpPost]
         public IActionResult Refresh([FromBody] string selectedTab)
         {
-            var model = _invService.SetupModel();
-            model.SelectedTab = selectedTab;
+            _model = _invService.SetupModel();
+            _model.SelectedTab = selectedTab;
 
-            return PartialView("InventoryBody",model);
+            return PartialView("InventoryBody", _model);
         }
 
         [HttpPost]
-        public IActionResult FilterProductTable([FromBody] ProductFilterInput input)
+        [FiltersAction]
+        public IActionResult FilterProductTable([FromBody] Filters filters)
         {
-            var isFilterEmpty = input.Value.Equals("clear");
+            if (filters.AnyActive())
             {
                 try
                 {
-                    switch (input.Type)
+                    switch (filters.Table)
                     {
-                        case "Bike": return PartialView("BikeTable", isFilterEmpty ? _invService.GetAllBikes() : _invService.GetFilteredProductList<Bike>(input));
-                        case "Part": return PartialView("PartTable", isFilterEmpty ? _invService.GetAllParts() : _invService.GetFilteredProductList<Part>(input));
-                        case "Material": return PartialView("MaterialTable", isFilterEmpty ? _invService.GetAllMaterials() : _invService.GetFilteredProductList<Material>(input));
+                        case "Bike":
+                            _model.BikeList = _invService.GetFilteredProductList<Bike>(filters);
+                            _model.BikeFilters = filters;
+                            break;
+                        case "Part":
+                            _model.PartList = _invService.GetFilteredProductList<Part>(filters);
+                            _model.PartFilters = filters;
+                            break;
+
+                        case "Material":
+                            _model.MaterialList = _invService.GetFilteredProductList<Material>(filters);
+                            _model.MaterialFilters = filters;
+                            break;
                     }
+
                 }
                 catch (DataAccessException e)
                 {
                     TempData["errorMessage"] = e.ToString();
                 }
-            }    
-            return Index();
+            }
+
+            _model.SelectedTab = filters.Table;
+
+            return PartialView("InventoryBody", _model);
         }
         /// <summary>
         /// Changes the quantity of an item

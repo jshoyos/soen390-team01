@@ -4,6 +4,7 @@ using soen390_team01.Data.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using soen390_team01.Data.Queries;
 
 namespace soen390_team01.Models
 { 
@@ -15,9 +16,9 @@ namespace soen390_team01.Models
         public List<Material> MaterialList { get; set; }
 
         //List parameter Filters
-        public SelectFilters BikeFilters { get; set; } =  new SelectFilters("Bike");
-        public SelectFilters PartFilters { get; set; } = new SelectFilters("Part");
-        public SelectFilters MaterialFilters { get; set; } = new SelectFilters("Material");
+        public Filters BikeFilters { get; set; } =  new Filters("Bike");
+        public Filters PartFilters { get; set; } = new Filters("Part");
+        public Filters MaterialFilters { get; set; } = new Filters("Material");
 
         public string SelectedTab { get; set; } = "All";
     }

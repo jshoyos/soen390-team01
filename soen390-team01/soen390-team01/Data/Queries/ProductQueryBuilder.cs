@@ -4,14 +4,14 @@ namespace soen390_team01.Data.Queries
 {
     public static class ProductQueryBuilder
     {
-        public static string FilterProduct(ProductFilterInput input)
+        public static string FilterProduct(Filters filters)
         {
-            return $"Select * From public.{input.Type} where {input.Name} = '{input.Value}'";
+            return $"Select * From {filters.Table} where {filters.GetConditionsString()}";
         }
 
         public static string GetProduct(string table, long itemId)
         {
-            return $"Select * From public.{table} where item_id = {itemId}";
+            return $"Select * From {table} where item_id = {itemId}";
         }
     }
 }

@@ -26,21 +26,38 @@
                 }
             });
         };
-        function passingFilter(type, name, value) {
-            console.log("test");
+        function passingFilters(filters, displayedName, filterInput) {
+            console.log(filters.List);
+            var list = filters.List.map(f => {
+                if (f.SelectValues) {
+                    f.Input = {
+                        SelectInput: { SelectValue: f.Value, PossibleValues: f.SelectValues }
+                    };
+                } else if (f.Value !== null) {
+                    f.Input = { StringValue: f.Value };
+                }
+                return f;
+            });
+
+            var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
+            var modifiedFilter = list[filterIndex];
+            modifiedFilter.Input = filterInput;
+            list[filterIndex] = modifiedFilter;
+
+            filters.List = list;
+
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ "type": type, "name": name, "value": value}),
+                data: JSON.stringify(filters),
                 dataType: 'html',
                 success: function (result) {
-                    $(`.${type}-table`).html(result);
+                    $('.inventory-view').html(result);
                 }
             });
         };
         function refreshFilter(type) {
-           
             $.ajax({
                 url: '@Url.Action("Refresh", "Inventory")',
                 type: 'POST',
@@ -48,7 +65,6 @@
                 data: JSON.stringify(type),
                 dataType: 'html',
                 success: function (result) {
-                    console.log(result);
                     $('.inventory-view').html(result);
                 }
             });
@@ -78,21 +94,21 @@
 
             switch (tableName) {
 
-            case "Bike":
-                document.getElementById("Bike-filter").style.display = "block";
-                document.getElementById("Part-filter").style.display = "none";
-                document.getElementById("Material-filter").style.display = "none";
-                break;
-            case "Material":
-                document.getElementById("Bike-filter").style.display = "none";
-                document.getElementById("Part-filter").style.display = "none";
-                document.getElementById("Material-filter").style.display = "block";
-                break;
-            case "Part":
-                document.getElementById("Bike-filter").style.display = "none";
-                document.getElementById("Part-filter").style.display = "block";
-                document.getElementById("Material-filter").style.display = "none";
-                break;
+                case "Bike":
+                    document.getElementById("Bike-filter").style.display = "block";
+                    document.getElementById("Part-filter").style.display = "none";
+                    document.getElementById("Material-filter").style.display = "none";
+                    break;
+                case "Material":
+                    document.getElementById("Bike-filter").style.display = "none";
+                    document.getElementById("Part-filter").style.display = "none";
+                    document.getElementById("Material-filter").style.display = "block";
+                    break;
+                case "Part":
+                    document.getElementById("Bike-filter").style.display = "none";
+                    document.getElementById("Part-filter").style.display = "block";
+                    document.getElementById("Material-filter").style.display = "none";
+                    break;
             }
         }
         function hideFilter() {
@@ -106,7 +122,7 @@
             }
         }
         function showFilter(type) {
-            document.getElementById(type+"-filter").display = "block" ;
+            document.getElementById(type + "-filter").display = "block";
         }
     </script>
 </head>
