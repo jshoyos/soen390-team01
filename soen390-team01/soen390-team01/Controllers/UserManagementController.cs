@@ -6,6 +6,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Controllers
 {
+    [Authorize]
     public class UserManagementController : Controller
     {
         #region fields
@@ -24,13 +25,14 @@ namespace soen390_team01.Controllers
         #region Methods
 
         [HttpGet]
-        [Authorize]
+        [ModulePermission(Roles = Role.Admin)]
         public IActionResult Index()
         {
             var model = new UserManagementModel
             {
                 Users = _userManagementService.GetAllUsers(),
-                AddUser = new AddUserModel()
+                AddUser = new AddUserModel(),
+                EditUser = new EditUserModel()
             };
 
             return View("Index", model);

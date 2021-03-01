@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System.Collections.Generic;
@@ -15,11 +16,14 @@ namespace soen390_team01.Controllers
         #region fields
 
         private readonly AuthenticationFirebaseService _authService;
+        private readonly UserManagementService _userManagementService;
         #endregion
 
-        public AuthenticationController(AuthenticationFirebaseService authService) 
+        public AuthenticationController(AuthenticationFirebaseService authService,
+            UserManagementService userManagementService)
         {
             _authService = authService;
+            _userManagementService = userManagementService;
         }
         #region properties
         [BindProperty]
@@ -56,7 +60,7 @@ namespace soen390_team01.Controllers
                     ModelState.AddModelError(string.Empty, "Invalid authentication");
                     return View(model);
                 }
-                await SetAuthCookie(email, this.HttpContext);
+                await SetAuthCookie(email, user.Role, this.HttpContext);
                 return LocalRedirect("/Home/Privacy");
             }
 
@@ -95,18 +99,23 @@ namespace soen390_team01.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult PermissionDenied()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Authenticates the user with the help of the firebase services
         /// </summary>
         /// <param name="email">User's email</param>
         /// <param name="password">User's password</param>
         /// <returns>returns the current user</returns>
-        private string AuthenticateUser(string email, string password)
+        private User AuthenticateUser(string email, string password)
         {
             if (_authService.AuthenticateUser(email, password).Result)
             {
-                //TODO: return more than just a string
-                return "User";
+                return _userManagementService.GetUserByEmail(email);
             }
             return null;
         }
@@ -116,11 +125,12 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="email"></param>
         /// <param name="context"></param>
-        private static async Task SetAuthCookie(string email, HttpContext context)
+        private static async Task SetAuthCookie(string email, string role, HttpContext context)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, email)
+                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

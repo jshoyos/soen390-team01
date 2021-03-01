@@ -39,6 +39,7 @@
                     <span asp-validation-for="AddUser.Role" class="text-danger"></span>
                 </div>
                 <div>
+                    @*<select asp-for="Role" asp-items="Html.GetEnumSelectList<Roles>()"></select>*@
                     <label asp-for="AddUser.Email"></label>
                     <input asp-for="AddUser.Email" class="form-control" />
                     <span asp-validation-for="AddUser.Email" class="text-danger"></span>
