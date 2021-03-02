@@ -11,25 +11,42 @@ namespace soen390_team01.Controllers
     public class InventoryController : Controller
     {
         private readonly InventoryService _invService;
-        private InventoryModel _model;
+        private readonly InventoryModel _model;
 
         public InventoryController(InventoryService invService)
         {
             _invService = invService;
-            _model = _invService.SetupModel();
+            _model = _invService.Model;
         }
 
         [Authorize]
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", _model);
+            return View(_model);
         }
         [HttpPost]
         public IActionResult Refresh([FromBody] string selectedTab)
         {
-            _model = _invService.SetupModel();
+            switch (selectedTab)
+            {
+                case "bike":
+                    _model.BikeList = _invService.GetAllBikes();
+                    _model.BikeFilters = _invService.ResetBikeFilters();
+                    break;
+                case "part":
+                    _model.PartList = _invService.GetAllParts();
+                    _model.PartFilters = _invService.ResetPartFilters();
+                    break;
+                case "material":
+                    _model.MaterialList = _invService.GetAllMaterials();
+                    _model.MaterialFilters = _invService.ResetMaterialFilters();
+                    break;
+            }
+
             _model.SelectedTab = selectedTab;
+            // Workaround until we put logic in models
+            _invService.Model = _model;
 
             return PartialView("InventoryBody", _model);
         }
@@ -38,38 +55,36 @@ namespace soen390_team01.Controllers
         [FiltersAction]
         public IActionResult FilterProductTable([FromBody] Filters filters)
         {
-            if (filters.AnyActive())
+            try
             {
-                try
+                switch (filters.Table)
                 {
-                    switch (filters.Table)
-                    {
-                        case "Bike":
-                            _model.BikeList = _invService.GetFilteredProductList<Bike>(filters);
-                            _model.BikeFilters = filters;
-                            break;
-                        case "Part":
-                            _model.PartList = _invService.GetFilteredProductList<Part>(filters);
-                            _model.PartFilters = filters;
-                            break;
-
-                        case "Material":
-                            _model.MaterialList = _invService.GetFilteredProductList<Material>(filters);
-                            _model.MaterialFilters = filters;
-                            break;
-                    }
-
+                    case "bike":
+                        _model.BikeList = filters.AnyActive() ? _invService.GetFilteredProductList<Bike>(filters) : _model.BikeList;
+                        _model.BikeFilters = filters;
+                        break;
+                    case "part":
+                        _model.PartList = filters.AnyActive() ? _invService.GetFilteredProductList<Part>(filters) : _model.PartList;
+                        _model.PartFilters = filters;
+                        break;
+                    case "material":
+                        _model.MaterialList = filters.AnyActive() ? _invService.GetFilteredProductList<Material>(filters) : _model.MaterialList;
+                        _model.MaterialFilters = filters;
+                        break;
                 }
-                catch (DataAccessException e)
-                {
-                    TempData["errorMessage"] = e.ToString();
-                }
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
             }
 
             _model.SelectedTab = filters.Table;
+            // Workaround until we put logic in models
+            _invService.Model = _model;
 
             return PartialView("InventoryBody", _model);
         }
+
         /// <summary>
         /// Changes the quantity of an item
         /// </summary>

@@ -31,5 +31,5 @@
         }
     }
     <br/><br/>
-    <input class="filter-data" type="button" value="Clear" onclick="refreshFilter('Material'),showFilter('Material')">
+    <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Table)), showFilter(@JsonConvert.SerializeObject(Model.Table))">
 </div>

@@ -8,6 +8,7 @@ namespace soen390_team01.Data.Queries
 
         public SelectFilter(Filter filter) : base(filter)
         {
+            Input = filter.Input;
             Value = filter.Input.SelectInput.SelectValue;
             SelectValues = filter.Input.SelectInput.PossibleValues;
         }

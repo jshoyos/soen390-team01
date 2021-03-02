@@ -2,6 +2,7 @@
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using soen390_team01.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,54 +15,76 @@ namespace soen390_team01.Services
     public class InventoryService : DisposableService
     {
         private readonly ErpDbContext _context;
+        public InventoryModel Model { get; set; }
 
         public InventoryService(ErpDbContext context)
         {
             _context = context;
+            SetupModel();
         }
 
         public virtual List<T> GetFilteredProductList<T>(Filters filters) where T : Item
         {
             try
             {
-                return _context.Set<T>("soen390_team01.Data.Entities." + filters.Table).FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                return _context.Set<T>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
             }
             catch(Exception)
             {
                 throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
             }
         }
-        public virtual InventoryModel SetupModel()
+
+        private void SetupModel()
         {
-            var model = GetInventoryModel();
-            model.BikeFilters.Add(new StringFilter("bike", "Name", "name"));
-            model.BikeFilters.Add(new SelectFilter("bike", "Grade", "grade", _context.Bikes.Select(bike => bike.Grade).Distinct().OrderBy(g => g).ToList()));
-            model.BikeFilters.Add(new SelectFilter("bike", "Size", "size", _context.Bikes.Select(bike => bike.Size).Distinct().OrderBy(s => s).ToList()));
-            model.PartFilters.Add(new StringFilter("part", "Name", "name"));
-            model.PartFilters.Add(new SelectFilter("part", "Grade", "grade", _context.Parts.Select(part => part.Grade).Distinct().OrderBy(g => g).ToList()));
-            model.PartFilters.Add(new SelectFilter("part", "Size", "size", _context.Parts.Select(part => part.Size).Distinct().OrderBy(s => s).ToList()));
-            model.MaterialFilters.Add(new StringFilter("material", "Name", "name"));
-            model.MaterialFilters.Add(new SelectFilter("material", "Grade", "grade", _context.Materials.Select(item => item.Grade).Distinct().OrderBy(g => g).ToList()));
+            Model = new InventoryModel();
+            var all = GetInventory();
+            Model.AllList = all;
+            Model.BikeList = GetAllBikes();
+            Model.PartList = GetAllParts();
+            Model.MaterialList = GetAllMaterials();
+            Model.BikeFilters = ResetBikeFilters();
+            Model.PartFilters = ResetPartFilters();
+            Model.MaterialFilters = ResetMaterialFilters();
             //model.BikeFilters.Add("Price", GetFilter("price", "bike"));
             //model.PartFilters.Add("Price", GetFilter("price", "part"));
             //model.MaterialFilters.Add("Price", GetFilter("price", "material"));
-            return model;
         }
 
-        /// <summary>
-        /// Queries all the items in the inventory and splits the into an InventoryModel
-        /// </summary>
-        /// <returns>InventoryModel</returns>
-        public virtual InventoryModel GetInventoryModel()
+        public virtual Filters ResetBikeFilters()
         {
+            var filters = new Filters("bike");
 
-            var model = new InventoryModel();
-            var all = GetInventory();
-            model.AllList = all;
-            model.BikeList = GetAllBikes();
-            model.PartList = GetAllParts();
-            model.MaterialList = GetAllMaterials();
-            return model;
+            filters.Add(new StringFilter("bike", "Name", "name"));
+            filters.Add(new SelectFilter("bike", "Grade", "grade", _context.Bikes.Select(bike => bike.Grade).Distinct().OrderBy(g => g).ToList()));
+            filters.Add(new SelectFilter("bike", "Size", "size", _context.Bikes.Select(bike => bike.Size).Distinct().OrderBy(s => s).ToList()));
+            // Can add bike specific filters
+
+            return filters;
+        }
+
+        public virtual Filters ResetPartFilters()
+        {
+            var filters = new Filters("part");
+
+            filters.Add(new StringFilter("part", "Name", "name"));
+            filters.Add(new SelectFilter("part", "Grade", "grade", _context.Parts.Select(part => part.Grade).Distinct().OrderBy(g => g).ToList()));
+            filters.Add(new SelectFilter("part", "Size", "size", _context.Parts.Select(part => part.Size).Distinct().OrderBy(s => s).ToList()));
+            // Can add part specific filters
+
+            return filters;
+        }
+
+        public virtual Filters ResetMaterialFilters()
+        {
+            var filters = new Filters("material");
+
+            filters.Add(new StringFilter("material", "Name", "name"));
+            filters.Add(new SelectFilter("material", "Grade", "grade", _context.Materials.Select(material => material.Grade).Distinct().OrderBy(g => g).ToList()));
+            // Can add material specific filters
+
+            return filters;
         }
 
         /// <summary>
@@ -113,7 +136,6 @@ namespace soen390_team01.Services
             {
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
-
         }
     }
 }

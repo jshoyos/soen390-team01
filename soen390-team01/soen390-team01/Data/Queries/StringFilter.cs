@@ -6,6 +6,7 @@
 
         public StringFilter(Filter filter) : this(filter.Table, filter.DisplayColumn, filter.Column)
         {
+            Input = filter.Input;
             Value = filter.Input.StringValue;
         }
         public StringFilter(string table, string displayColumn, string column) : base(table, displayColumn, column)
@@ -15,7 +16,7 @@
 
         public override string GetConditionString()
         {
-            return Column + " = '" + Value + "'";
+            return Column + " LIKE '%" + Value + "%'";
         }
 
         public override bool IsActive()

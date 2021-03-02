@@ -27,7 +27,6 @@
             });
         };
         function passingFilters(filters, displayedName, filterInput) {
-            console.log(filters.List);
             var list = filters.List.map(f => {
                 if (f.SelectValues) {
                     f.Input = {
@@ -45,6 +44,7 @@
             list[filterIndex] = modifiedFilter;
 
             filters.List = list;
+            console.log(filters.List);
 
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',
@@ -92,24 +92,10 @@
             document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
 
-            switch (tableName) {
-
-                case "Bike":
-                    document.getElementById("Bike-filter").style.display = "block";
-                    document.getElementById("Part-filter").style.display = "none";
-                    document.getElementById("Material-filter").style.display = "none";
-                    break;
-                case "Material":
-                    document.getElementById("Bike-filter").style.display = "none";
-                    document.getElementById("Part-filter").style.display = "none";
-                    document.getElementById("Material-filter").style.display = "block";
-                    break;
-                case "Part":
-                    document.getElementById("Bike-filter").style.display = "none";
-                    document.getElementById("Part-filter").style.display = "block";
-                    document.getElementById("Material-filter").style.display = "none";
-                    break;
-            }
+            document.getElementById("bike-filter").style.display = "none";
+            document.getElementById("part-filter").style.display = "none";
+            document.getElementById("material-filter").style.display = "none";
+            document.getElementById(tableName + "-filter").style.display = "block";
         }
         function hideFilter() {
             // Declare all variables
@@ -122,6 +108,7 @@
             }
         }
         function showFilter(type) {
+
             document.getElementById(type + "-filter").display = "block";
         }
     </script>
