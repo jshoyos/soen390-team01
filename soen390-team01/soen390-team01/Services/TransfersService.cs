@@ -7,6 +7,7 @@ using Npgsql;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
+using System;
 
 namespace soen390_team01.Services
 {
@@ -32,7 +33,10 @@ namespace soen390_team01.Services
     public class TransfersService : DisposableService
     {
         private readonly ErpDbContext _context;
-
+        public static String GetTimestamp(DateTime value)
+        {
+            return value.ToString("yyyyMMddHHmmssffff");
+        }
         public TransfersService(ErpDbContext context)
         {
             _context = context;
@@ -77,6 +81,7 @@ namespace soen390_team01.Services
 
                 _context.Orders.Update(order);
                 _context.SaveChanges();
+                String timeStamp = GetTimestamp(DateTime.Now);
                 return order;
             }
             catch (DbUpdateException e)
@@ -105,6 +110,7 @@ namespace soen390_team01.Services
 
                 _context.Procurements.Update(procurement);
                 _context.SaveChanges();
+                String timeStamp = GetTimestamp(DateTime.Now);
                 return procurement;
             }
             catch (DbUpdateException e)
@@ -148,7 +154,7 @@ namespace soen390_team01.Services
                 _context.Procurements.Add(procurement);
 
                 _context.SaveChanges();
-
+                String timeStamp = GetTimestamp(DateTime.Now);
                 return procurement;
             }
             catch (DbUpdateException e)

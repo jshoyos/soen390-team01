@@ -15,7 +15,10 @@ namespace soen390_team01.Services
     {
         private readonly ErpDbContext _context;
         private readonly EncryptionService _encryption;
-
+        public static String GetTimestamp(DateTime value)
+        {
+            return value.ToString("yyyyMMddHHmmssffff");
+        }
         public UserManagementService(ErpDbContext context, EncryptionService encryption)
         {
             _context = context;
@@ -46,6 +49,8 @@ namespace soen390_team01.Services
                 var addedUser = _context.Users.Add(new User(EncryptUser(user, r.IV))).Entity;
                 _context.SaveChanges();
 
+                String timeStamp = GetTimestamp(DateTime.Now);
+
                 return DecryptUser(addedUser);
             }
             catch (DbUpdateException e)
@@ -62,6 +67,7 @@ namespace soen390_team01.Services
         {
             _context.Users.Remove(_context.Users.FirstOrDefault(u => u.Email.Equals(user.Email))!);
             _context.SaveChanges();
+            String timeStamp = GetTimestamp(DateTime.Now);
         }
 
         /// <summary>
@@ -82,6 +88,7 @@ namespace soen390_team01.Services
 
                 _context.Users.Update(EncryptUser(user));
                 _context.SaveChanges();
+                String timeStamp = GetTimestamp(DateTime.Now);
                 return editedUser;
             }
             catch (DbUpdateException e)
