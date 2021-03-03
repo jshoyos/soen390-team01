@@ -55,20 +55,22 @@ namespace soen390_team01.Controllers
         [FiltersAction]
         public IActionResult FilterProductTable([FromBody] Filters filters)
         {
+
+            var active = filters.AnyActive();
             try
             {
                 switch (filters.Table)
                 {
                     case "bike":
-                        _model.BikeList = filters.AnyActive() ? _invService.GetFilteredProductList<Bike>(filters) : _model.BikeList;
+                        _model.BikeList = filters.AnyActive() ? _invService.GetFilteredProductList<Bike>(filters) : _invService.GetAllBikes();
                         _model.BikeFilters = filters;
                         break;
                     case "part":
-                        _model.PartList = filters.AnyActive() ? _invService.GetFilteredProductList<Part>(filters) : _model.PartList;
+                        _model.PartList = filters.AnyActive() ? _invService.GetFilteredProductList<Part>(filters) : _invService.GetAllParts();
                         _model.PartFilters = filters;
                         break;
                     case "material":
-                        _model.MaterialList = filters.AnyActive() ? _invService.GetFilteredProductList<Material>(filters) : _model.MaterialList;
+                        _model.MaterialList = filters.AnyActive() ? _invService.GetFilteredProductList<Material>(filters) : _invService.GetAllMaterials();
                         _model.MaterialFilters = filters;
                         break;
                 }

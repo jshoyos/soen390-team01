@@ -41,10 +41,10 @@
             var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
             var modifiedFilter = list[filterIndex];
             modifiedFilter.Input = filterInput;
+            console.log(modifiedFilter.Input);
             list[filterIndex] = modifiedFilter;
 
             filters.List = list;
-            console.log(filters.List);
 
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',

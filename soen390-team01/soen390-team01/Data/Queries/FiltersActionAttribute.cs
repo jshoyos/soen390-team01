@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace soen390_team01.Data.Queries
 {
-    public class FiltersAction : ActionFilterAttribute
+    public class FiltersActionAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// Creates specific filter types from filter inputs received as an action parameter
+        /// </summary>
+        /// <param name="context">action call context</param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-
             var filters = (Filters) context.ActionArguments["filters"];
 
             if (filters == null)

@@ -16,5 +16,10 @@ namespace soen390_team01.Data.Queries
         {
             SelectValues = selectValues;
         }
+
+        public override string GetConditionString()
+        {
+            return Column + " = '" + Value + "'";
+        }
     }
 }

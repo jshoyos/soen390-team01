@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace soen390_team01.Data.Queries
@@ -29,19 +30,21 @@ namespace soen390_team01.Data.Queries
                 return "";
             }
 
-            var conditionString = activeList.ElementAt(0).GetConditionString();
+            var sb = new StringBuilder();
+            sb.Append(activeList.ElementAt(0).GetConditionString());
 
-            foreach (var filter in activeList)
+            for (var i = 1; i < activeList.Count; i++)
             {
-                conditionString += " and " + filter.GetConditionString();
+                var filter = activeList[i];
+                sb.Append(" and " + filter.GetConditionString());
             }
 
-            return conditionString;
+            return sb.ToString();
         }
 
         public bool AnyActive()
         {
-            return List.Any(f => f.IsActive());
+            return List.Count > 0 && List.Any(f => f.IsActive());
         }
     }
 }
