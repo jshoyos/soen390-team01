@@ -1,0 +1,10 @@
+﻿.price-text {
+    width: 60px;
+    text-align: center;
+    -moz-appearance: textfield !important;
+}
+
+.price-text::-webkit-inner-spin-button, .price-text::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}

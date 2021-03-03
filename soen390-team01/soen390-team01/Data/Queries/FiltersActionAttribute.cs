@@ -21,7 +21,6 @@ namespace soen390_team01.Data.Queries
             for (var i = 0; i < filters.List.Count; i++)
             {
                 var filter = filters.List.ElementAt(i);
-                var input = filter.Input;
 
                 if (filter.Input == null)
                 {
@@ -30,10 +29,13 @@ namespace soen390_team01.Data.Queries
 
                 if (filter.Input.StringValue != null)
                 {
-                    filter = new StringFilter(filter) {Input = input};
+                    filter = new StringFilter(filter);
                 } else if (filter.Input.SelectInput != null)
                 {
-                    filter = new SelectFilter(filter) { Input = input };
+                    filter = new SelectFilter(filter);
+                } else if (filter.Input.RangeInput != null)
+                {
+                    filter = new RangeFilter(filter);
                 }
 
                 filters.List[i] = filter;

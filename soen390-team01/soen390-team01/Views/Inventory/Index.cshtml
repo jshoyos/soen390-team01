@@ -11,7 +11,6 @@
 
     <link rel="stylesheet" href="\css\Inventory.css">
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         function changeQuantity(inv, change) {
             inv.Quantity += change;
@@ -27,13 +26,20 @@
             });
         };
         function passingFilters(filters, displayedName, filterInput) {
+            console.log("before");
+            console.log(filters);
+
             var list = filters.List.map(f => {
                 if (f.SelectValues) {
                     f.Input = {
                         SelectInput: { SelectValue: f.Value, PossibleValues: f.SelectValues }
                     };
-                } else if (f.Value !== null) {
+                } else if (f.hasOwnProperty("Value")) {
                     f.Input = { StringValue: f.Value };
+                } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
+                    f.Input = {
+                        RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
+                    };
                 }
                 return f;
             });
@@ -41,10 +47,12 @@
             var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
             var modifiedFilter = list[filterIndex];
             modifiedFilter.Input = filterInput;
-            console.log(modifiedFilter.Input);
             list[filterIndex] = modifiedFilter;
 
             filters.List = list;
+
+            console.log("after");
+            console.log(filters);
 
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',
@@ -70,6 +78,20 @@
             });
         };
 
+        function enforceMinMax(el){
+            if(el.value !== ""){
+                if(parseInt(el.value) < parseInt(el.min)){
+                    el.value = el.min;
+                }
+                if(parseInt(el.value) > parseInt(el.max)){
+                    el.value = el.max;
+                }
+            }
+        }
+
+        function cleanNumberValue(value) {
+            return value == null || value === "" ? null : Number(value);
+        }
     </script>
     <script>
         function openTab(evt, tableName) {

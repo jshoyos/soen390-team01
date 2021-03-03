@@ -136,7 +136,19 @@ input.filer-data {
     -moz-appearance: textfield !important;
 }
 
-.quantity-text::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+.price-text {
+    height: 28px;
+    text-align: center;
+    width: 24px;
+    -moz-appearance: textfield !important;
+}
+
+.quantity-text::-webkit-inner-spin-button, .quantity-text::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+.price-text::-webkit-inner-spin-button, .price-text::-webkit-outer-spin-button {
     -webkit-appearance: none !important;
     margin: 0 !important;
 }

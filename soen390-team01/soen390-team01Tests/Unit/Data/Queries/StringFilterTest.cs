@@ -18,8 +18,8 @@ namespace soen390_team01Tests.Unit.Data.Queries
         public void IsActiveTest()
         {
             var filter = new StringFilter("material", "Name", "name");
-
             Assert.IsFalse(filter.IsActive(), "IsActive() should return false when Value is empty");
+
             filter = new StringFilter(
                 new Filter("bike", "Grade", "grade") {
                     Input = new FilterInput("some_value")

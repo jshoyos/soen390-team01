@@ -55,8 +55,6 @@ namespace soen390_team01.Controllers
         [FiltersAction]
         public IActionResult FilterProductTable([FromBody] Filters filters)
         {
-
-            var active = filters.AnyActive();
             try
             {
                 switch (filters.Table)
