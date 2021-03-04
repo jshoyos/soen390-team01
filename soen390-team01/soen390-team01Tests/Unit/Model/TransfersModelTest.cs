@@ -4,15 +4,15 @@ using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
-using soen390_team01.Services;
+using soen390_team01.Models;
 
 namespace soen390_team01Tests.Services
 {
-    public class TransfersServiceTest
+    public class TransfersModelTest
     {
 
         private ErpDbContext _context;
-        private TransfersService _transfersService;
+        private TransfersModel _model;
 
         [OneTimeSetUp]
         public void Init()
@@ -71,7 +71,7 @@ namespace soen390_team01Tests.Services
                 _context.SaveChanges();
             }
 
-            _transfersService = new TransfersService(_context);
+            _model = new TransfersModel(_context);
         }
 
         [OneTimeTearDown]
@@ -107,7 +107,7 @@ namespace soen390_team01Tests.Services
         [Test]
         public void GetTransfersModelTest()
         {
-            var transfersModel = _transfersService.GetTransfersModel();
+            var transfersModel = _model.SetupModel();
             Assert.AreEqual(5, transfersModel.Orders.Count);
             Assert.AreEqual(5, transfersModel.Procurements.Count);
         }
@@ -115,17 +115,17 @@ namespace soen390_team01Tests.Services
         [Test]
         public void ChangeTransferStateValidTest()
         {
-            var transfersModel = _transfersService.GetTransfersModel();
+            var transfersModel = _model.SetupModel();
 
             var orderToChange = transfersModel.Orders.ElementAt(0);
 
-            var changedOrder = _transfersService.ChangeOrderState(orderToChange.OrderId, "completed");
+            var changedOrder = _model.ChangeOrderState(orderToChange.OrderId, "completed");
 
             Assert.NotNull(changedOrder);
             Assert.AreEqual("completed", changedOrder.State);
 
             var procurementToChange = transfersModel.Procurements.ElementAt(0);
-            var changedProcurement = _transfersService.ChangeProcurementState(procurementToChange.ProcurementId, "completed");
+            var changedProcurement = _model.ChangeProcurementState(procurementToChange.ProcurementId, "completed");
 
             Assert.NotNull(changedProcurement);
             Assert.AreEqual("completed", changedProcurement.State);
@@ -134,15 +134,15 @@ namespace soen390_team01Tests.Services
         [Test]
         public void ChangeTransferStateInvalidTest()
         {
-            var transfersModel = _transfersService.GetTransfersModel();
+            var transfersModel = _model.SetupModel();
             const int INVALID_ID = 12345;
             var orderToChange = transfersModel.Orders.ElementAt(0);
-            Assert.Throws<InvalidValueException>(() => _transfersService.ChangeOrderState(orderToChange.OrderId, "invalid_state"));
-            Assert.Throws<NotFoundException>(() => _transfersService.ChangeOrderState(INVALID_ID, "pending"));
+            Assert.Throws<InvalidValueException>(() => _model.ChangeOrderState(orderToChange.OrderId, "invalid_state"));
+            Assert.Throws<NotFoundException>(() => _model.ChangeOrderState(INVALID_ID, "pending"));
 
             var procurementToChange = transfersModel.Procurements.ElementAt(0);
-            Assert.Throws<InvalidValueException>(() => _transfersService.ChangeProcurementState(procurementToChange.ProcurementId, "invalid_state"));
-            Assert.Throws<NotFoundException>(() => _transfersService.ChangeProcurementState(INVALID_ID, "pending"));
+            Assert.Throws<InvalidValueException>(() => _model.ChangeProcurementState(procurementToChange.ProcurementId, "invalid_state"));
+            Assert.Throws<NotFoundException>(() => _model.ChangeProcurementState(INVALID_ID, "pending"));
         }
     }
 }

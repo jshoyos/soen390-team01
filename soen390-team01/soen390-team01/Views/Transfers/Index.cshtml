@@ -34,6 +34,32 @@
         function hideLargeVendor() {
             document.getElementById("largeVendor").style.display = "none";
         }
+        function showProcurementFilter() {
+            document.getElementById("orderFilterDesk").style.display = "none";
+            document.getElementById("procurementFilter").style.display = "";
+
+        }
+
+        function hideProcurementFilter() {
+            document.getElementById("orderFilterDesk").style.display = "";
+            document.getElementById("procurementFilter").style.display = "none";
+        }
+
+
+        function passingFilter(transferFilter,type) {
+            console.log("test");
+            $.ajax({
+                url: '@Url.Action("FilterTransfers", "Transfer")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ "transferFilter": transferFilter, "type": type}),
+                dataType: 'html',
+                success: function (result) {
+                    $(`.${type}-table`).html(result);
+                }
+            });
+        };
+        
     </script>
 </head>
 
@@ -46,73 +72,8 @@
         </div>
     </div>
     <!--/Buttons that only appear in mobile version-->
-
     <!-- Modal for filter in mobile mode-->
-    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="modal-filter">
-
-                    <div id="orderFilter">
-                        <div class="row justify-content-center">
-                            <h3 class="text-center">FILTER</h3>
-                        </div>
-                        <div class="row justify-content-center pt-3">
-                            <h5 class="text-center">State</h5>
-                        </div>
-                        <div class="row justify-content-center pt-3">
-                            <div class="col"></div>
-                            <div class="col">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Pending
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Completed
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Canceled
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col"></div>
-                        </div>
-                    </div>
-                    <div class="pb-4 justify-content-center" id="vendor" style="display: none;">
-                        <div class="row justify-content-center pt-3">
-                            <h5 class="text-center">Vendor</h5>
-                        </div>
-                        <div class="row justify-content-center pt-3">
-                            <select class="form-select pl-auto" aria-label="Default select example">
-                                <option selected>Vendor</option>
-                                <option value="1">Vendor</option>
-                                <option value="2">Vendor</option>
-                                <option value="3">Vendor</option>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Filter</button>
-                </div>
-            </div>
-        </div>
-    </div>
+        @{await Html.RenderPartialAsync("ModalFilter", Model);}
     <!-- /Modal for filter in mobile mode-->
 
     <div class="row">
@@ -120,13 +81,12 @@
         <div class="col-lg-8 mx-lg-auto" id="LHS">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 50%;text-align:center;">
-                    <a class="nav-link @(Model.SelectedTab == "Order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor(); hideButton(); hideLargeVendor();">
-
+                    <a class="nav-link @(Model.SelectedTab == "Order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor(); hideButton(); hideLargeVendor(),hideProcurementFilter();">
                         Order
                     </a>
                 </li>
                 <li class="nav-item" style="width: 50%; text-align:center;">
-                    <a class="nav-link @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor(); showButton(); showLargeVendor();">
+                    <a class="nav-link @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor(); showButton(); showLargeVendor(),showProcurementFilter();">
                         Procurement
                     </a>
                 </li>
@@ -153,7 +113,7 @@
                 <div class="tab-pane fade show @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
                     <div class="container">
                         <div class="row pt-4 pb-4 h-100 text-center">
-                            
+
                             <div class="col"><u>ID</u></div>
                             <div class="col"><u>State</u></div>
                             <div class="col"><u>Vendor</u></div>
@@ -178,59 +138,7 @@
         </div>
         <!--/Table with tabs-->
         <!--Filter area-->
-        <div class="col-lg-3 pb-3" id="filter">
-            <div id="orderFilter">
-                <div class="row justify-content-center">
-                    <h3 class="text-center">FILTER</h3>
-                </div>
-                <div class="row justify-content-center pt-3">
-                    <h5 class="text-center">STATUS</h5>
-                </div>
-                <div class="row justify-content-center pt-3">
-                    <div class="col"></div>
-                    <div class="col">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Pending
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Completed
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Canceled
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col"></div>
-                </div>
-            </div>
-            <!--/Filter area-->
-            <!-- Vendor info for procurement tab filter-->
-            <div class="pb-4 justify-content-center" id="largeVendor" style="display: none;">
-                <div class="row justify-content-center pt-3">
-                    <h5 class="text-center">Vendor</h5>
-                </div>
-                <div class="row justify-content-center pt-3">
-                    <select class="form-select pl-auto">
-                        <option selected>Vendor</option>
-                        <option value="1">Vendor</option>
-                        <option value="2">Vendor</option>
-                        <option value="3">Vendor</option>
-                    </select>
-                </div>
-                <div class="row justify-content-center pt-3">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#procModal">Add Procurement</button>
-                </div>
-            </div>
-            <!-- /Vendor info for procurement tab filter-->
-        </div>
+        @{await Html.RenderPartialAsync("Filter", Model);}
     </div>
 
     <!-- Modal for procurement tab-->
@@ -246,38 +154,38 @@
                 <div class="modal-body" id="modal-procurement">
                     <form method="post" asp-controller="Transfers" asp-action="AddProcurement">
                         <div class="row">
-                                <div class="col-4 text-right">
-                                    <label asp-for="AddProcurement.ItemId">Item ID</label>
-                                </div>
-                                <div class="col-6">
-                                    <input asp-for="AddProcurement.ItemId" class="form-control" />
-                                    <span asp-validation-for="AddProcurement.ItemId" class="text-danger"></span>
-                                </div>
-                                <div class="col-4 text-right">
-                                    <label asp-for="AddProcurement.ItemType">Item Type</label>
-                                </div>
-                                <div class="col-6">
-                                    <input asp-for="AddProcurement.ItemType" class="form-control" />
-                                    <span asp-validation-for="AddProcurement.ItemType" class="text-danger"></span>
-                                </div>
-                                <div class="col-4 text-right">
-                                    <label asp-for="AddProcurement.ItemQuantity">Item Quantity</label>
-                                </div>
-                                <div class="col-6">
-                                    <input asp-for="AddProcurement.ItemQuantity" class="form-control" />
-                                    <span asp-validation-for="AddProcurement.ItemQuantity" class="text-danger"></span>
-                                </div>
-                                <div class="col-4 text-right">
-                                    <label asp-for="AddProcurement.VendorId">Vendor Id</label>
-                                </div>
-                                <div class="col-6">
-                                    <input asp-for="AddProcurement.VendorId" class="form-control" />
-                                    <span asp-validation-for="AddProcurement.VendorId" class="text-danger"></span>
-                                </div>
+                            <div class="col-4 text-right">
+                                <label asp-for="AddProcurement.ItemId">Item ID</label>
+                            </div>
+                            <div class="col-6">
+                                <input asp-for="AddProcurement.ItemId" class="form-control" />
+                                <span asp-validation-for="AddProcurement.ItemId" class="text-danger"></span>
+                            </div>
+                            <div class="col-4 text-right">
+                                <label asp-for="AddProcurement.ItemType">Item Type</label>
+                            </div>
+                            <div class="col-6">
+                                <input asp-for="AddProcurement.ItemType" class="form-control" />
+                                <span asp-validation-for="AddProcurement.ItemType" class="text-danger"></span>
+                            </div>
+                            <div class="col-4 text-right">
+                                <label asp-for="AddProcurement.ItemQuantity">Item Quantity</label>
+                            </div>
+                            <div class="col-6">
+                                <input asp-for="AddProcurement.ItemQuantity" class="form-control" />
+                                <span asp-validation-for="AddProcurement.ItemQuantity" class="text-danger"></span>
+                            </div>
+                            <div class="col-4 text-right">
+                                <label asp-for="AddProcurement.VendorId">Vendor Id</label>
+                            </div>
+                            <div class="col-6">
+                                <input asp-for="AddProcurement.VendorId" class="form-control" />
+                                <span asp-validation-for="AddProcurement.VendorId" class="text-danger"></span>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Add</button>
-                </div>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
                     </form>
                 </div>
             </div>

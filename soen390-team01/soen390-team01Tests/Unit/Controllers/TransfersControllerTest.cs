@@ -16,8 +16,8 @@ namespace soen390_team01Tests.Controllers
         public void IndexTest()
         {
             var transfersModel = CreateModel();
-            var transfersServiceMock = new Mock<TransfersService>(new Mock<ErpDbContext>().Object);
-            transfersServiceMock.Setup(i => i.GetTransfersModel()).Returns(transfersModel);
+            var transfersServiceMock = new Mock<TransfersModel>(new Mock<ErpDbContext>().Object);
+            transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
             var controller = new TransfersController(transfersServiceMock.Object);
 
             var result = controller.Index() as ViewResult;
@@ -30,11 +30,11 @@ namespace soen390_team01Tests.Controllers
         public void AddProcurementTest()
         {
             var transfersModel = CreateModel();
-            var transfersServiceMock = new Mock<TransfersService>(new Mock<ErpDbContext>().Object);
-            transfersServiceMock.Setup(i => i.AddProcurement<Bike>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
-            transfersServiceMock.Setup(i => i.AddProcurement<Part>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
-            transfersServiceMock.Setup(i => i.AddProcurement<Material>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
-            transfersServiceMock.Setup(i => i.GetTransfersModel()).Returns(transfersModel);
+            var transfersServiceMock = new Mock<TransfersModel>(new Mock<ErpDbContext>().Object);
+            transfersServiceMock.Setup(i => i.AddProcurements<Bike>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
+            transfersServiceMock.Setup(i => i.AddProcurements<Part>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
+            transfersServiceMock.Setup(i => i.AddProcurements<Material>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
+            transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
             var controller = new TransfersController(transfersServiceMock.Object);
 
             var inputModel = new TransfersModel();
@@ -52,9 +52,9 @@ namespace soen390_team01Tests.Controllers
             inputModel.AddProcurement.ItemType = "Material";
             var resultMaterial = controller.AddProcurement(inputModel) as ViewResult;
 
-            transfersServiceMock.Verify(t => t.AddProcurement<Bike>(It.IsAny<AddProcurementModel>()), Times.Once());
-            transfersServiceMock.Verify(t => t.AddProcurement<Part>(It.IsAny<AddProcurementModel>()), Times.Once());
-            transfersServiceMock.Verify(t => t.AddProcurement<Material>(It.IsAny<AddProcurementModel>()), Times.Once());
+            transfersServiceMock.Verify(t => t.AddProcurements<Bike>(It.IsAny<AddProcurementModel>()), Times.Once());
+            transfersServiceMock.Verify(t => t.AddProcurements<Part>(It.IsAny<AddProcurementModel>()), Times.Once());
+            transfersServiceMock.Verify(t => t.AddProcurements<Material>(It.IsAny<AddProcurementModel>()), Times.Once());
 
             Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
             Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);

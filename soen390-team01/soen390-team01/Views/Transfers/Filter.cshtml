@@ -1,0 +1,97 @@
+﻿@using Newtonsoft.Json
+@model soen390_team01.Models.TransfersModel
+
+
+<div class="col-lg-3 pb-3" id="filter">
+    <div id="procurementFilter" style="display:none">
+        <div class="row justify-content-center">
+            <h3 class="text-center">FILTER</h3>
+        </div>
+        <div class="row justify-content-center pt-3">
+            <h5 class="text-center">STATUS</h5>
+        </div>
+        <div class="row justify-content-center pt-3">
+            <div class="col"></div>
+            <div class="col">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Pending
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Completed
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @*onclick="@Model.TransferFilters.OrderStatus.Add("Canceled")"*@>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Canceled
+                    </label>
+                </div>
+            </div>
+            <div class="col"></div>
+
+        </div>
+        <!--/Filter area-->
+        <!-- Vendor info for procurement tab filter-->
+        <div class="pb-4 justify-content-center" id="largeVendor" style="display: none;">
+
+            @foreach (KeyValuePair<string, SelectList> pair in Model.ProcurementList)
+            {
+                <br /><h5 class="text-center">@pair.Key</h5>
+                <div class="row justify-content-center pt-3">
+                    <select onchange="@Model.TransferFilters.Vendor = this.value)">
+                        <option value="" selected disabled hidden>Choose here</option>
+                        @foreach (SelectListItem item in pair.Value)
+                        {
+                            <option value="@item.Text">@item.Text</option>
+                        }
+                    </select>
+                    <br /><br />
+                </div>
+            }
+
+            <div class="row justify-content-center pt-3">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#procModal">Add Procurement</button>
+            </div>
+        </div>
+        <input class="submit-button" type="submit" value="Filter options" onclick="passingFilter(@Model.TransferFilters,'Procurement')">
+        <!-- /Vendor info for procurement tab filter-->
+    </div>
+    <div id="orderFilterDesk" style="display:block">
+        <div class="row justify-content-center">
+            <h3 class="text-center">FILTER</h3>
+        </div>
+        <div class="row justify-content-center pt-3">
+            <h5 class="text-center">STATUS</h5>
+        </div>
+        <div class="row justify-content-center pt-3">
+            <div class="col"></div>
+            <div class="col">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Pending
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Completed
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" @*onclick="@Model.TransferFilters.OrderStatus.Add("Canceled")*@>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Canceled
+                    </label>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+</div>

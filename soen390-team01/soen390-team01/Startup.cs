@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using soen390_team01.Data;
+using soen390_team01.Models;
 using soen390_team01.Services;
 using System;
 
@@ -25,7 +26,7 @@ namespace soen390_team01
         {
             services.AddScoped<AuthenticationFirebaseService>();
             services.AddScoped<InventoryService>();
-            services.AddScoped<TransfersService>();
+            services.AddScoped<TransfersModel>();
             services.AddScoped<UserManagementService>();
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
