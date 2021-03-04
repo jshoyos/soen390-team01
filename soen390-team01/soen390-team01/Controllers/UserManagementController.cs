@@ -63,14 +63,22 @@ namespace soen390_team01.Controllers
 
         public IActionResult GetUserById(long userId)
         {
-            var user = _userManagementService.GetUserById(userId);
-
-            if (user != null)
+            try
             {
-                return PartialView("_UserModalPartial", new EditUserModel(user));
-            }
+                var user = _userManagementService.GetUserById(userId);
 
-            return Index();
+                if (user != null)
+                {
+                    return PartialView("_UserModalPartial", new EditUserModel(user));
+                }
+                return Index();
+
+            }
+            catch (NotFoundException e)
+            {
+                TempData["errorMessage"] = e.Message;
+                return Index();
+            }
         }
 
         [HttpPost]

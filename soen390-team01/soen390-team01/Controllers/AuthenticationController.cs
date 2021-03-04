@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System.Collections.Generic;
@@ -115,7 +116,14 @@ namespace soen390_team01.Controllers
         {
             if (_authService.AuthenticateUser(email, password).Result)
             {
-                return _userManagementService.GetUserByEmail(email);
+                try
+                {
+                    return _userManagementService.GetUserByEmail(email);
+                }
+                catch(NotFoundException e)
+                {
+                    return null;
+                }
             }
             return null;
         }
