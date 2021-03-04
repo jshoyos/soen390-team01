@@ -24,7 +24,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        [ModulePermission(Roles = Role.InventoryManager)]
+        [ModulePermissionAttribute(Roles = Role.InventoryManager)]
         public IActionResult Refresh([FromBody] string selectedTab)
         {
             var model = _invService.SetupModel();
@@ -59,7 +59,7 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="inventory">updated inventory item</param>
         [HttpPost]
-        [Authorize(Roles = Role.InventoryManager)]
+        [ModulePermissionAttribute(Roles = Role.InventoryManager)]
         public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {
             if (inventory.Quantity >= 0)

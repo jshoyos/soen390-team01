@@ -25,7 +25,7 @@ namespace soen390_team01.Controllers
         #region Methods
 
         [HttpGet]
-        [ModulePermission(Roles = Role.Admin)]
+        [ModulePermissionAttribute(Roles = Role.Admin)]
         public IActionResult Index()
         {
             var model = new UserManagementModel

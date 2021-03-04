@@ -27,10 +27,6 @@ namespace soen390_team01.Controllers
             _userManagementService = userManagementService;
         }
         #region properties
-        [BindProperty]
-        public LoginModel Input { get; set; }
-        [TempData]
-        public string StringErrorMessage { get; set; }
         #endregion
 
         #region Methods
@@ -53,16 +49,23 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                var email = model.Email;
-                var password = model.Password;
-                var user = AuthenticateUser(email, password);
-                if (user == null)
+                try
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid authentication");
-                    return View(model);
+                    var email = model.Email;
+                    var password = model.Password;
+                    var user = AuthenticateUser(email, password);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid authentication");
+                        return View(model);
+                    }
+                    await _authService.SetAuthCookie(email, user.Role, this.HttpContext);
+                    return LocalRedirect("/Home/Privacy");
                 }
-                await SetAuthCookie(email, user.Role, this.HttpContext);
-                return LocalRedirect("/Home/Privacy");
+                catch (NotFoundException)
+                {
+                    TempData["errorMessage"] = "User does not exist";
+                }
             }
 
             return View(model);
@@ -70,7 +73,7 @@ namespace soen390_team01.Controllers
 
         public async Task<IActionResult> LogoutAsync()
         {
-            await RemoveAuthCookie(this.HttpContext);
+            await _authService.RemoveAuthCookie(this.HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>
@@ -114,47 +117,14 @@ namespace soen390_team01.Controllers
         /// <returns>returns the current user</returns>
         private User AuthenticateUser(string email, string password)
         {
-            if (_authService.AuthenticateUser(email, password).Result)
+            User user = _userManagementService.GetUserByEmail(email);
+            if (_authService.AuthenticateUser(email, password).Result && user != null)
             {
-                try
-                {
-                    return _userManagementService.GetUserByEmail(email);
-                }
-                catch(NotFoundException e)
-                {
-                    return null;
-                }
+                return user;
             }
             return null;
         }
 
-        /// <summary>
-        /// Sets the authentication cookie so user is remembered in the browser
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="context"></param>
-        private static async Task SetAuthCookie(string email, string role, HttpContext context)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, email),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            {
-                AllowRefresh = true,
-            };
-
-            await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-        }
-
-        private static async Task RemoveAuthCookie(HttpContext context)
-        {
-            await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
-        }
         #endregion
     }
 }

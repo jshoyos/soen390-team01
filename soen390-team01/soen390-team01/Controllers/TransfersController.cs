@@ -17,7 +17,7 @@ namespace soen390_team01.Controllers
             _transfersService = transfersService;
         }
         [HttpGet]
-        [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep)]
+        [ModulePermissionAttribute(Roles = Role.Accountant + "," + Role.SalesRep)]
         public IActionResult Index()
         {
             var model = _transfersService.GetTransfersModel();
