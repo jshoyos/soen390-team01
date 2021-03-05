@@ -1,14 +1,17 @@
 ﻿using soen390_team01.Data.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace soen390_team01.Models
 {
     public class EditUserModel : User
     {
+        #region field
+        private Roles _roleEnum;
+        #endregion
         public EditUserModel()
         {
             Email = "";
-            Role = "";
             PhoneNumber = "";
             LastName = "";
             FirstName = "";
@@ -16,14 +19,30 @@ namespace soen390_team01.Models
         public EditUserModel(User user)
         {
             Email = user.Email;
-            Role = user.Role;
+            RoleEnum = (Roles) Enum.Parse(typeof(Roles), user.Role);
             PhoneNumber = user.PhoneNumber;
             LastName = user.LastName;
             FirstName = user.FirstName;
             UserId = user.UserId;
         }
         [Required]
-        public override string Role { get; set; }
+        public Roles RoleEnum
+        {
+            get
+            {
+                return _roleEnum;
+            }
+            set
+            {
+                if (value != _roleEnum)
+                {
+                    _roleEnum = value;
+                    base.Role = _roleEnum.ToString();
+                }
+            }
+        }
+        //[Required]
+        //public override string Role { get; set; }
         [Display(Name = "Phone Number")]
         [Required]
         [StringLength(10)]

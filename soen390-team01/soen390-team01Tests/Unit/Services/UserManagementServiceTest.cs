@@ -127,5 +127,21 @@ namespace soen390_team01Tests.Unit.Services
             _userManagementService.RemoveUser(user);
             Assert.AreEqual(1, _context.Users.ToList().Count);
         }
+
+        [Test, Order(7)]
+        public void GetUserByEmailTest()
+        {
+            var userId = _context.Users.ToList()[0].UserId;
+            var user = _userManagementService.GetUserById(userId);
+            Assert.IsNotNull(user);
+
+            var user2 = _userManagementService.GetUserByEmail(user.Email);
+
+            Assert.AreEqual(user.UserId, user2.UserId);
+            Assert.IsTrue(user.LastName.Equals(user2.LastName));
+
+            var nullUser = _userManagementService.GetUserByEmail("jake");
+            Assert.IsNull(nullUser);
+        }
     }
 }

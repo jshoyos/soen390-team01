@@ -30,10 +30,10 @@
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div>
-                        @*<select asp-for="Role" asp-items="Html.GetEnumSelectList<Roles>()"></select>*@
-                        <label asp-for="Role"></label>
+                        <select asp-for="RoleEnum" asp-items="Html.GetEnumSelectList<Roles>()"></select>
+                        @*<label asp-for="Role"></label>
                         <input asp-for="Role" class="form-control" />
-                        <span asp-validation-for="Role" class="text-danger"></span>
+                        <span asp-validation-for="Role" class="text-danger"></span>*@
                     </div>
                 </form>
             </div>

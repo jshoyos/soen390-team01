@@ -34,12 +34,12 @@
                     <span asp-validation-for="AddUser.PhoneNumber" class="text-danger"></span>
                 </div>
                 <div>
-                    <label asp-for="AddUser.Role"></label>
+                    <select asp-for="AddUser.RoleEnum" asp-items="Html.GetEnumSelectList<Roles>()"></select>
+                    @*<label asp-for="AddUser.Role"></label>
                     <input asp-for="AddUser.Role" class="form-control" />
-                    <span asp-validation-for="AddUser.Role" class="text-danger"></span>
+                    <span asp-validation-for="AddUser.Role" class="text-danger"></span>*@
                 </div>
                 <div>
-                    @*<select asp-for="Role" asp-items="Html.GetEnumSelectList<Roles>()"></select>*@
                     <label asp-for="AddUser.Email"></label>
                     <input asp-for="AddUser.Email" class="form-control" />
                     <span asp-validation-for="AddUser.Email" class="text-danger"></span>

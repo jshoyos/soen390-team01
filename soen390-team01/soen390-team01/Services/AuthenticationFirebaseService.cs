@@ -10,9 +10,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using System.Diagnostics.CodeAnalysis;
 
 namespace soen390_team01.Services
 {
+    [ExcludeFromCodeCoverage]
     public class AuthenticationFirebaseService : DisposableService
     {
         private readonly FirebaseAuthProvider _ap;
@@ -122,6 +124,7 @@ namespace soen390_team01.Services
             await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
+        [ExcludeFromCodeCoverage]
         public virtual async Task RemoveAuthCookie(HttpContext context)
         {
             await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
