@@ -34,7 +34,7 @@ namespace soen390_team01Tests.Unit.Services
             _authFirebaseProviderMock.Setup(a => a.CreateUserWithEmailAndPasswordAsync("existingEmail@hotmail.com", It.IsAny<string>(), "", false)).Throws(new Exception("message\": \"EMAIL_EXISTS\""));
 
             var authFirebaseService = new AuthenticationFirebaseService(_authFirebaseProviderMock.Object);
-            Assert.ThrowsAsync<EmailExistsException>(() => authFirebaseService.AuthenticateUser("existingEmail@hotmail.com", "badkfjdfks"));
+            Assert.ThrowsAsync<EmailExistsException>(() => authFirebaseService.RegisterUser("existingEmail@hotmail.com", "badkfjdfks"));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace soen390_team01Tests.Unit.Services
             _authFirebaseProviderMock.Setup(a => a.SendPasswordResetEmailAsync("existingEmail@hotmail.com")).Throws(new Exception("message\": \"EMAIL_NOT_FOUND\""));
 
             var authFirebaseService = new AuthenticationFirebaseService(_authFirebaseProviderMock.Object);
-            Assert.ThrowsAsync<EmailNotFoundException>(() => authFirebaseService.AuthenticateUser("existingEmail@hotmail.com", "badkfjdfks"));
+            Assert.ThrowsAsync<EmailNotFoundException>(() => authFirebaseService.RequestPasswordChange("existingEmail@hotmail.com"));
         }
         
     }

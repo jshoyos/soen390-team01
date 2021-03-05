@@ -1,7 +1,6 @@
 ﻿using soen390_team01.Controllers;
 using Moq;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using soen390_team01.Services;
@@ -99,8 +98,7 @@ namespace soen390_team01Tests.Unit.Controllers
 
             var indexResult = controller.GetUserById(-1) as ViewResult;
             Assert.IsNotNull(indexResult);
-            Assert.IsNotNull((indexResult.Model as User));
-            Assert.Throws<NotFoundException>(() => controller.GetUserById(-6));
+            Assert.IsNotNull((indexResult.Model as UserManagementModel));
         }
 
         [Test]
