@@ -25,14 +25,19 @@
                 }
             });
         };
+
         function passingFilters(filters, displayedName, filterInput) {
-            console.log("before");
-            console.log(filters);
+
+            console.log(filterInput);
 
             var list = filters.List.map(f => {
-                if (f.SelectValues) {
+                if (f.PossibleSelectValues) {
                     f.Input = {
-                        SelectInput: { SelectValue: f.Value, PossibleValues: f.SelectValues }
+                        SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
+                    };
+                } else if (f.PossibleCheckboxValues) {
+                    f.Input = {
+                        CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
                     };
                 } else if (f.hasOwnProperty("Value")) {
                     f.Input = { StringValue: f.Value };
@@ -51,9 +56,6 @@
 
             filters.List = list;
 
-            console.log("after");
-            console.log(filters);
-
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',
                 type: 'POST',
@@ -65,6 +67,7 @@
                 }
             });
         };
+
         function refreshFilter(type) {
             $.ajax({
                 url: '@Url.Action("Refresh", "Inventory")',
@@ -77,6 +80,19 @@
                 }
             });
         };
+
+        function createCheckboxInput(column, possibleValues) {
+            var checkBoxes = document.getElementsByName(column + "-checkbox");
+            var chosenCheckBoxes = [];
+
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    chosenCheckBoxes.push(checkBoxes[i].value);
+                }
+            }
+
+            return { CheckBoxInput: { Values: chosenCheckBoxes, PossibleValues: possibleValues } };
+        }
 
         function enforceMinMax(el){
             if(el.value !== ""){

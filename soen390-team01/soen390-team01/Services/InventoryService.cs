@@ -55,7 +55,7 @@ namespace soen390_team01.Services
 
             filters.Add(new StringFilter("bike", "Name", "name"));
             filters.Add(new SelectFilter("bike", "Grade", "grade", _context.Bikes.Select(bike => bike.Grade).Distinct().OrderBy(g => g).ToList()));
-            filters.Add(new SelectFilter("bike", "Size", "size", _context.Bikes.Select(bike => bike.Size).Distinct().OrderBy(s => s).ToList()));
+            filters.Add(new CheckboxFilter("bike", "Size", "size", _context.Bikes.Select(bike => bike.Size).Distinct().OrderBy(s => s).ToList()));
             filters.Add(new RangeFilter("bike", "Price", "price"));
             // Can add bike specific filters
 
@@ -68,7 +68,7 @@ namespace soen390_team01.Services
 
             filters.Add(new StringFilter("part", "Name", "name"));
             filters.Add(new SelectFilter("part", "Grade", "grade", _context.Parts.Select(part => part.Grade).Distinct().OrderBy(g => g).ToList()));
-            filters.Add(new SelectFilter("part", "Size", "size", _context.Parts.Select(part => part.Size).Distinct().OrderBy(s => s).ToList()));
+            filters.Add(new CheckboxFilter("part", "Size", "size", _context.Parts.Select(part => part.Size).Distinct().OrderBy(s => s).ToList()));
             filters.Add(new RangeFilter("part", "Price", "price"));
             // Can add part specific filters
 

@@ -29,6 +29,12 @@ namespace soen390_team01Tests.Unit.Data.Queries
                     SelectValue = "some_value"
                 })
             });
+            filters.Add(new Filter("bike", "Grade", "grade") {
+                Input = new FilterInput(checkboxInput: new CheckboxFilterInput() {
+                    PossibleValues = new List<string> { "some_value", "some_other_value" },
+                    Values = new List<string> {"some_value"}
+                })
+            });
             filters.Add(new Filter("bike", "Price", "price") {
                 Input = new FilterInput(rangeInput: new RangeFilterInput() {
                     MinValue = 3,
@@ -59,8 +65,9 @@ namespace soen390_team01Tests.Unit.Data.Queries
             Assert.IsTrue(modifiedFilters.AnyActive());
             Assert.IsInstanceOf(typeof(StringFilter), modifiedFilters.List.ElementAt(0), "First filter should be a StringFilter");
             Assert.IsInstanceOf(typeof(SelectFilter), modifiedFilters.List.ElementAt(1), "Second filter should be a SelectFilter");
-            Assert.IsInstanceOf(typeof(RangeFilter), modifiedFilters.List.ElementAt(2), "Third filter should be a SelectFilter");
-            Assert.IsInstanceOf(typeof(Filter), modifiedFilters.List.ElementAt(3), "Fourth filter should be a generic Filter");
+            Assert.IsInstanceOf(typeof(CheckboxFilter), modifiedFilters.List.ElementAt(2), "Third filter should be a CheckboxFilter");
+            Assert.IsInstanceOf(typeof(RangeFilter), modifiedFilters.List.ElementAt(3), "Fourth filter should be a RangeFilter");
+            Assert.IsInstanceOf(typeof(Filter), modifiedFilters.List.ElementAt(4), "Fifth filter should be a generic Filter");
         }
 
         [Test]

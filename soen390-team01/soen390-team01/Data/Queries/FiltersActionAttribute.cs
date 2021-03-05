@@ -30,10 +30,16 @@ namespace soen390_team01.Data.Queries
                 if (filter.Input.StringValue != null)
                 {
                     filter = new StringFilter(filter);
-                } else if (filter.Input.SelectInput != null)
+                } 
+                else if (filter.Input.SelectInput != null)
                 {
                     filter = new SelectFilter(filter);
-                } else if (filter.Input.RangeInput != null)
+                } 
+                else if (filter.Input.CheckboxInput != null)
+                {
+                    filter = new CheckboxFilter(filter);
+                }
+                else if (filter.Input.RangeInput != null)
                 {
                     filter = new RangeFilter(filter);
                 }
