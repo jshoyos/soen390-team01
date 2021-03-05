@@ -110,6 +110,7 @@ namespace soen390_team01.Services
         /// </summary>
         /// <param name="email"></param>
         /// <param name="context"></param>
+        [ExcludeFromCodeCoverage]
         public virtual async Task SetAuthCookie(string email, string role, HttpContext context)
         {
             var claims = new List<Claim>

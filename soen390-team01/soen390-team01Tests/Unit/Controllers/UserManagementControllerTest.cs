@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using soen390_team01.Data;
 using soen390_team01.Models;
+using soen390_team01.Data.Exceptions;
 
 namespace soen390_team01Tests.Unit.Controllers
 {
@@ -87,12 +88,19 @@ namespace soen390_team01Tests.Unit.Controllers
                 Iv = "FSedff453",
                 UserId = 5
             });
+            _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l < -5))).Throws(new NotFoundException("user","id","-1"));
+            _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l < 0 && l > -5))).Returns<User>(null);
 
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
             var result = controller.GetUserById(5) as PartialViewResult;
 
             Assert.IsNotNull(result);
             Assert.IsNotNull((result.Model as User));
+
+            var indexResult = controller.GetUserById(-1) as ViewResult;
+            Assert.IsNotNull(indexResult);
+            Assert.IsNotNull((indexResult.Model as User));
+            Assert.Throws<NotFoundException>(() => controller.GetUserById(-6));
         }
 
         [Test]

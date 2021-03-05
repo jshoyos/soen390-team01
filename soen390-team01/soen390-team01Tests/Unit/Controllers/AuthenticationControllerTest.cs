@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
@@ -106,6 +107,14 @@ namespace soen390_team01Tests.Unit.Controllers
             var result2 = await controller.ForgotPassword(invalidModel) as ViewResult;
 
             Assert.IsNotNull(result2);
+        }
+
+        [Test]
+        public async Task Logout()
+        {
+            _authenticationServiceMock.Setup(u => u.RemoveAuthCookie(new DefaultHttpContext()));
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            await controller.LogoutAsync();
         }
     }
 }
