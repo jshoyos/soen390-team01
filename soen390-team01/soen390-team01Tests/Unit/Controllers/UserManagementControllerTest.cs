@@ -41,7 +41,7 @@ namespace soen390_team01Tests.Unit.Controllers
                     LastName = "Se",
                     Email = "admin@hotmail.com",
                     PhoneNumber = "4385146677",
-                    Role = "admin",
+                    Role = "Admin",
                     Iv = "FSedff453",
                     UserId = 1
                 }
@@ -62,7 +62,7 @@ namespace soen390_team01Tests.Unit.Controllers
                     LastName = "Se",
                     Email = "admin@hotmail.com",
                     PhoneNumber = "4385146677",
-                    Role = "admin",
+                    Role = "Admin",
                     Iv = "FSedff453",
                     UserId = 2
                 }
@@ -83,7 +83,7 @@ namespace soen390_team01Tests.Unit.Controllers
                 LastName = "Se",
                 Email = "admin@hotmail.com",
                 PhoneNumber = "4385146677",
-                Role = "admin",
+                Role = "Admin",
                 Iv = "FSedff453",
                 UserId = 2
             });
