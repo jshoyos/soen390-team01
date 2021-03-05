@@ -93,6 +93,15 @@ namespace soen390_team01Tests.Unit.Services
             Assert.IsTrue("admin".Equals(users[0].Role));
             Assert.IsTrue("John".Equals(users[0].FirstName));
             Assert.IsTrue("admin2@hotmail.com".Equals(users[1].Email));
+            Assert.Throws<UnauthorizedInsertionException>(() => _userManagementService.AddUser(new User
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "admin2@hotmail.com",
+                PhoneNumber = "4385146677",
+                Role = "admin",
+                UserId = 5
+            }));
         }
 
         [Test, Order(4)]

@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System.Collections.Generic;
-using System.Security.Claims;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace soen390_team01.Controllers
@@ -66,6 +63,10 @@ namespace soen390_team01.Controllers
                 {
                     TempData["errorMessage"] = "User does not exist";
                 }
+                catch(EmailNotFoundException)
+                {
+                    TempData["errorMessage"] = "User does not exist";
+                }
             }
 
             return View(model);
@@ -118,7 +119,7 @@ namespace soen390_team01.Controllers
         private User AuthenticateUser(string email, string password)
         {
             User user = _userManagementService.GetUserByEmail(email);
-            if (_authService.AuthenticateUser(email, password).Result && user != null)
+            if (user != null && _authService.AuthenticateUser(email, password).Result)
             {
                 return user;
             }

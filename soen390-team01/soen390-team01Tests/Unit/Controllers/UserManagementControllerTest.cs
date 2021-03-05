@@ -85,7 +85,7 @@ namespace soen390_team01Tests.Unit.Controllers
                 PhoneNumber = "4385146677",
                 Role = "Admin",
                 Iv = "FSedff453",
-                UserId = 2
+                UserId = 5
             });
 
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
@@ -104,12 +104,42 @@ namespace soen390_team01Tests.Unit.Controllers
             {
                 AddUser = new AddUserModel()
             };
+            model.AddUser.RoleEnum = Roles.Accountant;
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
 
             Assert.IsNotNull(controller.AddUser(model));
             Assert.AreEqual("Account registration failed: Try again later.", controller.TempData["errorMessage"]);
+        }
+
+        [Test]
+        public void EditUserTest()
+        {
+            _userManagementServiceMock.Setup(u => u.EditUser(It.IsAny<User>())).Returns(new User());
+
+            var editUser = new EditUserModel(new User
+            {
+                FirstName = "Juan",
+                LastName = "Se",
+                Email = "admin@hotmail.com",
+                PhoneNumber = "4385146677",
+                Role = "Admin",
+                Iv = "FSedff453",
+                UserId = 5
+            });
+
+            editUser.RoleEnum = Roles.Accountant;
+            editUser.RoleEnum = Roles.InventoryManager;
+            editUser.RoleEnum = Roles.None;
+            editUser.RoleEnum = Roles.SalesRep;
+
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            Assert.IsNotNull(controller.EditUser(editUser));
         }
     }
 }

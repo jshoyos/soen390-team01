@@ -14,14 +14,18 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace soen390_team01.Services
 {
-    [ExcludeFromCodeCoverage]
     public class AuthenticationFirebaseService : DisposableService
     {
-        private readonly FirebaseAuthProvider _ap;
+        private readonly IFirebaseAuthProvider _ap;
 
         public AuthenticationFirebaseService()
         {
             _ap = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD_HlK6kr9gptfYidc7_4Egn7uHwHes2pI"));
+        }
+
+        public AuthenticationFirebaseService(IFirebaseAuthProvider ap)
+        {
+            _ap = ap;
         }
 
         /// <summary>
