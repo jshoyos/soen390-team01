@@ -39,7 +39,6 @@ namespace soen390_team01.Models
                 }
             }
         }
-        //public override string Role { get; set; }
         [Display(Name = "Phone Number")]
         [Required]
         [StringLength(10)]
