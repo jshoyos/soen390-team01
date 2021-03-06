@@ -11,7 +11,6 @@
 
     <link rel="stylesheet" href="\css\Inventory.css">
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         function changeQuantity(inv, change) {
             inv.Quantity += change;
@@ -26,21 +25,50 @@
                 }
             });
         };
-        function passingFilter(type, name, value) {
-            console.log("test");
+
+        function passingFilters(filters, displayedName, filterInput) {
+
+            console.log(filterInput);
+
+            var list = filters.List.map(f => {
+                if (f.PossibleSelectValues) {
+                    f.Input = {
+                        SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
+                    };
+                } else if (f.PossibleCheckboxValues) {
+                    f.Input = {
+                        CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
+                    };
+                } else if (f.hasOwnProperty("Value")) {
+                    f.Input = { StringValue: f.Value };
+                } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
+                    f.Input = {
+                        RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
+                    };
+                }
+                return f;
+            });
+
+            var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
+            var modifiedFilter = list[filterIndex];
+            modifiedFilter.Input = filterInput;
+            list[filterIndex] = modifiedFilter;
+
+            filters.List = list;
+
             $.ajax({
                 url: '@Url.Action("FilterProductTable", "Inventory")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ "type": type, "name": name, "value": value}),
+                data: JSON.stringify(filters),
                 dataType: 'html',
                 success: function (result) {
-                    $(`.${type}-table`).html(result);
+                    $('.inventory-view').html(result);
                 }
             });
         };
+
         function refreshFilter(type) {
-           
             $.ajax({
                 url: '@Url.Action("Refresh", "Inventory")',
                 type: 'POST',
@@ -48,12 +76,38 @@
                 data: JSON.stringify(type),
                 dataType: 'html',
                 success: function (result) {
-                    console.log(result);
                     $('.inventory-view').html(result);
                 }
             });
         };
 
+        function createCheckboxInput(column, possibleValues) {
+            var checkBoxes = document.getElementsByName(column + "-checkbox");
+            var chosenCheckBoxes = [];
+
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    chosenCheckBoxes.push(checkBoxes[i].value);
+                }
+            }
+
+            return { CheckBoxInput: { Values: chosenCheckBoxes, PossibleValues: possibleValues } };
+        }
+
+        function enforceMinMax(el){
+            if(el.value !== ""){
+                if(parseInt(el.value) < parseInt(el.min)){
+                    el.value = el.min;
+                }
+                if(parseInt(el.value) > parseInt(el.max)){
+                    el.value = el.max;
+                }
+            }
+        }
+
+        function cleanNumberValue(value) {
+            return value == null || value === "" ? null : Number(value);
+        }
     </script>
     <script>
         function openTab(evt, tableName) {
@@ -76,24 +130,10 @@
             document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
 
-            switch (tableName) {
-
-            case "Bike":
-                document.getElementById("Bike-filter").style.display = "block";
-                document.getElementById("Part-filter").style.display = "none";
-                document.getElementById("Material-filter").style.display = "none";
-                break;
-            case "Material":
-                document.getElementById("Bike-filter").style.display = "none";
-                document.getElementById("Part-filter").style.display = "none";
-                document.getElementById("Material-filter").style.display = "block";
-                break;
-            case "Part":
-                document.getElementById("Bike-filter").style.display = "none";
-                document.getElementById("Part-filter").style.display = "block";
-                document.getElementById("Material-filter").style.display = "none";
-                break;
-            }
+            document.getElementById("bike-filter").style.display = "none";
+            document.getElementById("part-filter").style.display = "none";
+            document.getElementById("material-filter").style.display = "none";
+            document.getElementById(tableName + "-filter").style.display = "block";
         }
         function hideFilter() {
             // Declare all variables
@@ -106,7 +146,8 @@
             }
         }
         function showFilter(type) {
-            document.getElementById(type+"-filter").display = "block" ;
+
+            document.getElementById(type + "-filter").display = "block";
         }
     </script>
 </head>
