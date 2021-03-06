@@ -90,7 +90,10 @@ namespace soen390_team01Tests.Unit.Controllers
             _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l < -5))).Throws(new NotFoundException("user","id","-1"));
             _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l < 0 && l > -5))).Returns<User>(null);
 
-            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
             var result = controller.GetUserById(5) as PartialViewResult;
 
             Assert.IsNotNull(result);
@@ -99,6 +102,7 @@ namespace soen390_team01Tests.Unit.Controllers
             var indexResult = controller.GetUserById(-1) as ViewResult;
             Assert.IsNotNull(indexResult);
             Assert.IsNotNull((indexResult.Model as UserManagementModel));
+            Assert.IsNotNull(controller.GetUserById(-6));
         }
 
         [Test]
@@ -117,6 +121,25 @@ namespace soen390_team01Tests.Unit.Controllers
 
             Assert.IsNotNull(controller.AddUser(model));
             Assert.AreEqual("Account registration failed: Try again later.", controller.TempData["errorMessage"]);
+        }
+
+        [Test]
+        public void AddUserFailTest()
+        {
+            _authenticationServiceMock.Setup(a => a.RegisterUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _userManagementServiceMock.Setup(u => u.AddUser(It.IsAny<User>())).Returns(new User());
+            _userManagementServiceMock.Setup(u => u.RemoveUser(It.IsAny<User>()));
+
+            var model = new UserManagementModel
+            {
+                AddUser = new AddUserModel()
+            };
+            model.AddUser.RoleEnum = Roles.Accountant;
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            Assert.IsNotNull(controller.AddUser(model));
         }
 
         [Test]
