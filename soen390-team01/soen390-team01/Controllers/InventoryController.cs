@@ -45,19 +45,9 @@ namespace soen390_team01.Controllers
                     _model.MaterialFilters = _invService.ResetMaterialFilters();
                     break;
             }
-<<<<<<< HEAD
-
             _model.SelectedTab = selectedTab;
             // Workaround until we put logic in models
             _invService.Model = _model;
-
-=======
-
-            _model.SelectedTab = selectedTab;
-            // Workaround until we put logic in models
-            _invService.Model = _model;
-
->>>>>>> bf22e6b9f78ff15056247024f2b515595fd8522c
             return PartialView("InventoryBody", _model);
         }
 
