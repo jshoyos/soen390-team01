@@ -4,6 +4,7 @@ using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using soen390_team01.Services;
 using System.Linq;
+using soen390_team01.Data.Queries;
 
 namespace soen390_team01Tests.Services
 {
@@ -28,37 +29,37 @@ namespace soen390_team01Tests.Services
                     1 => "part",
                     _ => "material",
                 };
-                if (type.Equals("bike"))
+                switch (type)
                 {
-                    _context.Bikes.Add(new Bike
-                    {
-                        ItemId = i,
-                        Grade = "copper " + i,
-                        Name = "Bike " + i,
-                        Size = "M",
-                        Price = i
-                    });
-                }
-                else if (type.Equals("part"))
-                {
-                    _context.Parts.Add(new Part
-                    {
-                        ItemId = i,
-                        Grade = "Copper " + i,
-                        Name = "Bike " + i,
-                        Size = "L",
-                        Price = i
-                    });
-                }
-                else
-                {
-                    _context.Materials.Add(new Material
-                    {
-                        ItemId = i,
-                        Grade = "Aluminum " + i,
-                        Name = "Bike " + i,
-                        Price = i
-                    });
+                    case "bike":
+                        _context.Bikes.Add(new Bike
+                        {
+                            ItemId = i,
+                            Grade = "copper " + i,
+                            Name = "Bike " + i,
+                            Size = "M",
+                            Price = i
+                        });
+                        break;
+                    case "part":
+                        _context.Parts.Add(new Part
+                        {
+                            ItemId = i,
+                            Grade = "copper " + i,
+                            Name = "Bike " + i,
+                            Size = "L",
+                            Price = i
+                        });
+                        break;
+                    default:
+                        _context.Materials.Add(new Material
+                        {
+                            ItemId = i,
+                            Grade = "aluminum " + i,
+                            Name = "Bike " + i,
+                            Price = i
+                        });
+                        break;
                 }
 
                 _context.Inventories.Add(new Inventory
@@ -111,39 +112,6 @@ namespace soen390_team01Tests.Services
         }
 
         [Test]
-        public void GetInventoryModelTest()
-        {
-            var inventoryModel = _inventoryService.GetInventoryModel();
-            Assert.AreEqual(9, inventoryModel.AllList.Count);
-            Assert.AreEqual(3, inventoryModel.BikeList.Count);
-            Assert.AreEqual(3, inventoryModel.PartList.Count);
-            Assert.AreEqual(3, inventoryModel.MaterialList.Count);
-        }
-
-        [Test]
-        public void GetFilterTest()
-        {   //Tests the bike filters
-            Assert.AreEqual(3, _inventoryService.GetFilter("grade", "bike").Count());
-            Assert.AreEqual(3, _inventoryService.GetFilter("name", "bike").Count());
-            Assert.AreEqual(3, _inventoryService.GetFilter("price", "bike").Count());
-            Assert.IsNull(_inventoryService.GetFilter("", "bike"));
-
-            //Tests the part filters
-            Assert.AreEqual(3, _inventoryService.GetFilter("grade", "part").Count());
-            Assert.AreEqual(3, _inventoryService.GetFilter("name", "part").Count());
-            Assert.AreEqual(3, _inventoryService.GetFilter("price", "part").Count());
-            Assert.IsNull(_inventoryService.GetFilter("", "part"));
-
-            //Tests the material filters
-            Assert.AreEqual(3, _inventoryService.GetFilter("grade", "material").Count());
-            Assert.AreEqual(3, _inventoryService.GetFilter("name", "material").Count());
-            Assert.AreEqual(3, _inventoryService.GetFilter("price", "material").Count());
-            Assert.IsNull(_inventoryService.GetFilter("", "material"));
-
-            Assert.IsNull(_inventoryService.GetFilter("", ""));
-        }
-
-        [Test]
         public void UpdateTest()
         {
             var model = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
@@ -151,6 +119,14 @@ namespace soen390_team01Tests.Services
             _inventoryService.Update(model);
             var invItem = _context.Inventories.FirstOrDefault(inv => inv.InventoryId == 1);
             Assert.AreEqual(model.Quantity, invItem.Quantity);
+        }
+
+        [Test]
+        public void ResetFiltersTest()
+        {
+            Assert.AreEqual(_inventoryService.Model.BikeFilters.List.Count, _inventoryService.ResetBikeFilters().List.Count);
+            Assert.AreEqual(_inventoryService.Model.PartFilters.List.Count, _inventoryService.ResetPartFilters().List.Count);
+            Assert.AreEqual(_inventoryService.Model.MaterialFilters.List.Count, _inventoryService.ResetMaterialFilters().List.Count);
         }
     }
 }
