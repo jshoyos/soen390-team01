@@ -1,16 +1,13 @@
 ﻿@model soen390_team01.Models.InventoryModel
 
-<div id="Bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "Bike" ? "block": "none")">
+<div id="bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
-    <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Bike'),showFilter('Bike')">
 </div>
-<div id="Part-filter" class="filer-data" style="display:@(Model.SelectedTab == "Part" ? "block": "none")">
+<div id="part-filter" class="filer-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
-    <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Part'),showFilter('Part')">
 </div>
-<div id="Material-filter" class="filer-data" style="display:@(Model.SelectedTab == "Material" ? "block": "none")">
+<div id="material-filter" class="filer-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
-    <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Material'),showFilter('Material')">
 </div>
 
 <div class="bike-components">
@@ -18,9 +15,9 @@
         <button class="tablinks @(Model.SelectedTab == "All" ? "active": "")" id="allButton" onclick="openTab(event, 'All'),hideFilter()">All</button>
     </div>
     <div class="tab">
-        <button class="tablinks @(Model.SelectedTab == "Bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'Bike'),showFilter('Bike')">Bike</button>
-        <button class="tablinks @(Model.SelectedTab == "Part" ? "active": "")" id="partButton" onclick="openTab(event, 'Part'),showFilter('Part')">Part</button>
-        <button class="tablinks @(Model.SelectedTab == "Material" ? "active": "")" id="matButton" onclick="openTab(event, 'Material'),showFilter('Material')">Material</button>
+        <button class="tablinks @(Model.SelectedTab == "bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'bike'),showFilter('bike')">Bike</button>
+        <button class="tablinks @(Model.SelectedTab == "part" ? "active": "")" id="partButton" onclick="openTab(event, 'part'),showFilter('part')">Part</button>
+        <button class="tablinks @(Model.SelectedTab == "material" ? "active": "")" id="matButton" onclick="openTab(event, 'material'),showFilter('material')">Material</button>
     </div>
     <div id="All" class="tabcontent" style="display: @(Model.SelectedTab == "All" ? "block": "none")" onclick="hideFilter()">
 
@@ -29,7 +26,7 @@
         @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
     </div>
     <!-- Tab content -->
-    <div id="Bike" class="tabcontent" style="display: @(Model.SelectedTab == "Bike" ? "block": "none")" onclick="showFilter('Bike')">
+    <div id="bike" class="tabcontent" style="display: @(Model.SelectedTab == "bike" ? "block": "none")" onclick="showFilter('bike')">
 
         <h3>Bikes</h3>
         <div class="Bike-table">
@@ -38,7 +35,7 @@
 
     </div>
 
-    <div id="Part" class="tabcontent" style="display: @(Model.SelectedTab == "Part" ? "block": "none")" onclick="showFilter('Part')">
+    <div id="part" class="tabcontent" style="display: @(Model.SelectedTab == "part" ? "block": "none")" onclick="showFilter('part')">
         <h3>Parts</h3>
         <div class="Part-table">
             @{await Html.RenderPartialAsync("PartTable", Model.PartList);}
@@ -46,7 +43,7 @@
 
     </div>
 
-    <div id="Material" class="tabcontent" style="display: @(Model.SelectedTab == "Material" ? "block": "none")" onclick="showFilter('Material')">
+    <div id="material" class="tabcontent" style="display: @(Model.SelectedTab == "material" ? "block": "none")" onclick="showFilter('material')">
         <h3>Material</h3>
         <div class="Material-table">
             @{await Html.RenderPartialAsync("MaterialTable", Model.MaterialList);}

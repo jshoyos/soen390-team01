@@ -24,10 +24,10 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<AuthenticationFirebaseService>();
-            services.AddScoped<InventoryService>();
-            services.AddScoped<TransfersModel>();
-            services.AddScoped<UserManagementService>();
+            services.AddSingleton<AuthenticationFirebaseService>();
+            services.AddSingleton<InventoryService>();
+            services.AddSingleton<TransfersService>();
+            services.AddSingleton<UserManagementService>();
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
                 ));

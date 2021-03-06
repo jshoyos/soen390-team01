@@ -37,13 +37,10 @@ namespace soen390_team01Tests.Controllers
             transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
             var controller = new TransfersController(transfersServiceMock.Object);
 
-            var inputModel = new TransfersModel();
-            inputModel.AddProcurement = new AddProcurementModel
-            {
-                ItemId = 0,
-                ItemType = "Bike",
-                ItemQuantity = 1,
-                VendorId = 1
+            var inputModel = new TransfersModel {
+                AddProcurement = new AddProcurementModel {
+                    ItemId = 0, ItemType = "Bike", ItemQuantity = 1, VendorId = 1
+                }
             };
 
             var resultBike = controller.AddProcurement(inputModel) as ViewResult;
