@@ -48,6 +48,7 @@
         @if (TempData["errorMessage"] != null)
         {
             await Html.RenderPartialAsync("_ErrorMessage", TempData["errorMessage"]);
+            TempData["errorMessage"] = null;
         }
     </header>
     <div class="container">

@@ -20,6 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\Filter.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\Filter.css" />
     <None Include="wwwroot\css\Inventory.css" />
   </ItemGroup>
 
