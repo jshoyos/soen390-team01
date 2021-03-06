@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using System.Linq;
 
 namespace soen390_team01.Services
@@ -21,7 +22,8 @@ namespace soen390_team01.Services
             }
             if (!isAuthorized)
             {
-                (context.Controller as Controller).HttpContext.Response.Redirect("Authentication\\PermissionDenied");
+                context.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary(new { controller = "Authentication", action = "PermissionDenied" }));
             }
         }
     }
