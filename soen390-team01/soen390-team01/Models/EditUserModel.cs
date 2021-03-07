@@ -7,7 +7,6 @@ namespace soen390_team01.Models
     public class EditUserModel : User
     {
         #region field
-        private Roles _roleEnum;
         #endregion
         public EditUserModel()
         {
@@ -19,28 +18,14 @@ namespace soen390_team01.Models
         public EditUserModel(User user)
         {
             Email = user.Email;
-            RoleEnum = (Roles) Enum.Parse(typeof(Roles), user.Role);
+            Role = user.Role;
             PhoneNumber = user.PhoneNumber;
             LastName = user.LastName;
             FirstName = user.FirstName;
             UserId = user.UserId;
         }
         [Required]
-        public Roles RoleEnum
-        {
-            get
-            {
-                return _roleEnum;
-            }
-            set
-            {
-                if (value != _roleEnum)
-                {
-                    _roleEnum = value;
-                    base.Role = _roleEnum.ToString();
-                }
-            }
-        }
+        public override string Role { get; set; }
         [Display(Name = "Phone Number")]
         [Required]
         [StringLength(10)]

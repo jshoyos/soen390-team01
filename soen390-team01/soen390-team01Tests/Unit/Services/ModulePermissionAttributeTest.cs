@@ -38,12 +38,13 @@ namespace soen390_team01Tests.Unit.Data.Queries
         [Test]
         public void AllowedModulePermissionTest()
         {
+            var actionArguments = new Dictionary<string, object>();
             var attribute = new ModulePermissionAttribute
             {
                 Roles = Role.Accountant
             };
 
-            var context = new ActionExecutedContext(
+            var context = new ActionExecutingContext(
                 new ActionContext(
                     httpContextMock.Object,
                     Mock.Of<RouteData>(),
@@ -51,19 +52,21 @@ namespace soen390_team01Tests.Unit.Data.Queries
                     new ModelStateDictionary()
                     ),
                 new List<IFilterMetadata>(),
+                actionArguments,
                 Mock.Of<Controller>()
                 );
-            attribute.OnActionExecuted(context);
+            attribute.OnActionExecuting(context);
         }
 
         [Test]
         public void RefusedModulePermissionTest()
         {
+            var actionArguments = new Dictionary<string, object>();
             var attribute = new ModulePermissionAttribute
             {
                 Roles = Role.SalesRep
             };
-            var context = new ActionExecutedContext(
+            var context = new ActionExecutingContext(
                 new ActionContext(
                     httpContextMock.Object,
                     Mock.Of<RouteData>(),
@@ -71,9 +74,10 @@ namespace soen390_team01Tests.Unit.Data.Queries
                     new ModelStateDictionary()
                     ),
                 new List<IFilterMetadata>(),
+                actionArguments,
                 Mock.Of<Controller>()
                 );
-            attribute.OnActionExecuted(context);
+            attribute.OnActionExecuting(context);
         }
     }
 }

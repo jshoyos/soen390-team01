@@ -34,7 +34,8 @@
                     <span asp-validation-for="AddUser.PhoneNumber" class="text-danger"></span>
                 </div>
                 <div>
-                    <select asp-for="AddUser.RoleEnum" asp-items="Html.GetEnumSelectList<Roles>()"></select>
+                    <label asp-for="AddUser.Role">Role</label>
+                    <select asp-for="AddUser.Role" asp-items="new SelectList(Enum.GetNames(typeof(Roles)))"></select>
                 </div>
                 <div>
                     <label asp-for="AddUser.Email"></label>

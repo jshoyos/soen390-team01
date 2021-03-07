@@ -30,7 +30,12 @@
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div>
-                        <select asp-for="RoleEnum" asp-items="Html.GetEnumSelectList<Roles>()"></select>
+                        <label asp-for="Role">Role</label>
+                        <select asp-for="Role"
+                                class="form-control"
+                                asp-items="new SelectList(Enum.GetNames(typeof(Roles)))">
+                            <option>Select type ...</option>
+                        </select>
                     </div>
                 </form>
             </div>

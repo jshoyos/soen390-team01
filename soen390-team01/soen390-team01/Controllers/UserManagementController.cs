@@ -82,6 +82,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
+        [ModulePermissionAttribute(Roles = Role.Accountant)]
         public IActionResult EditUser(EditUserModel user)
         {
             if (ModelState.IsValid)

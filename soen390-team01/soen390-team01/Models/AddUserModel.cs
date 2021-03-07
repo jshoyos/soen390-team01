@@ -7,7 +7,6 @@ namespace soen390_team01.Models
     public class AddUserModel : User
     {
         #region field
-        private Roles _roleEnum;
         #endregion
 
         public AddUserModel()
@@ -24,21 +23,7 @@ namespace soen390_team01.Models
         [EmailAddress]
         public override string Email { get; set; }
         [Required]
-        public Roles RoleEnum
-        {
-            get
-            {
-                return _roleEnum;
-            }
-            set
-            {
-                if (value != _roleEnum)
-                {
-                    _roleEnum = value;
-                    base.Role = _roleEnum.ToString();
-                }
-            }
-        }
+        public override string Role { get; set; }
         [Display(Name = "Phone Number")]
         [Required]
         [StringLength(10)]

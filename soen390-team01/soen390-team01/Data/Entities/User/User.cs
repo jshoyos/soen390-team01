@@ -18,7 +18,7 @@ namespace soen390_team01.Data.Entities
             Iv = u.Iv;
         }
 
-        public string Role { get; set; }
+        public virtual string Role { get; set; }
         public virtual string PhoneNumber { get; set; }
         public virtual string LastName { get; set; }
         public virtual string FirstName { get; set; }
