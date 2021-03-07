@@ -3,20 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
-using soen390_team01.Models;
 using soen390_team01.Services;
 
 namespace soen390_team01.Controllers
 {
     public class InventoryController : Controller
     {
-        private readonly InventoryService _invService;
-        private readonly InventoryModel _model;
+        private readonly IInventoryService _model;
 
-        public InventoryController(InventoryService invService)
+        public InventoryController(IInventoryService model)
         {
-            _invService = invService;
-            _model = _invService.Model;
+            _model = model;
         }
 
         [Authorize]
@@ -25,28 +22,24 @@ namespace soen390_team01.Controllers
         {
             return View(_model);
         }
+
         [HttpPost]
         public IActionResult Refresh([FromBody] string selectedTab)
         {
             switch (selectedTab)
             {
                 case "bike":
-                    _model.BikeList = _invService.GetAllBikes();
-                    _model.BikeFilters = _invService.ResetBikeFilters();
+                    _model.ResetBikes();
                     break;
                 case "part":
-                    _model.PartList = _invService.GetAllParts();
-                    _model.PartFilters = _invService.ResetPartFilters();
+                    _model.ResetParts();
                     break;
                 case "material":
-                    _model.MaterialList = _invService.GetAllMaterials();
-                    _model.MaterialFilters = _invService.ResetMaterialFilters();
+                    _model.ResetMaterials();
                     break;
             }
 
             _model.SelectedTab = selectedTab;
-            // Workaround until we put logic in models
-            _invService.Model = _model;
 
             return PartialView("InventoryBody", _model);
         }
@@ -57,21 +50,7 @@ namespace soen390_team01.Controllers
         {
             try
             {
-                switch (filters.Table)
-                {
-                    case "bike":
-                        _model.BikeList = filters.AnyActive() ? _invService.GetFilteredProductList<Bike>(filters) : _invService.GetAllBikes();
-                        _model.BikeFilters = filters;
-                        break;
-                    case "part":
-                        _model.PartList = filters.AnyActive() ? _invService.GetFilteredProductList<Part>(filters) : _invService.GetAllParts();
-                        _model.PartFilters = filters;
-                        break;
-                    case "material":
-                        _model.MaterialList = filters.AnyActive() ? _invService.GetFilteredProductList<Material>(filters) : _invService.GetAllMaterials();
-                        _model.MaterialFilters = filters;
-                        break;
-                }
+                _model.FilterSelectedTab(filters);
             }
             catch (DataAccessException e)
             {
@@ -79,8 +58,6 @@ namespace soen390_team01.Controllers
             }
 
             _model.SelectedTab = filters.Table;
-            // Workaround until we put logic in models
-            _invService.Model = _model;
 
             return PartialView("InventoryBody", _model);
         }
@@ -96,7 +73,7 @@ namespace soen390_team01.Controllers
             {
                 try
                 {
-                    _invService.Update(inventory);
+                    _model.Update(inventory);
                 }
                 catch (DataAccessException e)
                 {

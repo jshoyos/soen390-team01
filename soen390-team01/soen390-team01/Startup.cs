@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using soen390_team01.Data;
 using soen390_team01.Services;
 using System;
+using soen390_team01.Models;
 
 namespace soen390_team01
 {
@@ -24,7 +25,7 @@ namespace soen390_team01
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<AuthenticationFirebaseService>();
-            services.AddSingleton<InventoryService>();
+            services.AddSingleton<IInventoryService, InventoryModel>();
             services.AddSingleton<TransfersService>();
             services.AddSingleton<UserManagementService>();
             services.AddSingleton(s => new EncryptionService(
