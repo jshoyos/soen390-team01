@@ -32,13 +32,6 @@ div.quantity::after {
     zoom: 1;
 }
 
-div.inventory-view {
-    border-style: solid;
-    border-width: thin;
-    border-color: lightgrey;
-    padding: 10px;
-    border-radius: 8px;
-}
 
 div.bike-components {
     float: left;
@@ -58,42 +51,20 @@ input.filer-data {
     border-width: thin;
     float: right;
 }
-.tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: white;
-}
-
-.tablinks {
-    background-color: white;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    width: 33%;
-}
 
 .bike-components {
     width: 78.7%;
 }
 
-.tablinks:hover {
-    background-color: #ccc;
+.tablinks:hover , .allTab:hover {
+    background-color: #1b6ec2;
 }
 
-.tablinks.active {
-    background-color: #ccc;
+.tablinks.active , allTab:hover{
+    background-color: #1b6ec2;
 }
 
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
-    height: 400px;
-}
+
 
 .scroll {
     color: lightgray;
@@ -144,3 +115,18 @@ input.filer-data {
 .filter-data {
     text-align: center
 }
+/**/
+.bikeTable , .filter {
+    border: 1px solid #1861ac;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.bikeTable li {
+   border-bottom: 1px solid #1861ac;
+}
+
+#bikeTab, #partTab {
+    border-right: 1px solid #1861ac;
+}
+
