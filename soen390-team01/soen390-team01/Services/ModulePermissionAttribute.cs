@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Linq;
-using System.Net;
 
 namespace soen390_team01.Services
 {

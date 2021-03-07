@@ -9,12 +9,8 @@ using Moq;
 using NUnit.Framework;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace soen390_team01Tests.Unit.Data.Queries
 {
