@@ -1,0 +1,12 @@
+﻿@using Newtonsoft.Json
+@model soen390_team01.Data.Entities.User
+
+
+<td>
+    <button id="viewButton" type="button" class="btn btn-outline-secondary" data-toggle="ajax-modal" data-target="#EditUser" data-url="@Url.Action($"GetUserById","UserManagement",new { Model.UserId })">
+        Full Profile
+    </button>
+</td>
+
+<td>@Model.FirstName</td>
+<td>@Model.LastName</td>
