@@ -114,7 +114,6 @@ namespace soen390_team01Tests.Unit.Controllers
             {
                 AddUser = new AddUserModel()
             };
-            model.AddUser.RoleEnum = Roles.Accountant;
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -134,7 +133,6 @@ namespace soen390_team01Tests.Unit.Controllers
             {
                 AddUser = new AddUserModel()
             };
-            model.AddUser.RoleEnum = Roles.Accountant;
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -153,15 +151,10 @@ namespace soen390_team01Tests.Unit.Controllers
                 LastName = "Se",
                 Email = "admin@hotmail.com",
                 PhoneNumber = "4385146677",
-                Role = "Admin",
+                Role = Roles.Admin.ToString(),
                 Iv = "FSedff453",
                 UserId = 5
             });
-
-            editUser.RoleEnum = Roles.Accountant;
-            editUser.RoleEnum = Roles.InventoryManager;
-            editUser.RoleEnum = Roles.None;
-            editUser.RoleEnum = Roles.SalesRep;
 
             var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
             {
