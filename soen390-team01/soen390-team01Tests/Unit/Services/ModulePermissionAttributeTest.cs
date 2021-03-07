@@ -69,7 +69,13 @@ namespace soen390_team01Tests.Unit.Data.Queries
             var context = new ActionExecutingContext(
                 new ActionContext(
                     httpContextMock.Object,
-                    Mock.Of<RouteData>(),
+                    new RouteData(
+                        new RouteValueDictionary(
+                        new Dictionary<string, object>()
+                        {
+                            {"action","Index" }
+                        })
+                    ),
                     Mock.Of<ActionDescriptor>(),
                     new ModelStateDictionary()
                     ),
