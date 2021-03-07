@@ -1,66 +1,96 @@
 ﻿@model soen390_team01.Models.TransfersModel
+@using soen390_team01.Data.Queries
+@using Newtonsoft.Json
 
-<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="modal-filter">
-                <div id="orderFilter">
-                    <div class="row justify-content-center">
-                        <h3 class="text-center">FILTER</h3>
-                    </div>
-                    <div class="row justify-content-center pt-3">
-                        <h5 class="text-center">State</h5>
-                    </div>
-                    <div class="row justify-content-center pt-3">
-                        <div class="col"></div>
-                        <div class="col">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Pending
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Completed
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Canceled
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col"></div>
-                    </div>
-                </div>
-                <div class="pb-4 justify-content-center" id="vendor" style="display: none;">
-                    <div class="row justify-content-center pt-3">
-                        <h5 class="text-center">Vendor</h5>
-                    </div>
-                    <div class="row justify-content-center pt-3">
-                        <select class="form-select pl-auto" aria-label="Default select example">
-                            <option selected>Vendor</option>
-                            <option value="1">Vendor</option>
-                            <option value="2">Vendor</option>
-                            <option value="3">Vendor</option>
-                        </select>
-                    </div>
-                </div>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Filter</button>
-            </div>
-        </div>
-    </div>
+
+<div id="ofilterM" style="display:block">
+    @foreach (var filter in Model.OrderFilters.List)
+    {
+        <p><strong>@filter.DisplayColumn</strong></p>
+        if (filter.GetType() == typeof(SelectFilter))
+        {
+            <select onchange="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { SelectInput: { SelectValue: this.value, PossibleValues: @JsonConvert.SerializeObject(((SelectFilter)filter).PossibleSelectValues) } })">
+                <option value="" selected></option>
+
+                @foreach (var item in ((SelectFilter)filter).PossibleSelectValues)
+                {
+                    if (((SelectFilter)filter).Value == item)
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+                }
+            </select>
+            <br /><br />
+        }
+        else if (filter.GetType() == typeof(CheckboxFilter))
+        {
+            @foreach (var item in ((CheckboxFilter)filter).PossibleCheckboxValues)
+            {
+                <label>@item</label>
+                if (((CheckboxFilter)filter).Values.Contains(item))
+                {
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" checked="checked"
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                }
+                else
+                {
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                }
+                <br />
+            }
+            <br />
+        }
+    }
 </div>
+<div class="pb-4 justify-content-center" id="pfilterM" style="display: none;">
+    @foreach (var filter in Model.ProcurementFilters.List)
+    {
+        <p><strong>@filter.DisplayColumn</strong></p>
+        if (filter.GetType() == typeof(SelectFilter))
+        {
+            <select onchange="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { SelectInput: { SelectValue: this.value, PossibleValues: @JsonConvert.SerializeObject(((SelectFilter)filter).PossibleSelectValues) } })">
+
+                <option value="" selected></option>
+
+                @foreach (var item in ((SelectFilter)filter).PossibleSelectValues)
+                {
+                    if (((SelectFilter)filter).Value == item)
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+                }
+            </select>
+            <br /><br />
+        }
+        else if (filter.GetType() == typeof(CheckboxFilter))
+        {
+            @foreach (var item in ((CheckboxFilter)filter).PossibleCheckboxValues)
+            {
+                <label>@item</label>
+                if (((CheckboxFilter)filter).Values.Contains(item))
+                {
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" checked="checked"
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                }
+                else
+                {
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                }
+                <br />
+            }
+            <br />
+        }
+    }
+</div>
+

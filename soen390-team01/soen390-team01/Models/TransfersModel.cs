@@ -9,6 +9,7 @@ using soen390_team01.Data.Exceptions;
 using Npgsql;
 using soen390_team01.Services;
 using soen390_team01.Data.Queries;
+using System.Globalization;
 
 namespace soen390_team01.Models
 {
@@ -20,8 +21,8 @@ namespace soen390_team01.Models
         public AddProcurementModel AddProcurement { get; set; }
 
         //Filter list
-        public SelectFilters ProcurementList { get; set; } = new SelectFilters("Procurement");
-        public SelectFilters OrderList { get; set; } = new SelectFilters("Order");
+        public Filters ProcurementFilters { get; set; } = new Filters("procurement");
+        public Filters OrderFilters { get; set; } = new Filters("order");
 
         //selected filters
         public TransferFilter TransferFilters { get; set; } = new TransferFilter();
@@ -32,7 +33,8 @@ namespace soen390_team01.Models
             _context = context;
             Procurements = getProcurements();
             Orders = getOrders();
-            ProcurementList.Add("Vendor", GetFilter("vendor", "Procurement"));
+            ProcurementFilters = ResetProcurementFilters();
+            OrderFilters = ResetOrderFilters();
         }
 
         public TransfersModel SetupModel()
@@ -56,42 +58,51 @@ namespace soen390_team01.Models
                     .ToList();
             return list;
         }
-        public virtual void GetFilteredTransferModel(TransferFilter tFilter)
-        {
-            Orders = _context.Orders
-                .Include(o => o.OrderItems)
-                .Include(o => o.Payment)
-                .Include(o => o.Customer)
-                .ToList();
-            Procurements = _context.Procurements
-                .Include(p => p.Payment)
-                .Include(p => p.Vendor)
-                .ToList();
-            ProcurementList.Add("Vendor", GetFilter("vendor", "Procurement"));
-        }
-        /// <summary>
-        /// Gets filter for procurement and order
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public virtual SelectList GetFilter(string param, string table)
-        {
-            if (table.Equals("Order"))
-            {
-                //There is currently no list for order filters
-                return null;
-            }
-            else if (table.Equals("Procurement"))
-            {
-                return new SelectList(_context.Procurements.Select(procurement => procurement.Vendor.Name).Distinct().ToList());
-            }
-            else
-            {
-                return null;
-            }
 
+        public virtual Filters ResetProcurementFilters()
+        {
+            var filters = new Filters("procurement");
+
+            filters.Add(new SelectFilter("procurement", "Vendor", "vendor", _context.Procurements.Select(procurement => procurement.Vendor.Name).Distinct().OrderBy(v => v).ToList()));
+            filters.Add(new CheckboxFilter("procurement", "State", "state", _context.Procurements.Select(procurement => procurement.State).Distinct().OrderBy(s => s).ToList()));
+
+            return filters;
         }
+
+        public virtual Filters ResetOrderFilters()
+        {
+            var filters = new Filters("order");
+
+            filters.Add(new CheckboxFilter("order", "Status", "state", _context.Procurements.Select(procurement => procurement.State).Distinct().OrderBy(s => s).ToList()));
+
+            return filters;
+        }
+
+        public virtual List<Procurement> GetFilteredProcurementList(Filters filters)
+        {
+            try
+            {
+                return _context.Set<Procurement>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+            }
+            catch (Exception)
+            {
+                throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
+            }
+        }
+        public virtual List<Order> GetFilteredOrderList(Filters filters)
+        {
+            try
+            {
+                return _context.Set<Order>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+            }
+            catch (Exception)
+            {
+                throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
+            }
+        }
+
         /// <summary>
         /// Updates an order's status
         /// </summary>
@@ -199,7 +210,6 @@ namespace soen390_team01.Models
                 throw new InvalidValueException("state", state);
             }
         }
-
     }
     public static class TransferState
     {

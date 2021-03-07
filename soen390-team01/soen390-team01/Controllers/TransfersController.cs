@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
+using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System.Linq;
@@ -23,7 +24,6 @@ namespace soen390_team01.Controllers
         {
             return View(_model);
         }
-
         [HttpPost]
         public IActionResult AddProcurement(TransfersModel model)
         {
@@ -55,35 +55,51 @@ namespace soen390_team01.Controllers
 
             return View("Index", model);
         }
-        //[HttpPost]
-        //public IActionResult FilterTransfers([FromBody] TransferFilter input)
-        //{
-        //    var isFilterEmpty = input.OrderStatus.Count == 0 && input.ProcurementStatus.Count == 0 && input.Vendor.Equals("clear");
-        //    {
-        //        try
-        //        {
-        //            return PartialView("Filter", isFilterEmpty ? _model.SetupModel() : _model.GetFilteredTransferModel(input));
-        //        }
-        //        catch (DataAccessException e)
-        //        {
-        //            TempData["errorMessage"] = e.ToString();
-        //        }
-        //    }
-        //    return Index();
-        //}
+        [HttpPost]
+        public IActionResult FilterTransferTable([FromBody] Filters filters)
+        {
+            try
+            {
+                switch (filters.Table)
+                {
+                    case "procurement":
+                        _model.Procurements = true ? _model.GetFilteredProcurementList(filters) : _model.getProcurements();
+                        _model.ProcurementFilters = filters;
+                        break;
+                    case "order":
+                        _model.Orders = filters.AnyActive() ? _model.GetFilteredOrderList(filters) : _model.getOrders();
+                        _model.OrderFilters = filters;
+                        break;
+                }
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
 
+            _model.SelectedTab = filters.Table;
+
+            return PartialView("Filter", _model);
+        }
         [HttpPost]
         public IActionResult Refresh([FromBody] string selectedTab)
         {
             switch (selectedTab)
             {
-                case "Order": _model.Orders= _model.getOrders(); break;
-                case "Procurement": _model.Procurements = _model.getProcurements();  break;
+                case "procurement":
+                    _model.Procurements = _model.getProcurements();
+                    _model.ProcurementFilters = _model.ResetProcurementFilters();
+                    break;
+                case "order":
+                    _model.Orders = _model.getOrders();
+                    _model.OrderFilters = _model.ResetOrderFilters();
+                    break;
             }
+
             _model.SelectedTab = selectedTab;
 
-            return PartialView("InventoryBody", _model);
+            return PartialView("Filter", _model);
         }
-       
+
     }
 }

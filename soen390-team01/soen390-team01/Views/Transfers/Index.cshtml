@@ -11,14 +11,6 @@
     <meta name="viewport" content="width=device-width" />
 
     <script>
-        function showVendor() {
-            document.getElementById("vendor").style.display = "";
-        }
-
-        function hideVendor() {
-            document.getElementById("vendor").style.display = "none";
-        }
-
         function showButton() {
             document.getElementById("procbutton").style.display = "";
         }
@@ -27,39 +19,103 @@
             document.getElementById("procbutton").style.display = "none";
         }
 
-        function showLargeVendor() {
-            document.getElementById("largeVendor").style.display = "";
+        function showFilter() {
+            document.getElementById("ofilter").style.display = "none";
+            document.getElementById("ofilterM").style.display = "none";
+            document.getElementById("pfilter").style.display = "";
+            document.getElementById("pfilterM").style.display = "";
         }
 
-        function hideLargeVendor() {
-            document.getElementById("largeVendor").style.display = "none";
-        }
-        function showProcurementFilter() {
-            document.getElementById("orderFilterDesk").style.display = "none";
-            document.getElementById("procurementFilter").style.display = "";
-
+        function hideFilter() {
+            document.getElementById("pfilter").style.display = "none";
+            document.getElementById("pfilterM").style.display = "none";
+            document.getElementById("ofilterM").style.display = "";
+            document.getElementById("ofilter").style.display = "";
         }
 
-        function hideProcurementFilter() {
-            document.getElementById("orderFilterDesk").style.display = "";
-            document.getElementById("procurementFilter").style.display = "none";
-        }
+        function passingFilters(filters, displayedName, filterInput) {
 
+            console.log(filters);
+            console.log(displayedName);
+            console.log(filterInput);
 
-        function passingFilter(transferFilter,type) {
-            console.log("test");
+            var list = filters.List.map(f => {
+                if (f.PossibleSelectValues) {
+                    f.Input = {
+                        SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
+                    };
+                } else if (f.PossibleCheckboxValues) {
+                    f.Input = {
+                        CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
+                    };
+                } else if (f.hasOwnProperty("Value")) {
+                    f.Input = { StringValue: f.Value };
+                } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
+                    f.Input = {
+                        RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
+                    };
+                }
+                return f;
+            });
+
+            var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
+            var modifiedFilter = list[filterIndex];
+            modifiedFilter.Input = filterInput;
+            list[filterIndex] = modifiedFilter;
+
+            filters.List = list;
+
             $.ajax({
-                url: '@Url.Action("FilterTransfers", "Transfer")',
+                url: '@Url.Action("FilterTransferTable", "Transfers")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ "transferFilter": transferFilter, "type": type}),
+                data: JSON.stringify(filters),
                 dataType: 'html',
                 success: function (result) {
-                    $(`.${type}-table`).html(result);
+                    $('.filter').html(result);
                 }
             });
         };
-        
+                function refreshFilter(type) {
+            $.ajax({
+                url: '@Url.Action("Refresh", "Transfers")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(type),
+                dataType: 'html',
+                success: function (result) {
+                    $('.filter-view').html(result);
+                }
+            });
+        };
+
+        function createCheckboxInput(column, possibleValues) {
+            var checkBoxes = document.getElementsByName(column + "-checkbox");
+            var chosenCheckBoxes = [];
+
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    chosenCheckBoxes.push(checkBoxes[i].value);
+                }
+            }
+
+            return { CheckBoxInput: { Values: chosenCheckBoxes, PossibleValues: possibleValues } };
+        }
+
+        function enforceMinMax(el){
+            if(el.value !== ""){
+                if(parseInt(el.value) < parseInt(el.min)){
+                    el.value = el.min;
+                }
+                if(parseInt(el.value) > parseInt(el.max)){
+                    el.value = el.max;
+                }
+            }
+        }
+
+        function cleanNumberValue(value) {
+            return value == null || value === "" ? null : Number(value);
+        }
     </script>
 </head>
 
@@ -72,8 +128,26 @@
         </div>
     </div>
     <!--/Buttons that only appear in mobile version-->
-    <!-- Modal for filter in mobile mode-->
-        @{await Html.RenderPartialAsync("ModalFilter", Model);}
+    <!--/Modal for filter in mobile mode-->
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-filter">
+                    @{await Html.RenderPartialAsync("ModalFilter", Model);}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- /Modal for filter in mobile mode-->
 
     <div class="row">
@@ -81,12 +155,12 @@
         <div class="col-lg-8 mx-lg-auto" id="LHS">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 50%;text-align:center;">
-                    <a class="nav-link @(Model.SelectedTab == "Order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideVendor(); hideButton(); hideLargeVendor(),hideProcurementFilter();">
+                    <a class="nav-link @(Model.SelectedTab == "Order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="true" onclick="hideButton(); hideFilter();">
                         Order
                     </a>
                 </li>
                 <li class="nav-item" style="width: 50%; text-align:center;">
-                    <a class="nav-link @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showVendor(); showButton(); showLargeVendor(),showProcurementFilter();">
+                    <a class="nav-link @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="false" onclick="showButton(); showFilter();">
                         Procurement
                     </a>
                 </li>
@@ -138,7 +212,12 @@
         </div>
         <!--/Table with tabs-->
         <!--Filter area-->
-        @{await Html.RenderPartialAsync("Filter", Model);}
+        <div class="col-lg-3 pb-3" id="filter">
+            <div class="row justify-content-center">
+                <h3 class="text-center">FILTER</h3>
+            </div>
+            @{await Html.RenderPartialAsync("Filter", Model);}
+        </div>
     </div>
 
     <!-- Modal for procurement tab-->
