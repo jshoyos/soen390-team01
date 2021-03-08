@@ -22,6 +22,9 @@
                 dataType: 'html',
                 success: function (result) {
                     $('.itemRow' + inv.InventoryId).html(result);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
                 }
             });
         };

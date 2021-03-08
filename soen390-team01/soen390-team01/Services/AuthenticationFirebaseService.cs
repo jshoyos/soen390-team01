@@ -1,18 +1,29 @@
 ﻿using Firebase.Auth;
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using soen390_team01.Models;
+using System.Text.RegularExpressions;
+using soen390_team01.Data.Exceptions;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Diagnostics.CodeAnalysis;
 
 namespace soen390_team01.Services
 {
     public class AuthenticationFirebaseService : DisposableService
     {
-        private readonly FirebaseAuthProvider _ap;
+        private readonly IFirebaseAuthProvider _ap;
 
         public AuthenticationFirebaseService()
         {
             _ap = new FirebaseAuthProvider(new FirebaseConfig("AIzaSyD_HlK6kr9gptfYidc7_4Egn7uHwHes2pI"));
+        }
+
+        public AuthenticationFirebaseService(IFirebaseAuthProvider ap)
+        {
+            _ap = ap;
         }
 
         /// <summary>
@@ -21,16 +32,16 @@ namespace soen390_team01.Services
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
         /// <returns>boolean wether authentication was succesful or not</returns>
-        public async Task<bool> AuthenticateUser(string email, string password)
+        public virtual bool AuthenticateUser(string email, string password)
         {
             try
             {
-                var auth = await _ap.SignInWithEmailAndPasswordAsync(email, password);
-                return auth.User != null;
+                var auth = _ap.SignInWithEmailAndPasswordAsync(email, password).Result;
+                return auth?.User != null;
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                return false;
+                throw FirebaseErrors(e.Message);
             }
 
         }
@@ -41,17 +52,16 @@ namespace soen390_team01.Services
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
         /// <returns>boolean wether the account was succesfully created</returns>
-        public virtual async Task<bool> RegisterUser(string email, string password)
+        public virtual bool RegisterUser(string email, string password)
         {
             try
             {
-                await _ap.CreateUserWithEmailAndPasswordAsync(email, password);
+                _ap.CreateUserWithEmailAndPasswordAsync(email, password);
                 return true;
             }
             catch (Exception e)
             {
-                Debug.Fail(e.Message);
-                return false;
+                throw FirebaseErrors(e.Message);
             }
         }
 
@@ -60,17 +70,59 @@ namespace soen390_team01.Services
         /// </summary>
         /// <param name="email">user's email</param>
         /// <returns></returns>
-        public async Task<bool> RequestPasswordChange(string email)
+        public virtual bool RequestPasswordChange(string email)
         {
             try
             {
-                await _ap.SendPasswordResetEmailAsync(email);
+                _ap.SendPasswordResetEmailAsync(email);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                throw FirebaseErrors(e.Message);
             }
+        }
+
+        public static DataAccessException FirebaseErrors(string error)
+        {
+            var temp = new Regex("message\": \".*\"").Matches(error)[0].Value[11..].Replace('"', ' ').Trim();
+            return temp switch
+            {
+                "EMAIL_EXISTS" => new EmailExistsException(),
+                "EMAIL_NOT_FOUND" => new EmailNotFoundException(),
+                _ => new UnexpectedDataAccessException("Email_error")
+            };
+        }
+
+        /// <summary>
+        /// Sets the authentication cookie so user is remembered in the browser
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="role"></param>
+        /// <param name="context"></param>
+        [ExcludeFromCodeCoverage]
+        public virtual void SetAuthCookie(string email, string role, HttpContext context)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.Role, role)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+            };
+
+            context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public virtual void RemoveAuthCookie(HttpContext context)
+        {
+            context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }

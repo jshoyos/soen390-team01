@@ -372,3 +372,11 @@ TABLESPACE pg_default;
 
 ALTER TABLE public."user"
     OWNER to soen390team01devuser;
+
+INSERT INTO public."user"(
+	user_role, phone_number, last_name, first_name, email, iv)
+	VALUES ('Admin', 'RIMzfjzV+VcTL2/DXk/2QA==',
+	'aaFRyoeTmIB970WmVA5H9g==',
+	'aaFRyoeTmIB970WmVA5H9g==',
+	'23jT32dBjzfnrf39mHW0X0/QL0ZV5EZ+XucorndBCks=',
+	'T4qPYRHF2EQDIHJF1fAsRQ==');
