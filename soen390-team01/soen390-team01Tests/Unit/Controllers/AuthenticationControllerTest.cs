@@ -44,7 +44,7 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
-        public  async Task IndexAsyncTest()
+        public void IndexAsyncTest()
         {
             var user = new User
             {
@@ -64,14 +64,11 @@ namespace soen390_team01Tests.Unit.Controllers
             };
 
             _userManagementServiceMock.Setup(u => u.GetUserByEmail(It.IsAny<string>())).Returns(user);
-            _authenticationServiceMock.Setup(u => u.AuthenticateUser(It.Is<string>(s => !string.IsNullOrEmpty(s)), It.Is<string>(s => !string.IsNullOrEmpty(s)))).Returns(Task.FromResult(true));
-            _authenticationServiceMock.Setup(c => c.SetAuthCookie(It.Is<string>(s => !string.IsNullOrEmpty(s)), It.Is<string>(s => !string.IsNullOrEmpty(s)), null)).Returns(Task.FromResult(true));
-
-            _authenticationServiceMock.Setup(u => u.AuthenticateUser(It.Is<string>(s => string.IsNullOrEmpty(s)), It.Is<string>(s => string.IsNullOrEmpty(s)))).Returns(Task.FromResult(false));
-            _authenticationServiceMock.Setup(c => c.SetAuthCookie(It.Is<string>(s => string.IsNullOrEmpty(s)), It.Is<string>(s => string.IsNullOrEmpty(s)), null)).Returns(Task.FromResult(false));
+            _authenticationServiceMock.Setup(u => u.AuthenticateUser(It.Is<string>(s => !string.IsNullOrEmpty(s)), It.Is<string>(s => !string.IsNullOrEmpty(s)))).Returns(true);
+            _authenticationServiceMock.Setup(c => c.SetAuthCookie(It.Is<string>(s => !string.IsNullOrEmpty(s)), It.Is<string>(s => !string.IsNullOrEmpty(s)), null));
 
             var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
-            var result =  await controller.IndexAsync(model) as LocalRedirectResult;
+            var result =  controller.IndexAsync(model) as LocalRedirectResult;
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Url.Equals("/Home/Privacy"));
@@ -81,14 +78,14 @@ namespace soen390_team01Tests.Unit.Controllers
                 Email = "",
                 Password = ""
             };
-            var result2 = await controller.IndexAsync(invalidModel) as ViewResult;
+            var result2 = controller.IndexAsync(invalidModel) as ViewResult;
 
             Assert.IsNotNull(result2);
             Assert.IsTrue((result2.Model as LoginModel).Email.Equals(invalidModel.Email));
         }
 
         [Test]
-        public async Task ForgotPasswordTest()
+        public void ForgotPasswordTest()
         {
             var model = new LoginModel
             {
@@ -96,25 +93,25 @@ namespace soen390_team01Tests.Unit.Controllers
                 Password = ""
 
             };
-            _authenticationServiceMock.Setup(u => u.RequestPasswordChange(It.Is<string>(s => !string.IsNullOrEmpty(s)))).Returns(Task.FromResult(true));
+            _authenticationServiceMock.Setup(u => u.RequestPasswordChange(It.Is<string>(s => !string.IsNullOrEmpty(s)))).Returns(true);
             var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
-            var result = await controller.ForgotPassword(model) as LocalRedirectResult;
+            var result = controller.ForgotPassword(model) as LocalRedirectResult;
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Url.Equals("/Authentication/Index"));
 
             var invalidModel = new LoginModel();
-            var result2 = await controller.ForgotPassword(invalidModel) as ViewResult;
+            var result2 = controller.ForgotPassword(invalidModel) as ViewResult;
 
             Assert.IsNotNull(result2);
         }
 
         [Test]
-        public async Task Logout()
+        public void Logout()
         {
             _authenticationServiceMock.Setup(u => u.RemoveAuthCookie(new DefaultHttpContext()));
             var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
-            await controller.LogoutAsync();
+            controller.LogoutAsync();
         }
     }
 }

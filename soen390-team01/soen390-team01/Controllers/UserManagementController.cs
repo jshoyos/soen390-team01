@@ -25,7 +25,7 @@ namespace soen390_team01.Controllers
         #region Methods
 
         [HttpGet]
-        [ModulePermissionAttribute(Roles = Role.Admin)]
+        [ModulePermission(Roles = Role.Admin)]
         public IActionResult Index()
         {
             var model = new UserManagementModel
@@ -71,18 +71,15 @@ namespace soen390_team01.Controllers
                 {
                     return PartialView("_UserModalPartial", new EditUserModel(user));
                 }
-                return Index();
-
             }
             catch (NotFoundException e)
             {
                 TempData["errorMessage"] = e.Message;
-                return Index();
             }
+            return Index();
         }
 
         [HttpPost]
-        [ModulePermissionAttribute(Roles = Role.Accountant)]
         public IActionResult EditUser(EditUserModel user)
         {
             if (ModelState.IsValid)
@@ -97,7 +94,7 @@ namespace soen390_team01.Controllers
         private void RegisterUser(AddUserModel user)
         {
             var addedUser = _userManagementService.AddUser(user);
-            if (_authService.RegisterUser(addedUser.Email, user.Password).Result)
+            if (_authService.RegisterUser(addedUser.Email, user.Password))
             {
                 return;
             }

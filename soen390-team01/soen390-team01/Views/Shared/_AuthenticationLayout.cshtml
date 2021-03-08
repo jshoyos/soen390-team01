@@ -6,34 +6,38 @@
         <title>@ViewData["Title"] Downhill</title>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
     </head>
     <body class="bg-light">
         <div class="container" style="margin-top: 20px">
             <div class="row">
-                <div class="col-lg-5 mx-auto" style="margin-top:20px; padding: 30px; border: 1px solid black; border-radius: 10px;">
+                <div class="col-lg-5 mx-auto" style="margin-top: 20px; padding: 30px; border: 1px solid black; border-radius: 10px;">
                     <div class="container">
                         <h1 id="welcometry">Welcome</h1>
                         <p class="lead">Welcome to Downhill's entreprise resources management.</p>
                         <div class="row">
-                            <button type="button" class="btn btn-primary" style="margin:5px">Help Page</button>
-                            <button type="button" class="btn btn-primary" style="margin:5px">Pricing</button>
+                            <button type="button" class="btn btn-primary" style="margin: 5px">Help Page</button>
+                            <button type="button" class="btn btn-primary" style="margin: 5px">Pricing</button>
                         </div>
                     </div>
-                    
+
                 </div>
-                <div class="col-lg-5 mx-auto" style="margin-top: 20px; border: 1px solid black; border-radius: 10px;" >
-                    <div class="container" >
+                <div class="col-lg-5 mx-auto" style="margin-top: 20px; border: 1px solid black; border-radius: 10px;">
+                    <div class="container">
                         <div class="container">
                             @RenderBody()
                         </div>
                     </div>
                 </div>
             </div>
-        </div> 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        </div>
         @await RenderSectionAsync("Scripts", required: false)
-
+        @if (TempData["errorMessage"] != null)
+        {
+            await Html.RenderPartialAsync("_ErrorMessage", TempData["errorMessage"]);
+            TempData["errorMessage"] = null;
+        }
     </body>
 </html>

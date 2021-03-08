@@ -1,7 +1,5 @@
 ﻿using Firebase.Auth;
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using soen390_team01.Models;
 using System.Text.RegularExpressions;
 using soen390_team01.Data.Exceptions;
@@ -34,17 +32,16 @@ namespace soen390_team01.Services
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
         /// <returns>boolean wether authentication was succesful or not</returns>
-        public virtual async Task<bool> AuthenticateUser(string email, string password)
+        public virtual bool AuthenticateUser(string email, string password)
         {
             try
             {
-                var auth = await _ap.SignInWithEmailAndPasswordAsync(email, password);
+                var auth = _ap.SignInWithEmailAndPasswordAsync(email, password).Result;
                 return auth?.User != null;
             }
             catch(Exception e)
             {
-                FirebaseErrors(e.Message);
-                return false;
+                throw FirebaseErrors(e.Message);
             }
 
         }
@@ -55,17 +52,16 @@ namespace soen390_team01.Services
         /// <param name="email">user's email</param>
         /// <param name="password">user's password</param>
         /// <returns>boolean wether the account was succesfully created</returns>
-        public virtual async Task<bool> RegisterUser(string email, string password)
+        public virtual bool RegisterUser(string email, string password)
         {
             try
             {
-                await _ap.CreateUserWithEmailAndPasswordAsync(email, password);
+                _ap.CreateUserWithEmailAndPasswordAsync(email, password);
                 return true;
             }
             catch (Exception e)
             {
-                FirebaseErrors(e.Message);
-                return false;
+                throw FirebaseErrors(e.Message);
             }
         }
 
@@ -74,44 +70,38 @@ namespace soen390_team01.Services
         /// </summary>
         /// <param name="email">user's email</param>
         /// <returns></returns>
-        public virtual async Task<bool> RequestPasswordChange(string email)
+        public virtual bool RequestPasswordChange(string email)
         {
             try
             {
-                await _ap.SendPasswordResetEmailAsync(email);
+                _ap.SendPasswordResetEmailAsync(email);
                 return true;
             }
             catch (Exception e)
             {
-                FirebaseErrors(e.Message);
-                return false;
+                throw FirebaseErrors(e.Message);
             }
         }
 
-        public static void FirebaseErrors(string error)
+        public static DataAccessException FirebaseErrors(string error)
         {
-            var temp = new Regex("message\": \".*\"").Matches(error)[0].Value.Substring(11).Replace('"', ' ').Trim();
-            switch (temp)
+            var temp = new Regex("message\": \".*\"").Matches(error)[0].Value[11..].Replace('"', ' ').Trim();
+            return temp switch
             {
-                case "EMAIL_EXISTS":
-                    throw new EmailExistsException();
-                case "EMAIL_NOT_FOUND":
-                    throw new EmailNotFoundException();
-                case "INVALID_PASSWORD":
-                    break;
-                default:
-                    Debug.Fail("This should not happen");
-                    break;
-            }
+                "EMAIL_EXISTS" => new EmailExistsException(),
+                "EMAIL_NOT_FOUND" => new EmailNotFoundException(),
+                _ => new UnexpectedDataAccessException("Email_error")
+            };
         }
 
         /// <summary>
         /// Sets the authentication cookie so user is remembered in the browser
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="role"></param>
         /// <param name="context"></param>
         [ExcludeFromCodeCoverage]
-        public virtual async Task SetAuthCookie(string email, string role, HttpContext context)
+        public virtual void SetAuthCookie(string email, string role, HttpContext context)
         {
             var claims = new List<Claim>
             {
@@ -126,13 +116,13 @@ namespace soen390_team01.Services
                 AllowRefresh = true,
             };
 
-            await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
         [ExcludeFromCodeCoverage]
-        public virtual async Task RemoveAuthCookie(HttpContext context)
+        public virtual void RemoveAuthCookie(HttpContext context)
         {
-            await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
+            context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }

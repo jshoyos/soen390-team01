@@ -3,9 +3,6 @@ using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace soen390_team01.Controllers
 {
@@ -42,7 +39,7 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> IndexAsync(LoginModel model)
+        public IActionResult IndexAsync(LoginModel model)
         {
             if (ModelState.IsValid)
             {
@@ -56,14 +53,10 @@ namespace soen390_team01.Controllers
                         ModelState.AddModelError(string.Empty, "Invalid authentication");
                         return View(model);
                     }
-                    await _authService.SetAuthCookie(email, user.Role, this.HttpContext);
+                    _authService.SetAuthCookie(email, user.Role, this.HttpContext);
                     return LocalRedirect("/Home/Privacy");
                 }
-                catch (NotFoundException)
-                {
-                    TempData["errorMessage"] = "User does not exist";
-                }
-                catch(EmailNotFoundException)
+                catch (DataAccessException)
                 {
                     TempData["errorMessage"] = "User does not exist";
                 }
@@ -72,9 +65,9 @@ namespace soen390_team01.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> LogoutAsync()
+        public IActionResult LogoutAsync()
         {
-            await _authService.RemoveAuthCookie(this.HttpContext);
+            _authService.RemoveAuthCookie(this.HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>
@@ -93,15 +86,16 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(LoginModel model)
+        public IActionResult ForgotPassword(LoginModel model)
         {
-            if (!string.IsNullOrEmpty(model.Email))
+            if (string.IsNullOrEmpty(model.Email))
             {
-                await _authService.RequestPasswordChange(model.Email);
-                return LocalRedirect("/Authentication/Index");
+                return View(model);
             }
 
-            return View(model);
+            _authService.RequestPasswordChange(model.Email);
+            return LocalRedirect("/Authentication/Index");
+
         }
 
         [HttpGet]
@@ -118,8 +112,8 @@ namespace soen390_team01.Controllers
         /// <returns>returns the current user</returns>
         private User AuthenticateUser(string email, string password)
         {
-            User user = _userManagementService.GetUserByEmail(email);
-            if (user != null && _authService.AuthenticateUser(email, password).Result)
+            var user = _userManagementService.GetUserByEmail(email);
+            if (user != null && _authService.AuthenticateUser(email, password))
             {
                 return user;
             }

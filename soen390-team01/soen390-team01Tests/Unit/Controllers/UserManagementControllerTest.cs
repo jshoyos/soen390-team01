@@ -108,7 +108,7 @@ namespace soen390_team01Tests.Unit.Controllers
         [Test]
         public void AddUserTest()
         {
-            _authenticationServiceMock.Setup(a => a.RegisterUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(false));
+            _authenticationServiceMock.Setup(a => a.RegisterUser(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
             _userManagementServiceMock.Setup(u => u.AddUser(It.IsAny<User>())).Returns(new User());
             var model = new UserManagementModel
             {
@@ -125,7 +125,7 @@ namespace soen390_team01Tests.Unit.Controllers
         [Test]
         public void AddUserFailTest()
         {
-            _authenticationServiceMock.Setup(a => a.RegisterUser(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _authenticationServiceMock.Setup(a => a.RegisterUser(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             _userManagementServiceMock.Setup(u => u.AddUser(It.IsAny<User>())).Returns(new User());
             _userManagementServiceMock.Setup(u => u.RemoveUser(It.IsAny<User>()));
 
