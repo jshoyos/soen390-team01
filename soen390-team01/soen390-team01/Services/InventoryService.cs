@@ -15,10 +15,6 @@ namespace soen390_team01.Services
     public class InventoryService : DisposableService
     {
         private readonly ErpDbContext _context;
-        public static String GetTimestamp(DateTime value)
-        {
-            return value.ToString("yyyyMMddHHmmssffff");
-        }
         public InventoryService(ErpDbContext context)
         {
             _context = context;
@@ -160,7 +156,6 @@ namespace soen390_team01.Services
             {
                 _context.Inventories.Update(updatedInventory);
                 _context.SaveChanges();
-                String timeStamp = GetTimestamp(DateTime.Now);
             }
             catch (DbUpdateException e)
             {

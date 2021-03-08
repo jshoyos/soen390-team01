@@ -11,7 +11,6 @@ namespace soen390_team01.Data.Entities
         {
             PartMaterials = new HashSet<PartMaterial>();
         }
-
         public virtual ICollection<PartMaterial> PartMaterials { get; set; }
     }
 }

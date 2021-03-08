@@ -2,14 +2,65 @@
 
 <div id="Bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "Bike" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
+    <div class="row " style="padding-left:10%; padding-right:20%;">
+        <div class="col-3 text-align: right;">
+            Added:
+        </div>
+        <div class="col-8">
+            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+        </div>
+    </div>
+    <div class="row " style="padding-left:10%; padding-right:20%;">
+        <div class="col-3 text-align: right;">
+            Updated:
+        </div>
+        <div class="col-8">
+            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+        </div>
+    </div>
+    <br />
     <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Bike'),showFilter('Bike')">
 </div>
 <div id="Part-filter" class="filer-data" style="display:@(Model.SelectedTab == "Part" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
+    <div class="row " style="padding-left:10%; padding-right:20%;">
+        <div class="col-3 text-align: right;">
+            Added:
+        </div>
+        <div class="col-8">
+            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+        </div>
+    </div>
+    <div class="row " style="padding-left:10%; padding-right:20%;">
+        <div class="col-3 text-align: right;">
+            Updated:
+        </div>
+        <div class="col-8">
+            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+        </div>
+    </div>
+    <br />
     <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Part'),showFilter('Part')">
 </div>
 <div id="Material-filter" class="filer-data" style="display:@(Model.SelectedTab == "Material" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
+    <div class="row " style="padding-left:10%; padding-right:20%;">
+        <div class="col-3 text-align: right;">
+            Added: 
+        </div>
+        <div class="col-8">
+            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+        </div>
+    </div>
+    <div class="row " style="padding-left:10%; padding-right:20%;">
+        <div class="col-3 text-align: right;">
+            Updated: 
+        </div>
+        <div class="col-8">
+            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+        </div>
+    </div>
+    <br />
     <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Material'),showFilter('Material')">
 </div>
 
