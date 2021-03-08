@@ -1,6 +1,6 @@
 ﻿$(function () {
     var placeHolderElement = $('#PlaceHolderHere');
-    $('button[data-toggle="ajax-modal"').click(function(event) {
+    $('button[data-toggle="ajax-modal"').click(function (event) {
         var url = $(this).data('url');
         var decodedUrl = decodeURIComponent(url);
         $.get(decodedUrl).done(function (data) {
@@ -21,4 +21,10 @@
                 placeHolderElement.find('.modal').modal('hide');
             });
         });
+    $(document).ajaxError(function (event, jqxhr, settings, exception) {
+        if (jqxhr.status == 401) {
+            alert("You don't have the permission required");
+            $('#PlaceHolderHere').find('.modal').modal('show');
+        }
+    });
 })
