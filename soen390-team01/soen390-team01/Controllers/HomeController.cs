@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using soen390_team01.Models;
 using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 
 namespace soen390_team01.Controllers

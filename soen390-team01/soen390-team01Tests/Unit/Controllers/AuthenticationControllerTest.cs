@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System.Threading.Tasks;
@@ -85,6 +87,27 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
+        public void IndexAsyncExceptionTest()
+        {
+            _userManagementServiceMock.Setup(u => u.GetUserByEmail(It.IsAny<string>())).Throws(new InvalidValueException("test","Exception"));
+            var model = new LoginModel
+            {
+                Email = "admin@hotmail.com",
+                Password = "admin1"
+
+            };
+
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            var result = controller.IndexAsync(model) as ViewResult;
+
+            Assert.IsTrue("User does not exist".Equals(result.TempData["errorMessage"]));
+        }
+
+        [Test]
         public void ForgotPasswordTest()
         {
             var model = new LoginModel
@@ -107,6 +130,15 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
+        public void ForgotPasswordViewTest()
+        {
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var result = controller.ForgotPassword() as ViewResult;
+
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
         public void Logout()
         {
             _authenticationServiceMock.Setup(u => u.RemoveAuthCookie(new DefaultHttpContext()));
@@ -115,3 +147,4 @@ namespace soen390_team01Tests.Unit.Controllers
         }
     }
 }
+

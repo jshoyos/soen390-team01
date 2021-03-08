@@ -21,11 +21,17 @@ namespace soen390_team01Tests.Unit.Services
         public void AuthenticateUserTest()
         {
             _authFirebaseProviderMock.Setup(a => a.SignInWithEmailAndPasswordAsync("existingEmail@hotmail.com", It.IsAny<string>())).Throws(new Exception("message\": \"EMAIL_NOT_FOUND\""));
-            //_authFirebaseProviderMock.Setup(a => a.SignInWithEmailAndPasswordAsync(It.Is<string>(s => !s.Equals("existingEmail@hotmail.com")), It.IsAny<string>())).ReturnsAsync(new FirebaseAuthLink(_authFirebaseProviderMock.Object, new FirebaseAuth()));
 
             var authFirebaseService = new AuthenticationFirebaseService(_authFirebaseProviderMock.Object);
             Assert.Throws<EmailNotFoundException>(() => authFirebaseService.AuthenticateUser("existingEmail@hotmail.com", "badkfjdfks"));
-            //Assert.IsTrue(authFirebaseService.AuthenticateUser("admin@hotmail.com", "bruu").Result);
+        }
+        [Test]
+        public void UnexpectedExceptionTest()
+        {
+            _authFirebaseProviderMock.Setup(a => a.SignInWithEmailAndPasswordAsync("existingEmail@hotmail.com", It.IsAny<string>())).Throws(new Exception("message\": \"INVALID_PASSWORD\""));
+
+            var authFirebaseService = new AuthenticationFirebaseService(_authFirebaseProviderMock.Object);
+            Assert.Throws<UnexpectedDataAccessException>(() => authFirebaseService.AuthenticateUser("existingEmail@hotmail.com", "badkfjdfks"));
         }
 
         [Test]

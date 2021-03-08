@@ -55,7 +55,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
         }
 
         [Test]
-        public void RefusedModulePermissionTest()
+        public void RefusedModulePermissionOnIndexTest()
         {
             var actionArguments = new Dictionary<string, object>();
             var attribute = new ModulePermissionAttribute
@@ -70,6 +70,34 @@ namespace soen390_team01Tests.Unit.Data.Queries
                         new Dictionary<string, object>()
                         {
                             {"action","Index" }
+                        })
+                    ),
+                    Mock.Of<ActionDescriptor>(),
+                    new ModelStateDictionary()
+                    ),
+                new List<IFilterMetadata>(),
+                actionArguments,
+                Mock.Of<Controller>()
+                );
+            attribute.OnActionExecuting(context);
+        }
+
+        [Test]
+        public void RefusedModulePermissionTest()
+        {
+            var actionArguments = new Dictionary<string, object>();
+            var attribute = new ModulePermissionAttribute
+            {
+                Roles = Role.SalesRep
+            };
+            var context = new ActionExecutingContext(
+                new ActionContext(
+                    httpContextMock.Object,
+                    new RouteData(
+                        new RouteValueDictionary(
+                        new Dictionary<string, object>()
+                        {
+                            {"action","EditUser" }
                         })
                     ),
                     Mock.Of<ActionDescriptor>(),
