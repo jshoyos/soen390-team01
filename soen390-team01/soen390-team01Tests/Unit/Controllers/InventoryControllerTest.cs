@@ -150,35 +150,18 @@ namespace soen390_team01Tests.Controllers
         [Test]
         public void RefreshTest()
         {
-            var allList = new List<Inventory>();
-
-            var selectedTab = "bike";
-            for (var i = 1; i <= 9; i++)
-            {
-                var type = (9 % i) switch
-                {
-                    0 => "bike",
-                    1 => "part",
-                    _ => "material"
-                };
-                allList.Add(new Inventory
-                {
-                    ItemId = i,
-                    InventoryId = i,
-                    Quantity = i,
-                    Type = type,
-                    Warehouse = "Warehouse " + i
-                }
-                );
-            }
-
-            _modelMock.Setup(m => m.AllList).Returns(allList);
+            _modelMock.Setup(m => m.ResetBikes());
+            _modelMock.Setup(m => m.ResetParts());
+            _modelMock.Setup(m => m.ResetMaterials());
 
             var controller = new InventoryController(_modelMock.Object);
 
-            var result = controller.Refresh(selectedTab) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(9, (result.Model as IInventoryService).AllList.Count);
+            controller.Refresh("bike");
+            _modelMock.Verify(m => m.ResetBikes(), Times.Once());
+            controller.Refresh("part");
+            _modelMock.Verify(m => m.ResetParts(), Times.Once());
+            controller.Refresh("material");
+            _modelMock.Verify(m => m.ResetMaterials(), Times.Once());
         }
     }
 }
