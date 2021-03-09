@@ -68,6 +68,10 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Added)
                     .HasColumnType("timestamp without time zone")
                     .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified");
             });
 
             modelBuilder.Entity<BikePart>(entity =>
@@ -170,6 +174,10 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Added)
                     .HasColumnType("timestamp without time zone")
                     .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+               .HasColumnType("timestamp without time zone")
+               .HasColumnName("modified");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -204,6 +212,10 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Added)
                     .HasColumnType("timestamp without time zone")
                     .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified");
             });
 
             modelBuilder.Entity<OrderItem>(entity =>
@@ -263,6 +275,10 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Added)
                     .HasColumnType("timestamp without time zone")
                     .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+               .HasColumnType("timestamp without time zone")
+               .HasColumnName("modified");
             });
 
             modelBuilder.Entity<PartMaterial>(entity =>
@@ -309,6 +325,10 @@ namespace soen390_team01.Data
                 entity.Property(e => e.Added)
                    .HasColumnType("timestamp without time zone")
                    .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified");
             });
 
             modelBuilder.Entity<Procurement>(entity =>
@@ -347,9 +367,14 @@ namespace soen390_team01.Data
                     .HasForeignKey(d => d.VendorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("procurement_vendor_id_fkey");
+
                 entity.Property(e => e.Added)
                    .HasColumnType("timestamp without time zone")
                    .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modified");
             });
 
             modelBuilder.Entity<Vendor>(entity =>
@@ -409,9 +434,14 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasColumnType("character varying")
                     .HasColumnName("user_role");
+
                 entity.Property(e => e.Added)
                   .HasColumnType("timestamp without time zone")
                   .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+                 .HasColumnType("timestamp without time zone")
+                 .HasColumnName("modified");
             });
 
             modelBuilder.HasSequence("bike_id_seq");

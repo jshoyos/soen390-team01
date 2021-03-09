@@ -1,3 +1,17 @@
+CREATE FUNCTION public.timestamp_update()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    
+AS $BODY$
+BEGIN
+NEW.updated = now();
+return NEW;
+END
+$BODY$;
+
+ALTER FUNCTION public.timestamp_update()
+    OWNER TO soen390team01devuser;
+
 CREATE FUNCTION public.inventory_item_check() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -42,6 +56,11 @@ CREATE TABLE public.bike (
 
 ALTER TABLE public.bike OWNER TO soen390team01devuser;
 
+CREATE TRIGGER bike_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.bike
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.bike_part (
     bike_id bigint NOT NULL,
@@ -94,6 +113,12 @@ CREATE TABLE public.material (
 
 ALTER TABLE public.material OWNER TO soen390team01devuser;
 
+CREATE TRIGGER material_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.material
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
+
 CREATE SEQUENCE public.part_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -114,6 +139,12 @@ CREATE TABLE public.part (
 
 
 ALTER TABLE public.part OWNER TO soen390team01devuser;
+
+CREATE TRIGGER part_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.part
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.part_material (
     part_id bigint NOT NULL,
@@ -266,6 +297,12 @@ TABLESPACE pg_default;
 ALTER TABLE public.payment
     OWNER to soen390team01devuser;
 
+CREATE TRIGGER payment_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.payment
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
+
 CREATE TABLE public."order"
 (
     order_id bigint NOT NULL DEFAULT nextval('order_order_id_seq'::regclass),
@@ -289,6 +326,12 @@ TABLESPACE pg_default;
 
 ALTER TABLE public."order"
     OWNER to soen390team01devuser;
+
+CREATE TRIGGER order_timestamp_trigger
+    BEFORE UPDATE 
+    ON public."order"
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.procurement
 (
@@ -316,6 +359,12 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.procurement
     OWNER to soen390team01devuser;
+
+CREATE TRIGGER procurement_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.procurement
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TRIGGER procurement_item_trigger
     BEFORE INSERT OR UPDATE 
@@ -372,3 +421,9 @@ TABLESPACE pg_default;
 
 ALTER TABLE public."user"
     OWNER to soen390team01devuser;
+
+CREATE TRIGGER user_timestamp_trigger
+    BEFORE UPDATE 
+    ON public."user"
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();

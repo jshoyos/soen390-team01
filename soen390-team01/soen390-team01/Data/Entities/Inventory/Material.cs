@@ -12,6 +12,7 @@ namespace soen390_team01.Data.Entities
             PartMaterials = new HashSet<PartMaterial>();
         }
         public DateTime Added { get; set; }
+        public DateTime Updated { get; set; }
         public virtual ICollection<PartMaterial> PartMaterials { get; set; }
     }
 }

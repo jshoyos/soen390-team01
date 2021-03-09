@@ -14,6 +14,7 @@ namespace soen390_team01.Data.Entities
         }
         public string Size { get; set; }
         public DateTime Added { get; set; }
+        public DateTime Updated { get; set; }
         public virtual ICollection<BikePart> BikeParts { get; set; }
         public virtual ICollection<PartMaterial> PartMaterials { get; set; }
     }
