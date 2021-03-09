@@ -16,7 +16,7 @@ namespace soen390_team01.Data.Entities
         public long PaymentId { get; set; }
         public decimal Amount { get; set; }
         public string State { get; set; }
-
+        public DateTime Added { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Procurement> Procurements { get; set; }
     }

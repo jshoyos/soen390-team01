@@ -25,5 +25,6 @@ namespace soen390_team01.Data.Entities
         public virtual string Email { get; set; }
         public long UserId { get; set; }
         public string Iv { get; set; }
+        public DateTime Added { get; set; }
     }
 }

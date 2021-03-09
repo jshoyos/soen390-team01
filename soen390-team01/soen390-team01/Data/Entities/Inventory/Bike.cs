@@ -13,6 +13,7 @@ namespace soen390_team01.Data.Entities
             BikeParts = new HashSet<BikePart>();
         }
         public string Size { get; set; }
+        public DateTime Added { get; set; }
         public virtual ICollection<BikePart> BikeParts { get; set; }
     }
 }

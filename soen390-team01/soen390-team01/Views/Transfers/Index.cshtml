@@ -160,11 +160,12 @@
                         </div>
                         @foreach (var order in Model.Orders)
                         {
-                            <div class="row pt-4 pb-4 h-100 text-center">
-                                <div class="col">@order.OrderId</div>
-                                <div class="col">@order.State</div>
-                                <div class="col">@order.Customer.Name</div>
-                            </div>
+                    <div class="row pt-4 pb-4 h-100 text-center">
+                        <div class="col">@order.OrderId</div>
+                        <div class="col">@order.State</div>
+                        <div class="col">@order.Customer.Name</div>
+                        <div class="col">@order.Added</div>
+                    </div>
                         }
                     </div>
                 </div>
