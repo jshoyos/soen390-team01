@@ -2,9 +2,9 @@
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using soen390_team01.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using soen390_team01.Data.Exceptions;
@@ -15,103 +15,76 @@ namespace soen390_team01.Services
     public class InventoryService : DisposableService
     {
         private readonly ErpDbContext _context;
+        public InventoryModel Model { get; set; }
+
         public InventoryService(ErpDbContext context)
         {
             _context = context;
+            SetupModel();
         }
 
-        public virtual List<T> GetFilteredProductList<T>(ProductFilterInput input) where T : Item
+        public virtual List<T> GetFilteredProductList<T>(Filters filters) where T : Item
         {
             try
             {
-                return _context.Set<T>("soen390_team01.Data.Entities." + input.Type).FromSqlRaw(ProductQueryBuilder.FilterProduct(input)).ToList();
+                return _context.Set<T>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
             }
             catch(Exception)
             {
-                throw new NotFoundException(input.Type, input.Name, input.Value);
+                throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
             }
         }
-        public virtual InventoryModel SetupModel()
-        {
-            var model = GetInventoryModel();
-            model.BikeFilters.Add("Name", GetFilter("name","bike"));
-            model.BikeFilters.Add("Grade", GetFilter("grade", "bike"));
-            model.BikeFilters.Add("Price", GetFilter("price", "bike"));
-            model.PartFilters.Add("Name", GetFilter("name", "part"));
-            model.PartFilters.Add("Grade", GetFilter("grade", "part"));
-            model.PartFilters.Add("Price", GetFilter("price", "part"));
-            model.MaterialFilters.Add("Name", GetFilter("name", "material"));
-            model.MaterialFilters.Add("Grade", GetFilter("grade", "material"));
-            model.MaterialFilters.Add("Price", GetFilter("price", "material"));
-            return model;
-        }
 
-        /// <summary>
-        /// Queries all the items in the inventory and splits the into an InventoryModel
-        /// </summary>
-        /// <returns>InventoryModel</returns>
-        public virtual InventoryModel GetInventoryModel()
+        private void SetupModel()
         {
-
-            var model = new InventoryModel();
+            Model = new InventoryModel();
             var all = GetInventory();
-            model.AllList = all;
-            model.BikeList = GetAllBikes();
-            model.PartList = GetAllParts();
-            model.MaterialList = GetAllMaterials();
-            return model;
+            Model.AllList = all;
+            Model.BikeList = GetAllBikes();
+            Model.PartList = GetAllParts();
+            Model.MaterialList = GetAllMaterials();
+            Model.BikeFilters = ResetBikeFilters();
+            Model.PartFilters = ResetPartFilters();
+            Model.MaterialFilters = ResetMaterialFilters();
         }
 
-
-        //TODO: refactor
-        public virtual SelectList GetFilter(string param,string table)
+        public virtual Filters ResetBikeFilters()
         {
-            switch (table)
-            {
-                case "bike":
-                    switch (param)
-                    {
-                        case "grade": return new SelectList(_context.Bikes.Select(bike => bike.Grade).Distinct().ToList());
-                        case "name": return new SelectList(_context.Bikes.Select(bike => bike.Name).Distinct().ToList());
-                        case "price":
-                            List<string> stringList = new List<string>();
-                            foreach (double d in _context.Bikes.Select(bike => bike.Price).Distinct().ToList())
-                            {
-                                stringList.Add(d.ToString());
-                            }
-                            return new SelectList(stringList);
-                        default: return null;
-                    }
-                case "part":
-                    switch (param)
-                    {
-                        case "grade": return new SelectList(_context.Parts.Select(bike => bike.Grade).Distinct().ToList());
-                        case "name": return new SelectList(_context.Parts.Select(bike => bike.Name).Distinct().ToList());
-                        case "price":
-                            List<string> stringList = new List<string>();
-                            foreach (double d in _context.Parts.Select(bike => bike.Price).Distinct().ToList())
-                            {
-                                stringList.Add(d.ToString());
-                            }
-                            return new SelectList(stringList);
-                        default: return null;
-                    }
-                case "material":
-                    switch (param)
-                    {
-                        case "grade": return new SelectList(_context.Materials.Select(bike => bike.Grade).Distinct().ToList());
-                        case "name": return new SelectList(_context.Materials.Select(bike => bike.Name).Distinct().ToList());
-                        case "price":
-                            List<string> stringList = new List<string>();
-                            foreach (double d in _context.Materials.Select(bike => bike.Price).Distinct().ToList())
-                            {
-                                stringList.Add(d.ToString());
-                            }
-                            return new SelectList(stringList);
-                        default: return null;
-                    }
-                default: return null;
-            }     
+            var filters = new Filters("bike");
+
+            filters.Add(new StringFilter("bike", "Name", "name"));
+            filters.Add(new SelectFilter("bike", "Grade", "grade", _context.Bikes.Select(bike => bike.Grade).Distinct().OrderBy(g => g).ToList()));
+            filters.Add(new CheckboxFilter("bike", "Size", "size", _context.Bikes.Select(bike => bike.Size).Distinct().OrderBy(s => s).ToList()));
+            filters.Add(new RangeFilter("bike", "Price", "price"));
+            // Can add bike specific filters
+
+            return filters;
+        }
+
+        public virtual Filters ResetPartFilters()
+        {
+            var filters = new Filters("part");
+
+            filters.Add(new StringFilter("part", "Name", "name"));
+            filters.Add(new SelectFilter("part", "Grade", "grade", _context.Parts.Select(part => part.Grade).Distinct().OrderBy(g => g).ToList()));
+            filters.Add(new CheckboxFilter("part", "Size", "size", _context.Parts.Select(part => part.Size).Distinct().OrderBy(s => s).ToList()));
+            filters.Add(new RangeFilter("part", "Price", "price"));
+            // Can add part specific filters
+
+            return filters;
+        }
+
+        public virtual Filters ResetMaterialFilters()
+        {
+            var filters = new Filters("material");
+
+            filters.Add(new StringFilter("material", "Name", "name"));
+            filters.Add(new SelectFilter("material", "Grade", "grade", _context.Materials.Select(material => material.Grade).Distinct().OrderBy(g => g).ToList()));
+            filters.Add(new RangeFilter("material", "Price", "price"));
+            // Can add material specific filters
+
+            return filters;
         }
 
         /// <summary>
@@ -149,11 +122,13 @@ namespace soen390_team01.Services
         /// <summary>
         /// Updates an inventory item
         /// </summary>
-        /// <param name="updatedInventory">inventory item to update</param>
-        public virtual void Update(Inventory updatedInventory)
+        /// <param name="inventory">inventory item to update</param>
+        public virtual void Update(Inventory inventory)
         {
             try
             {
+                var updatedInventory = _context.Inventories.First(i => i.InventoryId == inventory.InventoryId);
+                updatedInventory.Quantity = inventory.Quantity;
                 _context.Inventories.Update(updatedInventory);
                 _context.SaveChanges();
             }
@@ -161,7 +136,6 @@ namespace soen390_team01.Services
             {
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
-
         }
     }
 }
