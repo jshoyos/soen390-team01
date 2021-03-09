@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using soen390_team01.Services;
 using System.Linq;
+using MockQueryable.Moq;
+using Moq;
+using Npgsql;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 
@@ -68,6 +72,22 @@ namespace soen390_team01Tests.Unit.Services
             {
                 LastName = "Doe",
                 Email = "different_admin@hotmail.com",
+                PhoneNumber = "4385146677",
+                Role = "admin"
+            }));
+
+            var contextMock = new Mock<ErpDbContext>();
+
+            var userSet = new List<User>().AsQueryable().BuildMockDbSet();
+            contextMock.Setup(c => c.Users).Returns(userSet.Object);
+            userSet.Setup(s => s.Add(It.IsAny<User>())).Throws(new DbUpdateException("some_error", new PostgresException("", "", "", "23502", columnName: "some_column")));
+
+            var model = new UserManagementModel(contextMock.Object, _encryptionService);
+            Assert.Throws<NullValueException>(() => model.AddUser(new User
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "admin@hotmail.com",
                 PhoneNumber = "4385146677",
                 Role = "admin"
             }));
