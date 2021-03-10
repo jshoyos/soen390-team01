@@ -4,29 +4,23 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
-using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System.Threading.Tasks;
 
 namespace soen390_team01Tests.Unit.Controllers
 {
     public class AuthenticationControllerTest
     {
-        Mock<ErpDbContext> _contextMock;
         Mock<AuthenticationFirebaseService> _authenticationServiceMock;
-        Mock<EncryptionService> _encryptionServiceMock;
-        Mock<UserManagementService> _userManagementServiceMock;
+        Mock<IUserManagementService> _userManagementServiceMock;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            _contextMock = new Mock<ErpDbContext>();
             _authenticationServiceMock = new Mock<AuthenticationFirebaseService>();
-            _encryptionServiceMock = new Mock<EncryptionService>("xg05/WzFW88jHrFxuNGy3vIMC8SMdFBTr/S2r+EPTtY=");
-            _userManagementServiceMock = new Mock<UserManagementService>(_contextMock.Object, _encryptionServiceMock.Object);
+            _userManagementServiceMock = new Mock<IUserManagementService>();
         }
 
         [Test]
