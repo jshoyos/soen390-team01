@@ -150,7 +150,9 @@ namespace soen390_team01.Services
                 PhoneNumber = _encryption.Decrypt(user.PhoneNumber, iv),
                 Role = user.Role,
                 UserId = user.UserId,
-                Iv = Convert.ToBase64String(iv)
+                Iv = Convert.ToBase64String(iv),
+                Added = user.Added,
+                Updated = user.Updated
             };
         }
     }
