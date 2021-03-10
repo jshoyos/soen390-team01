@@ -22,6 +22,12 @@ namespace soen390_team01.Services
         public List<Payment> GetReceivables();
 
         public List<Payment> GetPayables();
+
+        public void ResetPayments();
+
+        public void ResetPayables();
+
+        public void ResetReceivables();
     }
 
 }

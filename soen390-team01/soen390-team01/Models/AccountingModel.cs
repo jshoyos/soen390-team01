@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using soen390_team01.Data.Queries;
+using System.Globalization;
+using soen390_team01.Data.Exceptions;
 
 namespace soen390_team01.Models
 {
@@ -65,6 +67,23 @@ namespace soen390_team01.Models
             }
             return payablesList;
         }
+        public void ResetPayments()
+        {
+            Payments = GetPayments();
+            PaymentFilters = ResetFilters();
+        }
+
+        public void ResetPayables()
+        {
+            Payables = GetPayables();
+            PayableFilters = ResetFilters();
+        }
+
+        public void ResetReceivables()
+        {
+            Receivables = GetReceivables();
+            ReceivableFilters = ResetFilters();
+        }
 
         private Filters ResetFilters()
         {
@@ -76,5 +95,36 @@ namespace soen390_team01.Models
             return filters;
         }
 
+        public void FilterSelectedTab(Filters filters)
+        {
+            switch (filters.Table)
+            {
+                case "receivable":
+                    Receivables = filters.AnyActive() ? GetFilteredPaymentList(filters) : GetReceivables();
+                    ReceivableFilters = filters;
+                    break;
+                case "payable":
+                    Payables = filters.AnyActive() ? GetFilteredPaymentList(filters) : GetPayables();
+                    PayableFilters = filters;
+                    break;
+                case "all":
+                    Payments = filters.AnyActive() ? GetFilteredPaymentList(filters) : GetPayments();
+                    PaymentFilters = filters;
+                    break;
+            }
+        }
+
+        private List<Payment> GetFilteredPaymentList(Filters filters)
+        {
+            try
+            {
+                return _context.Payments
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+            }
+            catch (Exception)
+            {
+                throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
+            }
+        }
     }   
 }
