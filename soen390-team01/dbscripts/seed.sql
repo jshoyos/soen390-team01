@@ -1,15 +1,14 @@
-CREATE FUNCTION public.update_timestamp()
+CREATE FUNCTION public.timestamp_update()
     RETURNS trigger
     LANGUAGE 'plpgsql'
-    
-AS $BODY$
+AS $$
 BEGIN
-NEW.updated = now();
-return NEW;
+    NEW.modified = now();
+    return NEW;
 END
-$BODY$;
+$$;
 
-ALTER FUNCTION public.update_timestamp()
+ALTER FUNCTION public.timestamp_update()
     OWNER TO soen390team01devuser;
 
 CREATE FUNCTION public.inventory_item_check() RETURNS trigger
@@ -62,7 +61,7 @@ CREATE TRIGGER bike_update_timestamp
     BEFORE UPDATE 
     ON public.bike
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.bike_part (
     bike_id bigint NOT NULL,
@@ -121,7 +120,7 @@ CREATE TRIGGER material_timestamp_trigger
     BEFORE UPDATE 
     ON public.material
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE SEQUENCE public.part_id_seq
     START WITH 1
@@ -150,7 +149,7 @@ CREATE TRIGGER part_timestamp_trigger
     BEFORE UPDATE 
     ON public.part
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.part_material (
     part_id bigint NOT NULL,
@@ -269,7 +268,7 @@ CREATE TABLE public.customer
     address character varying(32) COLLATE pg_catalog."default" NOT NULL,
     phone_number character varying(10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT customer_pkey PRIMARY KEY (customer_id)
-);
+)
 
 TABLESPACE pg_default;
 
@@ -283,7 +282,7 @@ CREATE TABLE public.vendor
     address character varying(32) COLLATE pg_catalog."default" NOT NULL,
     phone_number character varying(10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT vendor_pkey PRIMARY KEY (vendor_id)
-);
+)
 
 TABLESPACE pg_default;
 
@@ -298,7 +297,7 @@ CREATE TABLE public.payment
     added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT payment_pkey PRIMARY KEY (payment_id)
-);
+)
 
 TABLESPACE pg_default;
 
@@ -309,7 +308,7 @@ CREATE TRIGGER payment_timestamp_trigger
     BEFORE UPDATE 
     ON public.payment
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public."order"
 (
@@ -330,7 +329,7 @@ CREATE TABLE public."order"
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
-);
+)
 
 TABLESPACE pg_default;
 
@@ -341,7 +340,7 @@ CREATE TRIGGER order_timestamp_trigger
     BEFORE UPDATE 
     ON public."order"
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.procurement
 (
@@ -365,7 +364,7 @@ CREATE TABLE public.procurement
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
-);
+)
 
 TABLESPACE pg_default;
 
@@ -376,7 +375,7 @@ CREATE TRIGGER procurement_timestamp_trigger
     BEFORE UPDATE 
     ON public.procurement
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TRIGGER procurement_item_trigger
     BEFORE INSERT OR UPDATE 
@@ -396,7 +395,7 @@ CREATE TABLE public.order_item
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
-);
+)
 
 TABLESPACE pg_default;
 
@@ -429,7 +428,7 @@ CREATE TABLE public."user"
     modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT user_pkey PRIMARY KEY (user_id),
     CONSTRAINT email_unique UNIQUE (email)
-);
+)
 
 TABLESPACE pg_default;
 
@@ -440,7 +439,7 @@ CREATE TRIGGER user_timestamp_trigger
     BEFORE UPDATE 
     ON public."user"
     FOR EACH ROW
-    EXECUTE PROCEDURE public.update_timestamp();
+    EXECUTE PROCEDURE public.timestamp_update();
 
 INSERT INTO public."user"(
 	user_role, phone_number, last_name, first_name, email, iv)
