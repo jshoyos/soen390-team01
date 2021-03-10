@@ -6,11 +6,12 @@ namespace soen390_team01.Models
 {
     public class AddUserModel : User
     {
+        #region field
+        #endregion
 
         public AddUserModel()
         {
             Email = "";
-            Role = "";
             PhoneNumber = "";
             LastName = "";
             FirstName = "";

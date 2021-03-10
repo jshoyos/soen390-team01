@@ -93,7 +93,7 @@ namespace soen390_team01.Services
         /// <returns>List of all users</returns>
         public virtual List<User> GetAllUsers()
         {
-            return _context.Users.ToList().Select(DecryptUser).ToList();
+            return _context.Users.ToList().ConvertAll(DecryptUser);
         }
 
         /// <summary>
@@ -103,8 +103,28 @@ namespace soen390_team01.Services
         /// <returns></returns>
         public virtual User GetUserById(long id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == id);
-            return DecryptUser(user);
+            try
+            {
+                var user = _context.Users.FirstOrDefault(u => u.UserId == id);
+                return DecryptUser(user);
+            }
+            catch (Exception)
+            {
+                throw new NotFoundException("User", "ID", id.ToString());
+            }
+        }
+
+        public virtual User GetUserByEmail(string email)
+        {
+            try
+            {
+                List<User> users = GetAllUsers();
+                return users.Find(u => u.Email == email);
+            }
+            catch (Exception)
+            {
+                throw new NotFoundException("User", "email", email);
+            }
         }
 
         private User EncryptUser(User user, byte[] iv = null)

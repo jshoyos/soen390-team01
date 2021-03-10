@@ -435,12 +435,15 @@ TABLESPACE pg_default;
 ALTER TABLE public."user"
     OWNER to soen390team01devuser;
 
+<<<<<<< HEAD
 CREATE TRIGGER user_timestamp_trigger
     BEFORE UPDATE 
     ON public."user"
     FOR EACH ROW
     EXECUTE PROCEDURE public.timestamp_update();
 
+=======
+>>>>>>> 7d8e0aa27ad8fedc395eb670b36511949517c9eb
 INSERT INTO public."user"(
 	user_role, phone_number, last_name, first_name, email, iv)
 	VALUES ('Admin', 'RIMzfjzV+VcTL2/DXk/2QA==',
