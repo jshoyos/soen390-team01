@@ -65,18 +65,22 @@
                    onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } })" />
             <br /><br />
         }
-        else if (filter.GetType() == typeof(RangeFilter))
+        else if (filter.GetType() == typeof(DateRangeFilter))
         {
-            <input type="number" class="price-text"
-                   value="@(((RangeFilter)filter).Min)"
-                   onkeyup="enforceMinMax(this)"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(this.value), MaxValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Max)) } })" />
-            <span>To</span>
-            <input type="number" class="price-text"
-                   value="@(((RangeFilter)filter).Max)"
-                   onkeyup="enforceMinMax(this)"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } })" />
-            <br /><br />
+            <div>From</div>
+            <input 
+                style="max-width: 200px;"
+                type="datetime-local"
+                value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } })" />
+            <br/>
+            <div>To</div>
+            <input 
+                style="max-width: 200px;"
+                type="datetime-local"
+                value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } })" />
+            <br/><br/>
         }
     }
     <br /><br />

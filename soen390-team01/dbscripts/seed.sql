@@ -76,11 +76,19 @@ CREATE TABLE public.inventory (
     type character varying(8) NOT NULL,
     quantity integer NOT NULL,
     warehouse character varying(32) NOT NULL,
-    inventory_id bigint NOT NULL
+    inventory_id bigint NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.inventory OWNER TO soen390team01devuser;
+
+CREATE TRIGGER inventory_update_timestamp
+    BEFORE UPDATE 
+    ON public.inventory
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE SEQUENCE public.inventory_inventory_id_seq
     START WITH 1

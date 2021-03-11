@@ -144,6 +144,14 @@ namespace soen390_team01.Data
                     .IsRequired()
                     .HasMaxLength(32)
                     .HasColumnName("warehouse");
+
+                entity.Property(e => e.Added)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("added");
+
+                entity.Property(e => e.Updated)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("modified");
             });
 
             modelBuilder.Entity<Material>(entity =>
@@ -176,8 +184,8 @@ namespace soen390_team01.Data
                     .HasColumnName("added");
 
                 entity.Property(e => e.Updated)
-               .HasColumnType("timestamp without time zone")
-               .HasColumnName("modified");
+                   .HasColumnType("timestamp without time zone")
+                   .HasColumnName("modified");
             });
 
             modelBuilder.Entity<Order>(entity =>

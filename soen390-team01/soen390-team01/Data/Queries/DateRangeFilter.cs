@@ -5,19 +5,19 @@ namespace soen390_team01.Data.Queries
 {
     public class DateRangeFilter : Filter
     {
-        public DateTime? Min { get; set; }
-        public DateTime? Max { get; set; }
+        public DateTime? MinDate { get; set; }
+        public DateTime? MaxDate { get; set; }
 
         public DateRangeFilter(Filter filter) : this(filter.Table, filter.DisplayColumn, filter.Column)
         {
             Input = filter.Input;
-            Min = filter.Input.DateRangeInput.MinValue;
-            Max = filter.Input.DateRangeInput.MaxValue;
+            MinDate = filter.Input.DateRangeInput.MinValue;
+            MaxDate = filter.Input.DateRangeInput.MaxValue;
         }
         public DateRangeFilter(string table, string displayColumn, string column) : base(table, displayColumn, column)
         {
-            Min = null;
-            Max = null;
+            MinDate = null;
+            MaxDate = null;
         }
 
         public override string GetConditionString()
@@ -25,18 +25,18 @@ namespace soen390_team01.Data.Queries
             var sb = new StringBuilder();
             var validMin = false;
 
-            if (Min != null)
+            if (MinDate != null)
             {
-                sb.Append($"{Column}>= {new NpgsqlTypes.NpgsqlDate((DateTime)Min)}");
+                sb.Append($"{Column} >= '{new NpgsqlTypes.NpgsqlDateTime((DateTime)MinDate)}'");
                 validMin = true;
             }
-            if (Max != null)
+            if (MaxDate != null)
             {
                 if (validMin)
                 {
                     sb.Append(" and ");
                 }
-                sb.Append($"{Column} <= {new NpgsqlTypes.NpgsqlDate((DateTime)Max)}");
+                sb.Append($"{Column} <= '{new NpgsqlTypes.NpgsqlDateTime((DateTime)MaxDate)}'");
             }
 
             return sb.ToString();
@@ -44,7 +44,7 @@ namespace soen390_team01.Data.Queries
 
         public override bool IsActive()
         {
-            return Min != null || Max != null;
+            return MinDate != null || MaxDate != null;
         }
     }
 }

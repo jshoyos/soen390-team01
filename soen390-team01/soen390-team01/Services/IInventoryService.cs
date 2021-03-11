@@ -12,6 +12,7 @@ namespace soen390_team01.Services
         public List<Material> MaterialList { get; set; }
 
         //List parameter Filters
+        public Filters InventoryFilters { get; set; }
         public Filters BikeFilters { get; set; }
         public Filters PartFilters { get; set; }
         public Filters MaterialFilters { get; set; }

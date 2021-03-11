@@ -1,81 +1,30 @@
 ﻿@model soen390_team01.Services.IInventoryService
 
+<div id="inventory-filter" class="filer-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
+</div>
 <div id="bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
-    <div class="row " style="padding-left:10%; padding-right:20%;">
-        <div class="col-3 text-align: right;">
-            Added:
-        </div>
-        <div class="col-8">
-            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-        </div>
-    </div>
-    <div class="row " style="padding-left:10%; padding-right:20%;">
-        <div class="col-3 text-align: right;">
-            Updated:
-        </div>
-        <div class="col-8">
-            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-        </div>
-    </div>
-    <br />
-    <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Bike'),showFilter('Bike')">
 </div>
 <div id="part-filter" class="filer-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
-    <div class="row " style="padding-left:10%; padding-right:20%;">
-        <div class="col-3 text-align: right;">
-            Added:
-        </div>
-        <div class="col-8">
-            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-        </div>
-    </div>
-    <div class="row " style="padding-left:10%; padding-right:20%;">
-        <div class="col-3 text-align: right;">
-            Updated:
-        </div>
-        <div class="col-8">
-            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-        </div>
-    </div>
-    <br />
-    <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Part'),showFilter('Part')">
 </div>
 <div id="material-filter" class="filer-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
-    <div class="row " style="padding-left:10%; padding-right:20%;">
-        <div class="col-3 text-align: right;">
-            Added: 
-        </div>
-        <div class="col-8">
-            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-        </div>
-    </div>
-    <div class="row " style="padding-left:10%; padding-right:20%;">
-        <div class="col-3 text-align: right;">
-            Updated: 
-        </div>
-        <div class="col-8">
-            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-        </div>
-    </div>
-    <br />
-    <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Material'),showFilter('Material')">
 </div>
 
 <div class="bike-components">
     <div class="tab">
-        <button class="tablinks @(Model.SelectedTab == "All" ? "active": "")" id="allButton" onclick="openTab(event, 'All'),hideFilter()">All</button>
+        <button class="tablinks @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
     </div>
     <div class="tab">
         <button class="tablinks @(Model.SelectedTab == "bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'bike'),showFilter('bike')">Bike</button>
         <button class="tablinks @(Model.SelectedTab == "part" ? "active": "")" id="partButton" onclick="openTab(event, 'part'),showFilter('part')">Part</button>
         <button class="tablinks @(Model.SelectedTab == "material" ? "active": "")" id="matButton" onclick="openTab(event, 'material'),showFilter('material')">Material</button>
     </div>
-    <div id="All" class="tabcontent" style="display: @(Model.SelectedTab == "All" ? "block": "none")" onclick="hideFilter()">
+    <div id="inventory" class="tabcontent" style="display: @(Model.SelectedTab == "inventory" ? "block": "none")" onclick="showFilter('inventory')">
 
-        <h3>All</h3>
+        <h3>Inventory</h3>
 
         @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
     </div>

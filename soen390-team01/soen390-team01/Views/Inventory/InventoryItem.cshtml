@@ -8,7 +8,9 @@
 <td>
     <div class="quantity">
         <button class="button-minus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), -1)">-</button>
-        <input type="number" class="quantity-text" value="@Model.Quantity" min="0"/>
+        <input type="number" class="quantity-text" value="@Model.Quantity" min="0" />
         <button class="button-plus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), 1)">+</button>
     </div>
 </td>
+<td>@Model.Added</td>
+<td>@Model.Updated</td>
