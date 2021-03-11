@@ -26,7 +26,7 @@
                     }
                 }
             </select>
-            <br/><br/>
+            <br /><br />
         }
         else if (filter.GetType() == typeof(CheckboxFilter))
         {
@@ -43,14 +43,14 @@
                     <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
                            onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
                 }
-                <br/>
+                <br />
             }
-            <br/>
+            <br />
         }
         else if (filter.GetType() == typeof(StringFilter))
         {
             <input type="text" value="@(((StringFilter)filter).Value)" onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { StringValue: this.value })" />
-            <br/><br/>
+            <br /><br />
         }
         else if (filter.GetType() == typeof(RangeFilter))
         {
@@ -63,9 +63,22 @@
                    value="@(((RangeFilter)filter).Max)"
                    onkeyup="enforceMinMax(this)"
                    onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } })" />
-            <br/><br/>
+            <br /><br />
+        }
+        else if (filter.GetType() == typeof(RangeFilter))
+        {
+            <input type="number" class="price-text"
+                   value="@(((RangeFilter)filter).Min)"
+                   onkeyup="enforceMinMax(this)"
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(this.value), MaxValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Max)) } })" />
+            <span>To</span>
+            <input type="number" class="price-text"
+                   value="@(((RangeFilter)filter).Max)"
+                   onkeyup="enforceMinMax(this)"
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } })" />
+            <br /><br />
         }
     }
-    <br/><br/>
+    <br /><br />
     <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Table)), showFilter(@JsonConvert.SerializeObject(Model.Table))">
 </div>
