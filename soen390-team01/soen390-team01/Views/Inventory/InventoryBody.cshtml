@@ -1,4 +1,4 @@
-﻿@model soen390_team01.Models.InventoryModel
+﻿@model soen390_team01.Services.IInventoryService
 
 <div id="bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
