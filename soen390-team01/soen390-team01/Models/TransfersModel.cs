@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using soen390_team01.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using soen390_team01.Data.Exceptions;
 using Npgsql;
 using soen390_team01.Services;
+using soen390_team01.Models;
 using soen390_team01.Data.Queries;
 using System.Globalization;
 
 namespace soen390_team01.Models
 {
-    public class TransfersModel
+    public class TransfersModel : ITransferService
     {
         private readonly ErpDbContext _context;
         public List<Order> Orders { get; set; }
@@ -21,18 +21,21 @@ namespace soen390_team01.Models
         public AddProcurementModel AddProcurement { get; set; }
 
         //Filter list
-        public Filters ProcurementFilters { get; set; } = new Filters("procurement");
-        public Filters OrderFilters { get; set; } = new Filters("order");
+        public Filters ProcurementFilters { get; set; }
+        public Filters OrderFilters { get; set; }
 
-        //selected filters
-        public TransferFilter TransferFilters { get; set; } = new TransferFilter();
         public string SelectedTab { get; set; } = "Order";
         public bool ShowModal { get; set; } = false;
 
-        public TransfersModel(ErpDbContext context) {
+        public TransfersModel()
+        {
+        }
+
+        public TransfersModel(ErpDbContext context)
+        {
             _context = context;
-            Procurements = getProcurements();
-            Orders = getOrders();
+            Procurements = GetProcurements();
+            Orders = GetOrders();
             ProcurementFilters = ResetProcurementFilters();
             OrderFilters = ResetOrderFilters();
         }
@@ -41,7 +44,7 @@ namespace soen390_team01.Models
         {
             return this;
         }
-        public virtual List<Procurement> getProcurements()
+        public List<Procurement> GetProcurements()
         {
             List<Procurement> list = _context.Procurements
                     .Include(p => p.Payment)
@@ -49,7 +52,7 @@ namespace soen390_team01.Models
                     .ToList();
             return list;
         }
-        public virtual List<Order> getOrders()
+        public List<Order> GetOrders()
         {
             List<Order> list = _context.Orders
                     .Include(o => o.OrderItems)
@@ -59,7 +62,7 @@ namespace soen390_team01.Models
             return list;
         }
 
-        public virtual Filters ResetProcurementFilters()
+        public Filters ResetProcurementFilters()
         {
             var filters = new Filters("procurement");
 
@@ -69,7 +72,7 @@ namespace soen390_team01.Models
             return filters;
         }
 
-        public virtual Filters ResetOrderFilters()
+        public Filters ResetOrderFilters()
         {
             var filters = new Filters("order");
 
@@ -78,24 +81,22 @@ namespace soen390_team01.Models
             return filters;
         }
 
-        public virtual List<Procurement> GetFilteredProcurementList(Filters filters)
+        public List<Procurement> GetFilteredProcurementList(Filters filters)
         {
             try
             {
-                return _context.Set<Procurement>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                return _context.Procurements.FromSqlRaw(TransfersQueryBuilder.FilterProcurement(filters)).ToList();
             }
             catch (Exception)
             {
                 throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
             }
         }
-        public virtual List<Order> GetFilteredOrderList(Filters filters)
+        public List<Order> GetFilteredOrderList(Filters filters)
         {
             try
             {
-                return _context.Set<Order>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                return _context.Orders.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
             }
             catch (Exception)
             {
@@ -109,7 +110,7 @@ namespace soen390_team01.Models
         /// <param name="orderId"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public virtual Order ChangeOrderState(long orderId, string state)
+        public Order ChangeOrderState(long orderId, string state)
         {
             try
             {
@@ -137,7 +138,7 @@ namespace soen390_team01.Models
         /// <param name="procurementId"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public virtual Procurement ChangeProcurementState(long procurementId, string state)
+        public Procurement ChangeProcurementState(long procurementId, string state)
         {
             try
             {
@@ -165,11 +166,11 @@ namespace soen390_team01.Models
         /// <typeparam name="T">Item type</typeparam>
         /// <param name="addProcurements">procurement insertion input</param>
         /// <returns></returns>
-        public virtual Procurement AddProcurements<T>(AddProcurementModel addProcurement) where T : Item
+        public Procurement AddProcurements<T>(AddProcurementModel addProcurement) where T : Item
         {
             try
             {
-                var item = _context.Set<T>("soen390_team01.Data.Entities." + addProcurement.ItemType)
+                var item = _context.Set<T>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(addProcurement.ItemType))
                     .FromSqlRaw(ProductQueryBuilder.GetProduct(addProcurement.ItemType, addProcurement.ItemId))
                     .First();
 

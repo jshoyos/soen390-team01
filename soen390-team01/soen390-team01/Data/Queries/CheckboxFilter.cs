@@ -25,7 +25,7 @@ namespace soen390_team01.Data.Queries
         {
             var sb = new StringBuilder();
 
-            sb.Append($"{Column} in (");
+            sb.Append($"{Table}.{Column} in (");
 
             foreach (var value in Values)
             {

@@ -12,13 +12,21 @@ namespace soen390_team01Tests.Controllers
 {
     public class TransfersControllerTest
     {
+        Mock<ITransferService> _modelMock;
+
+        [SetUp]
+        public void Setup()
+        {
+            _modelMock = new Mock<ITransferService>();
+        }
+
         [Test]
         public void IndexTest()
         {
             var transfersModel = CreateModel();
-            var transfersServiceMock = new Mock<TransfersModel>(new Mock<ErpDbContext>().Object);
-            transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
-            var controller = new TransfersController(transfersServiceMock.Object);
+            var transfersModelMock = new Mock<TransfersModel>(new Mock<ErpDbContext>().Object);
+            transfersModelMock.Setup(i => i.SetupModel()).Returns(transfersModel);
+            var controller = new TransfersController(transfersModelMock.Object);
 
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
@@ -37,7 +45,7 @@ namespace soen390_team01Tests.Controllers
             transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
             var controller = new TransfersController(transfersServiceMock.Object);
 
-            var inputModel = new TransfersModel {
+            var inputModel = new TransfersModel(new ErpDbContext()) {
                 AddProcurement = new AddProcurementModel {
                     ItemId = 0, ItemType = "Bike", ItemQuantity = 1, VendorId = 1
                 }
@@ -66,7 +74,7 @@ namespace soen390_team01Tests.Controllers
             var orders = new List<Order>();
             var procurements = new List<Procurement>();
 
-            var transfersModel = new TransfersModel
+            var transfersModel = new TransfersModel(new Mock<ErpDbContext>().Object)
             {
                 Orders = orders,
                 Procurements = procurements

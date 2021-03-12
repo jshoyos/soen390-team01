@@ -11,9 +11,9 @@ namespace soen390_team01.Controllers
 {
     public class TransfersController : Controller
     {
-        private readonly TransfersModel _model;
+        private readonly ITransferService _model;
 
-        public TransfersController(TransfersModel model)
+        public TransfersController(ITransferService model)
         {
             _model = model;
         }
@@ -24,19 +24,21 @@ namespace soen390_team01.Controllers
         {
             return View(_model);
         }
+
         [HttpPost]
         public IActionResult AddProcurement(TransfersModel model)
         {
+            _model.AddProcurement = model.AddProcurement;
             var showModal = false;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    switch (model.AddProcurement.ItemType)
+                    switch (_model.AddProcurement.ItemType)
                     {
-                        case "Bike": _model.AddProcurements<Bike>(model.AddProcurement); break;
-                        case "Part": _model.AddProcurements<Part>(model.AddProcurement); break;
-                        case "Material": _model.AddProcurements<Material>(model.AddProcurement); break;
+                        case "bike": _model.AddProcurements<Bike>(_model.AddProcurement); break;
+                        case "part": _model.AddProcurements<Part>(_model.AddProcurement); break;
+                        case "material": _model.AddProcurements<Material>(_model.AddProcurement); break;
                     }
                 }
                 catch (DataAccessException e)
@@ -49,13 +51,13 @@ namespace soen390_team01.Controllers
                 showModal = true;
             }
 
-            model = _model.SetupModel();
-            model.SelectedTab = "Procurement";
-            model.ShowModal = showModal;
+            _model.SelectedTab = "Procurement";
+            _model.ShowModal = showModal;
 
-            return View("Index", model);
+            return View("Index", _model);
         }
         [HttpPost]
+        [FiltersAction]
         public IActionResult FilterTransferTable([FromBody] Filters filters)
         {
             try
@@ -63,11 +65,11 @@ namespace soen390_team01.Controllers
                 switch (filters.Table)
                 {
                     case "procurement":
-                        _model.Procurements = true ? _model.GetFilteredProcurementList(filters) : _model.getProcurements();
+                        _model.Procurements = true ? _model.GetFilteredProcurementList(filters) : _model.GetProcurements();
                         _model.ProcurementFilters = filters;
                         break;
                     case "order":
-                        _model.Orders = filters.AnyActive() ? _model.GetFilteredOrderList(filters) : _model.getOrders();
+                        _model.Orders = filters.AnyActive() ? _model.GetFilteredOrderList(filters) : _model.GetOrders();
                         _model.OrderFilters = filters;
                         break;
                 }
@@ -79,7 +81,7 @@ namespace soen390_team01.Controllers
 
             _model.SelectedTab = filters.Table;
 
-            return PartialView("Filter", _model);
+            return PartialView("TransferBody", _model);
         }
         [HttpPost]
         public IActionResult Refresh([FromBody] string selectedTab)
@@ -87,18 +89,18 @@ namespace soen390_team01.Controllers
             switch (selectedTab)
             {
                 case "procurement":
-                    _model.Procurements = _model.getProcurements();
+                    _model.Procurements = _model.GetProcurements();
                     _model.ProcurementFilters = _model.ResetProcurementFilters();
                     break;
                 case "order":
-                    _model.Orders = _model.getOrders();
+                    _model.Orders = _model.GetOrders();
                     _model.OrderFilters = _model.ResetOrderFilters();
                     break;
             }
 
             _model.SelectedTab = selectedTab;
 
-            return PartialView("Filter", _model);
+            return PartialView("TransferBody", _model);
         }
 
     }
