@@ -12,7 +12,7 @@ namespace soen390_team01.Data
         /// <returns></returns>
         public static string DateTimeLocalString(this DateTime dateTime)
         {
-            return TimeZoneInfo.ConvertTime(dateTime, TimeZoneInfo.Local).ToString(CultureInfo.InvariantCulture);
+            return TimeZoneInfo.ConvertTime(new DateTime(dateTime.Ticks, DateTimeKind.Utc), TimeZoneInfo.Local).ToString(CultureInfo.InvariantCulture);
         }
 
     }
