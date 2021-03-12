@@ -1,4 +1,5 @@
 ﻿@using Newtonsoft.Json
+@using soen390_team01.Data
 @model soen390_team01.Data.Entities.Inventory
 
 <td>@Model.InventoryId</td>
@@ -12,5 +13,5 @@
         <button class="button-plus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), 1)">+</button>
     </div>
 </td>
-<td>@Model.Added</td>
-<td>@Model.Updated</td>
+<td>@Model.Added.DateTimeLocalString()</td>
+<td>@Model.Updated.DateTimeLocalString()</td>

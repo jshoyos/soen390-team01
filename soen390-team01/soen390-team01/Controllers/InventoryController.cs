@@ -29,6 +29,10 @@ namespace soen390_team01.Controllers
         {
             switch (selectedTab)
             {
+
+                case "inventory":
+                    _model.ResetInventories();
+                    break;
                 case "bike":
                     _model.ResetBikes();
                     break;
@@ -74,7 +78,7 @@ namespace soen390_team01.Controllers
             {
                 try
                 {
-                    _model.Update(inventory);
+                    inventory = _model.Update(inventory);
                 }
                 catch (DataAccessException e)
                 {

@@ -46,6 +46,15 @@ namespace soen390_team01.Models
         /// <summary>
         /// Resets BikeList and its filters
         /// </summary>
+        public void ResetInventories()
+        {
+            AllList = GetInventory();
+            InventoryFilters = ResetInventoryFilters();
+        }
+
+        /// <summary>
+        /// Resets BikeList and its filters
+        /// </summary>
         public void ResetBikes()
         {
             BikeList = GetAllBikes();
@@ -101,7 +110,7 @@ namespace soen390_team01.Models
         /// Updates an inventory item
         /// </summary>
         /// <param name="inventory">inventory item to update</param>
-        public void Update(Inventory inventory)
+        public Inventory Update(Inventory inventory)
         {
             try
             {
@@ -109,6 +118,7 @@ namespace soen390_team01.Models
                 updatedInventory.Quantity = inventory.Quantity;
                 _context.Inventories.Update(updatedInventory);
                 _context.SaveChanges();
+                return updatedInventory;
             }
             catch (DbUpdateException e)
             {

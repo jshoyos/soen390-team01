@@ -96,7 +96,7 @@ namespace soen390_team01.Models
 
                 _context.Users.Update(EncryptUser(user));
                 _context.SaveChanges();
-                return editedUser;
+                return DecryptUser(user);
             }
             catch (DbUpdateException e)
             {

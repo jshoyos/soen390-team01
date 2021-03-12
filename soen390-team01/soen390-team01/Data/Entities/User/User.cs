@@ -16,8 +16,6 @@ namespace soen390_team01.Data.Entities
             FirstName = u.FirstName;
             Email = u.Email;
             Iv = u.Iv;
-            Added = u.Added;
-            Updated = u.Updated;
         }
 
         public virtual string Role { get; set; }

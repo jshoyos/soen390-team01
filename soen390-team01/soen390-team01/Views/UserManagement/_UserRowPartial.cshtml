@@ -1,4 +1,5 @@
 ﻿@using Newtonsoft.Json
+@using soen390_team01.Data
 @model soen390_team01.Data.Entities.User
 
 <td><button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#EditUser" data-url="@Url.Action($"GetUserById","UserManagement",new { Model.UserId })">Edit</button></td>
@@ -8,5 +9,5 @@
 <td>@Model.Role</td>
 <td>@Model.PhoneNumber</td>
 <td>@Model.Email</td>
-<td>@Model.Added</td>
-<td>@Model.Updated</td>
+<td>@Model.Added.DateTimeLocalString()</td>
+<td>@Model.Updated.DateTimeLocalString()</td>

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using soen390_team01.Data
 @model soen390_team01.Models.TransfersModel
 
 @{
@@ -164,8 +165,8 @@
                         <div class="col">@order.OrderId</div>
                         <div class="col">@order.State</div>
                         <div class="col">@order.Customer.Name</div>
-                        <div class="col">@order.Added</div>
-                        <div class="col">@order.Updated</div>
+                        <div class="col">@order.Added.DateTimeLocalString()</div>
+                        <div class="col">@order.Updated.DateTimeLocalString()</div>
                     </div>
                         }
                     </div>
@@ -192,8 +193,8 @@
                         <div class="col">@procurement.ItemId</div>
                         <div class="col">@procurement.ItemQuantity</div>
                         <div class="col">@procurement.Payment.Amount</div>
-                        <div class="col">@procurement.Added</div>
-                        <div class="col">@procurement.Updated</div>
+                        <div class="col">@procurement.Added.DateTimeLocalString()</div>
+                        <div class="col">@procurement.Updated.DateTimeLocalString()</div>
                     </div>
                         }
                     </div>
