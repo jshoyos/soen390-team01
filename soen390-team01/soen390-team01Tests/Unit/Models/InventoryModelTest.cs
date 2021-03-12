@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System.Linq;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Query;
 using MockQueryable.Moq;
 using Moq;
 using Npgsql;
@@ -122,15 +118,15 @@ namespace soen390_team01Tests.Services
         public void UpdateInvalidTest()
         {
             var ctx = new Mock<ErpDbContext>();
-            var count = 0;
+            var nbInventoriesCall = 0;
             ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Materials).Returns(new List<Material>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
             {
-                count++;
-                // Second call in the update method throws a db exception
-                if (count == 2)
+                nbInventoriesCall++;
+                // 4th call (the one in Update()) in the update method throws a db exception
+                if (nbInventoriesCall == 4)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
 

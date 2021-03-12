@@ -1,3 +1,16 @@
+CREATE FUNCTION public.timestamp_update()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+AS $$
+BEGIN
+    NEW.modified = now();
+    return NEW;
+END
+$$;
+
+ALTER FUNCTION public.timestamp_update()
+    OWNER TO soen390team01devuser;
+
 CREATE FUNCTION public.inventory_item_check() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -36,12 +49,19 @@ CREATE TABLE public.bike (
     name character varying(64) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL,
-    size character varying(4) NOT NULL
+    size character varying(4) NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.bike OWNER TO soen390team01devuser;
 
+CREATE TRIGGER bike_update_timestamp
+    BEFORE UPDATE 
+    ON public.bike
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.bike_part (
     bike_id bigint NOT NULL,
@@ -56,11 +76,19 @@ CREATE TABLE public.inventory (
     type character varying(8) NOT NULL,
     quantity integer NOT NULL,
     warehouse character varying(32) NOT NULL,
-    inventory_id bigint NOT NULL
+    inventory_id bigint NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.inventory OWNER TO soen390team01devuser;
+
+CREATE TRIGGER inventory_update_timestamp
+    BEFORE UPDATE 
+    ON public.inventory
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE SEQUENCE public.inventory_inventory_id_seq
     START WITH 1
@@ -88,11 +116,19 @@ CREATE TABLE public.material (
     item_id bigint DEFAULT nextval('public.material_id_seq'::regclass) NOT NULL,
     name character varying(64) NOT NULL,
     price money NOT NULL,
-    grade character varying(32) NOT NULL
+    grade character varying(32) NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.material OWNER TO soen390team01devuser;
+
+CREATE TRIGGER material_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.material
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE SEQUENCE public.part_id_seq
     START WITH 1
@@ -109,11 +145,19 @@ CREATE TABLE public.part (
     name character varying(6) NOT NULL,
     price money NOT NULL,
     grade character varying(32) NOT NULL,
-    size character varying(4) NOT NULL
+    size character varying(4) NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.part OWNER TO soen390team01devuser;
+
+CREATE TRIGGER part_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.part
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TABLE public.part_material (
     part_id bigint NOT NULL,
@@ -258,6 +302,8 @@ CREATE TABLE public.payment
     payment_id bigint NOT NULL DEFAULT nextval('payment_payment_id_seq'::regclass),
     amount money NOT NULL,
     state character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT payment_pkey PRIMARY KEY (payment_id)
 )
 
@@ -266,12 +312,20 @@ TABLESPACE pg_default;
 ALTER TABLE public.payment
     OWNER to soen390team01devuser;
 
+CREATE TRIGGER payment_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.payment
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
+
 CREATE TABLE public."order"
 (
     order_id bigint NOT NULL DEFAULT nextval('order_order_id_seq'::regclass),
     customer_id bigint NOT NULL,
     state character varying(10) COLLATE pg_catalog."default" NOT NULL,
     payment_id bigint NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT order_pkey PRIMARY KEY (order_id),
     CONSTRAINT order_customer_id_fkey FOREIGN KEY (customer_id)
         REFERENCES public.customer (customer_id) MATCH SIMPLE
@@ -290,6 +344,12 @@ TABLESPACE pg_default;
 ALTER TABLE public."order"
     OWNER to soen390team01devuser;
 
+CREATE TRIGGER order_timestamp_trigger
+    BEFORE UPDATE 
+    ON public."order"
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
+
 CREATE TABLE public.procurement
 (
     procurement_id bigint NOT NULL DEFAULT nextval('procurement_procurement_id_seq'::regclass),
@@ -299,6 +359,8 @@ CREATE TABLE public.procurement
     state character varying(10) COLLATE pg_catalog."default" NOT NULL,
     type character varying(8) COLLATE pg_catalog."default" NOT NULL,
     vendor_id bigint NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT procurement_pkey PRIMARY KEY (procurement_id),
     CONSTRAINT procurement_payment_id_fkey FOREIGN KEY (payment_id)
         REFERENCES public.payment (payment_id) MATCH SIMPLE
@@ -316,6 +378,12 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.procurement
     OWNER to soen390team01devuser;
+
+CREATE TRIGGER procurement_timestamp_trigger
+    BEFORE UPDATE 
+    ON public.procurement
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 CREATE TRIGGER procurement_item_trigger
     BEFORE INSERT OR UPDATE 
@@ -364,6 +432,8 @@ CREATE TABLE public."user"
     email character varying COLLATE pg_catalog."default" NOT NULL,
     user_id bigint NOT NULL DEFAULT nextval('user_user_id_seq'::regclass),
     iv character varying COLLATE pg_catalog."default" NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT user_pkey PRIMARY KEY (user_id),
     CONSTRAINT email_unique UNIQUE (email)
 )
@@ -372,6 +442,13 @@ TABLESPACE pg_default;
 
 ALTER TABLE public."user"
     OWNER to soen390team01devuser;
+
+
+CREATE TRIGGER user_timestamp_trigger
+    BEFORE UPDATE 
+    ON public."user"
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
 
 INSERT INTO public."user"(
 	user_role, phone_number, last_name, first_name, email, iv)

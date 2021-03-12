@@ -1,5 +1,8 @@
 ﻿@model soen390_team01.Services.IInventoryService
 
+<div id="inventory-filter" class="filer-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
+</div>
 <div id="bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
 </div>
@@ -12,16 +15,16 @@
 
 <div class="bike-components">
     <div class="tab">
-        <button class="tablinks @(Model.SelectedTab == "All" ? "active": "")" id="allButton" onclick="openTab(event, 'All'),hideFilter()">All</button>
+        <button class="tablinks @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
     </div>
     <div class="tab">
         <button class="tablinks @(Model.SelectedTab == "bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'bike'),showFilter('bike')">Bike</button>
         <button class="tablinks @(Model.SelectedTab == "part" ? "active": "")" id="partButton" onclick="openTab(event, 'part'),showFilter('part')">Part</button>
         <button class="tablinks @(Model.SelectedTab == "material" ? "active": "")" id="matButton" onclick="openTab(event, 'material'),showFilter('material')">Material</button>
     </div>
-    <div id="All" class="tabcontent" style="display: @(Model.SelectedTab == "All" ? "block": "none")" onclick="hideFilter()">
+    <div id="inventory" class="tabcontent" style="display: @(Model.SelectedTab == "inventory" ? "block": "none")" onclick="showFilter('inventory')">
 
-        <h3>All</h3>
+        <h3>Inventory</h3>
 
         @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
     </div>

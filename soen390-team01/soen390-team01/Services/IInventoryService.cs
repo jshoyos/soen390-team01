@@ -12,10 +12,16 @@ namespace soen390_team01.Services
         public List<Material> MaterialList { get; set; }
 
         //List parameter Filters
+        public Filters InventoryFilters { get; set; }
         public Filters BikeFilters { get; set; }
         public Filters PartFilters { get; set; }
         public Filters MaterialFilters { get; set; }
         public string SelectedTab { get; set; }
+
+        /// <summary>
+        /// Resets AllList and its filters
+        /// </summary>
+        public void ResetInventories();
 
         public void ResetBikes();
 
@@ -39,6 +45,6 @@ namespace soen390_team01.Services
         /// Updates an inventory item
         /// </summary>
         /// <param name="inventory">inventory item to update</param>
-        public void Update(Inventory inventory);
+        public Inventory Update(Inventory inventory);
     }
 }

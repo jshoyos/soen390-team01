@@ -65,7 +65,9 @@ namespace soen390_team01Tests.Controllers
                 Type = "bike",
                 Warehouse = "Warehouse 1"
             };
-            
+
+            _modelMock.Setup(m => m.Update(It.IsAny<Inventory>())).Returns(inventory);
+
             var controller = new InventoryController(_modelMock.Object);
 
             var result = controller.ChangeQuantity(inventory) as PartialViewResult;

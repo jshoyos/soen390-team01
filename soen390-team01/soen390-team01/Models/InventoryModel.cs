@@ -16,6 +16,18 @@ namespace soen390_team01.Models
     {
 
         private readonly ErpDbContext _context;
+        public List<Inventory> AllList { get; set; }
+        public List<Bike> BikeList { get; set; }
+        public List<Part> PartList { get; set; }
+        public List<Material> MaterialList { get; set; }
+
+        //List parameter Filters
+        public Filters InventoryFilters { get; set; }
+        public Filters BikeFilters { get; set; }
+        public Filters PartFilters { get; set; }
+        public Filters MaterialFilters { get; set; }
+
+        public string SelectedTab { get; set; } = "inventory";
 
         public InventoryModel(ErpDbContext context)
         {
@@ -25,22 +37,20 @@ namespace soen390_team01.Models
             BikeList = GetAllBikes();
             PartList = GetAllParts();
             MaterialList = GetAllMaterials();
+            InventoryFilters = ResetInventoryFilters();
             BikeFilters = ResetBikeFilters();
             PartFilters = ResetPartFilters();
             MaterialFilters = ResetMaterialFilters();
         }
 
-        public List<Inventory> AllList { get; set; }
-        public List<Bike> BikeList { get; set; }
-        public List<Part> PartList { get; set; }
-        public List<Material> MaterialList { get; set; }
-
-        //List parameter Filters
-        public Filters BikeFilters { get; set; }
-        public Filters PartFilters { get; set; }
-        public Filters MaterialFilters { get; set; }
-
-        public string SelectedTab { get; set; } = "All";
+        /// <summary>
+        /// Resets BikeList and its filters
+        /// </summary>
+        public void ResetInventories()
+        {
+            AllList = GetInventory();
+            InventoryFilters = ResetInventoryFilters();
+        }
 
         /// <summary>
         /// Resets BikeList and its filters
@@ -77,6 +87,10 @@ namespace soen390_team01.Models
         {
             switch (filters.Table)
             {
+                case "inventory":
+                    AllList = filters.AnyActive() ? GetFilteredInventoryList(filters) : GetInventory();
+                    InventoryFilters = filters;
+                    break;
                 case "bike":
                     BikeList = filters.AnyActive() ? GetFilteredProductList<Bike>(filters) : GetAllBikes();
                     BikeFilters = filters;
@@ -96,7 +110,7 @@ namespace soen390_team01.Models
         /// Updates an inventory item
         /// </summary>
         /// <param name="inventory">inventory item to update</param>
-        public void Update(Inventory inventory)
+        public Inventory Update(Inventory inventory)
         {
             try
             {
@@ -104,11 +118,26 @@ namespace soen390_team01.Models
                 updatedInventory.Quantity = inventory.Quantity;
                 _context.Inventories.Update(updatedInventory);
                 _context.SaveChanges();
+                return updatedInventory;
             }
             catch (DbUpdateException e)
             {
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
+        }
+
+        private Filters ResetInventoryFilters()
+        {
+            var filters = new Filters("inventory");
+
+            filters.Add(new CheckboxFilter("inventory", "Type", "type", _context.Inventories.Select(inv => inv.Type).Distinct().OrderBy(t => t).ToList()));
+            filters.Add(new SelectFilter("inventory", "Warehouse", "warehouse", _context.Inventories.Select(inv => inv.Warehouse).Distinct().OrderBy(w => w).ToList()));
+            filters.Add(new RangeFilter("inventory", "Quantity", "quantity"));
+            filters.Add(new DateRangeFilter("inventory", "Added", "added"));
+            filters.Add(new DateRangeFilter("inventory", "Updated", "modified"));
+            // Can add bike specific filters
+
+            return filters;
         }
 
         private Filters ResetBikeFilters()
@@ -119,6 +148,8 @@ namespace soen390_team01.Models
             filters.Add(new SelectFilter("bike", "Grade", "grade", _context.Bikes.Select(bike => bike.Grade).Distinct().OrderBy(g => g).ToList()));
             filters.Add(new CheckboxFilter("bike", "Size", "size", _context.Bikes.Select(bike => bike.Size).Distinct().OrderBy(s => s).ToList()));
             filters.Add(new RangeFilter("bike", "Price", "price"));
+            filters.Add(new DateRangeFilter("bike", "Added", "added"));
+            filters.Add(new DateRangeFilter("bike", "Updated", "modified"));
             // Can add bike specific filters
 
             return filters;
@@ -132,6 +163,8 @@ namespace soen390_team01.Models
             filters.Add(new SelectFilter("part", "Grade", "grade", _context.Parts.Select(part => part.Grade).Distinct().OrderBy(g => g).ToList()));
             filters.Add(new CheckboxFilter("part", "Size", "size", _context.Parts.Select(part => part.Size).Distinct().OrderBy(s => s).ToList()));
             filters.Add(new RangeFilter("part", "Price", "price"));
+            filters.Add(new DateRangeFilter("part", "Added", "added"));
+            filters.Add(new DateRangeFilter("part", "Updated", "modified"));
             // Can add part specific filters
 
             return filters;
@@ -144,6 +177,8 @@ namespace soen390_team01.Models
             filters.Add(new StringFilter("material", "Name", "name"));
             filters.Add(new SelectFilter("material", "Grade", "grade", _context.Materials.Select(material => material.Grade).Distinct().OrderBy(g => g).ToList()));
             filters.Add(new RangeFilter("material", "Price", "price"));
+            filters.Add(new DateRangeFilter("material", "Added", "added"));
+            filters.Add(new DateRangeFilter("material", "Updated", "modified"));
             // Can add material specific filters
 
             return filters;
@@ -167,6 +202,18 @@ namespace soen390_team01.Models
         private List<Material> GetAllMaterials()
         {
             return _context.Materials.OrderBy(mat => mat.ItemId).ToList();
+        }
+
+        private List<Inventory> GetFilteredInventoryList(Filters filters)
+        {
+            try
+            {
+                return _context.Inventories.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+            }
+            catch (Exception)
+            {
+                throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
+            }
         }
 
         private List<T> GetFilteredProductList<T>(Filters filters) where T : Item

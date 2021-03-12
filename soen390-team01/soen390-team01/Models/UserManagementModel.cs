@@ -96,7 +96,7 @@ namespace soen390_team01.Models
 
                 _context.Users.Update(EncryptUser(user));
                 _context.SaveChanges();
-                return editedUser;
+                return DecryptUser(user);
             }
             catch (DbUpdateException e)
             {
@@ -167,6 +167,8 @@ namespace soen390_team01.Models
                 PhoneNumber = _encryption.Decrypt(user.PhoneNumber, iv),
                 Role = user.Role,
                 UserId = user.UserId,
+                Added = user.Added,
+                Updated = user.Updated,
                 Iv = Convert.ToBase64String(iv)
             };
         }

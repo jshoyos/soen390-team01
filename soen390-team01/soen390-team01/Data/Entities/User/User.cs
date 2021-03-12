@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -15,6 +16,8 @@ namespace soen390_team01.Data.Entities
             LastName = u.LastName;
             FirstName = u.FirstName;
             Email = u.Email;
+            Added = u.Added;
+            Updated = u.Updated;
             Iv = u.Iv;
         }
 
@@ -25,5 +28,9 @@ namespace soen390_team01.Data.Entities
         public virtual string Email { get; set; }
         public long UserId { get; set; }
         public string Iv { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime Added { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime Updated { get; set; }
     }
 }
