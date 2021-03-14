@@ -9,7 +9,6 @@ namespace soen390_team01.Controllers
     public class AuthenticationController : Controller
     {
         #region fields
-
         private readonly AuthenticationFirebaseService _authService;
         private readonly IUserManagementService _userManagementService;
         #endregion
@@ -20,8 +19,6 @@ namespace soen390_team01.Controllers
             _authService = authService;
             _userManagementService = userManagementService;
         }
-        #region properties
-        #endregion
 
         #region Methods
         /// <summary>

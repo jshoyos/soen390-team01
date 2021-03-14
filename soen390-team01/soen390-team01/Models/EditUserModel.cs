@@ -6,8 +6,23 @@ namespace soen390_team01.Models
 {
     public class EditUserModel : User
     {
-        #region field
+        #region properties
+        [Required]
+        public override string Role { get; set; }
+        [Display(Name = "Phone Number")]
+        [Required]
+        [StringLength(10)]
+        [DisplayFormat(DataFormatString = "{0:###-###-####}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.PhoneNumber)]
+        public override string PhoneNumber { get; set; }
+        [Display(Name = "Last Name")]
+        [Required]
+        public override string LastName { get; set; }
+        [Display(Name = "First Name")]
+        [Required]
+        public override string FirstName { get; set; }
         #endregion
+
         public EditUserModel()
         {
             Email = "";
@@ -24,19 +39,5 @@ namespace soen390_team01.Models
             FirstName = user.FirstName;
             UserId = user.UserId;
         }
-        [Required]
-        public override string Role { get; set; }
-        [Display(Name = "Phone Number")]
-        [Required]
-        [StringLength(10)]
-        [DisplayFormat(DataFormatString = "{0:###-###-####}", ApplyFormatInEditMode = true)]
-        [DataType(DataType.PhoneNumber)]
-        public override string PhoneNumber { get; set; }
-        [Display(Name = "Last Name")]
-        [Required]
-        public override string LastName { get; set; }
-        [Display(Name = "First Name")]
-        [Required]
-        public override string FirstName { get; set; }
     }
 }
