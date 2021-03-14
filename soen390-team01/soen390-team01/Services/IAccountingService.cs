@@ -28,6 +28,7 @@ namespace soen390_team01.Services
         public void ResetPayables();
 
         public void ResetReceivables();
+        void FilterSelectedTab(Filters filters);
     }
 
 }

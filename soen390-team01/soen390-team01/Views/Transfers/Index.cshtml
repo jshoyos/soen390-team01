@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using soen390_team01.Data
 @model soen390_team01.Models.TransfersModel
 
 @{
@@ -90,6 +91,22 @@
                             </div>
                             <div class="col"></div>
                         </div>
+                        <div class="row " style="padding-left:20%; padding-right:20%;">
+                            <div class="col-3 text-align: right;">
+                                Added:
+                            </div>
+                            <div class="col-8">
+                                <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                            </div>
+                        </div>
+                        <div class="row " style="padding-left:20%; padding-right:20%;">
+                            <div class="col-3 text-align: right;">
+                                Updated:
+                            </div>
+                            <div class="col-8">
+                                <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                            </div>
+                        </div>
                     </div>
                     <div class="pb-4 justify-content-center" id="vendor" style="display: none;">
                         <div class="row justify-content-center pt-3">
@@ -139,38 +156,46 @@
                             <div class="col"><u>ID</u></div>
                             <div class="col"><u>State</u></div>
                             <div class="col"><u>Customer</u></div>
+                            <div class="col"><u>Added</u></div>
+                            <div class="col"><u>Updated</u></div>
                         </div>
                         @foreach (var order in Model.Orders)
                         {
-                            <div class="row pt-4 pb-4 h-100 text-center">
-                                <div class="col">@order.OrderId</div>
-                                <div class="col">@order.State</div>
-                                <div class="col">@order.Customer.Name</div>
-                            </div>
+                    <div class="row pt-4 pb-4 h-100 text-center">
+                        <div class="col">@order.OrderId</div>
+                        <div class="col">@order.State</div>
+                        <div class="col">@order.Customer.Name</div>
+                        <div class="col">@order.Added.DateTimeLocalString()</div>
+                        <div class="col">@order.Updated.DateTimeLocalString()</div>
+                    </div>
                         }
                     </div>
                 </div>
                 <div class="tab-pane fade show @(Model.SelectedTab == "Procurement" ? "active" : "")" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
                     <div class="container">
                         <div class="row pt-4 pb-4 h-100 text-center">
-                            
+
                             <div class="col"><u>ID</u></div>
                             <div class="col"><u>State</u></div>
                             <div class="col"><u>Vendor</u></div>
                             <div class="col"><u>Item Id</u></div>
                             <div class="col"><u>Quantity</u></div>
                             <div class="col"><u>Price</u></div>
+                            <div class="col"><u>Added</u></div>
+                            <div class="col"><u>Updated</u></div>
                         </div>
                         @foreach (var procurement in Model.Procurements)
                         {
-                            <div class="row pt-4 pb-4 h-100 text-center">
-                                <div class="col">@procurement.ProcurementId</div>
-                                <div class="col">@procurement.State</div>
-                                <div class="col">@procurement.Vendor.Name</div>
-                                <div class="col">@procurement.ItemId</div>
-                                <div class="col">@procurement.ItemQuantity</div>
-                                <div class="col">@procurement.Payment.Amount</div>
-                            </div>
+                    <div class="row pt-4 pb-4 h-100 text-center">
+                        <div class="col">@procurement.ProcurementId</div>
+                        <div class="col">@procurement.State</div>
+                        <div class="col">@procurement.Vendor.Name</div>
+                        <div class="col">@procurement.ItemId</div>
+                        <div class="col">@procurement.ItemQuantity</div>
+                        <div class="col">@procurement.Payment.Amount</div>
+                        <div class="col">@procurement.Added.DateTimeLocalString()</div>
+                        <div class="col">@procurement.Updated.DateTimeLocalString()</div>
+                    </div>
                         }
                     </div>
                 </div>
@@ -209,6 +234,17 @@
                         </div>
                     </div>
                     <div class="col"></div>
+                </div>
+                <div class="row elements">
+                    <div class="col mx-auto">
+                        Added:  <input type="date" name="added" min="2000-01-01" max="2021-03-01">
+                    </div>
+                </div>
+                <br />
+                <div class="row elements">
+                    <div class="col mx-auto">
+                        Updated:  <input type="date" name="updated" min="2000-01-01" max="2021-03-01">
+                    </div>
                 </div>
             </div>
             <!--/Filter area-->

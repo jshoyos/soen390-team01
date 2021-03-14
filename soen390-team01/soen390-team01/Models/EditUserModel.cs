@@ -1,14 +1,16 @@
 ﻿using soen390_team01.Data.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace soen390_team01.Models
 {
     public class EditUserModel : User
     {
+        #region field
+        #endregion
         public EditUserModel()
         {
             Email = "";
-            Role = "";
             PhoneNumber = "";
             LastName = "";
             FirstName = "";

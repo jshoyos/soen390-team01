@@ -7,6 +7,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Controllers
 {
+    [Authorize]
     public class TransfersController : Controller
     {
         private readonly TransfersService _transfersService;
@@ -15,9 +16,8 @@ namespace soen390_team01.Controllers
         {
             _transfersService = transfersService;
         }
-
-        [Authorize]
         [HttpGet]
+        [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep)]
         public IActionResult Index()
         {
             var model = _transfersService.GetTransfersModel();
