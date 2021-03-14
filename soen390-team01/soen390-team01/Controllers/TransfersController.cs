@@ -19,7 +19,7 @@ namespace soen390_team01.Controllers
             _model = model;
         }
         [HttpGet]
-        [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep)]
+        //[ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep)]
         public IActionResult Index()
         {
             return View(_model);
