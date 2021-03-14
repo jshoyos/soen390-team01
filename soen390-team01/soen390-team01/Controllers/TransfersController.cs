@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace soen390_team01.Controllers
 {
+    [Authorize]
     public class TransfersController : Controller
     {
         private readonly ITransferService _model;
@@ -17,9 +18,8 @@ namespace soen390_team01.Controllers
         {
             _model = model;
         }
-
-        [Authorize]
         [HttpGet]
+        [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep)]
         public IActionResult Index()
         {
             return View(_model);

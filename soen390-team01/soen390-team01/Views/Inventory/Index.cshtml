@@ -1,4 +1,4 @@
-﻿@model soen390_team01.Models.InventoryModel
+﻿@model soen390_team01.Services.IInventoryService
 @using Newtonsoft.Json
 
 @{
@@ -22,16 +22,14 @@
                 dataType: 'html',
                 success: function (result) {
                     $('.itemRow' + inv.InventoryId).html(result);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
                 }
             });
         };
 
         function passingFilters(filters, displayedName, filterInput) {
-
-            console.log(filters);
-            console.log(displayedName);
-            console.log(filterInput);
-
             var list = filters.List.map(f => {
                 if (f.PossibleSelectValues) {
                     f.Input = {
@@ -46,6 +44,10 @@
                 } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
                     f.Input = {
                         RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
+                    };
+                } else if (f.hasOwnProperty("MinDate") || f.hasOwnProperty("MaxDate")) {
+                    f.Input = {
+                        DateRangeInput: { MinValue: !f.MinDate ? null : f.MinDate, MaxValue: !f.MaxDate ? null : f.MaxDate }
                     };
                 }
                 return f;
@@ -110,6 +112,15 @@
         function cleanNumberValue(value) {
             return value == null || value === "" ? null : Number(value);
         }
+
+        function cleanDateValue(value, isNew) {
+            if (value == null || value === "") {
+                return null;
+            }
+
+            return new Date(value);
+        }
+
     </script>
     <script>
         function openTab(evt, tableName) {
@@ -125,13 +136,14 @@
             // Get all elements with class="tablinks" and remove the class "active"
             tablinks = document.getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+                tablinks[i].className = tablinks[i].className.replace("active", "");
             }
-
             // Show the current tab, and add an "active" class to the button that opened the tab
+            console.log(document.getElementById(tableName))
             document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
 
+            document.getElementById("inventory-filter").style.display = "none";
             document.getElementById("bike-filter").style.display = "none";
             document.getElementById("part-filter").style.display = "none";
             document.getElementById("material-filter").style.display = "none";

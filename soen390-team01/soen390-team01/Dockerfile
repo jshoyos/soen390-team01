@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 FROM ubuntu:latest
+ENV TZ="America/Toronto"
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443

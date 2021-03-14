@@ -23,6 +23,7 @@
                     <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 <div class="row" style="margin-top:10px;">
                     <input class="btn btn-primary" type="submit" value="Login" style="margin: 10px;" />
                     <a class=" btn btn-outline-primary" asp-controller="Authentication" asp-action="ForgotPassword" style="margin: 10px;">Forgot Password</a>
