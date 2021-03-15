@@ -40,10 +40,6 @@ namespace soen390_team01.Models
             OrderFilters = ResetOrderFilters();
         }
 
-        public TransfersModel SetupModel()
-        {
-            return this;
-        }
         public List<Procurement> GetProcurements()
         {
             List<Procurement> list = _context.Procurements

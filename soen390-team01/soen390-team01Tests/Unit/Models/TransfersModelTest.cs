@@ -107,24 +107,21 @@ namespace soen390_team01Tests.Services
         [Test]
         public void GetTransfersModelTest()
         {
-            var transfersModel = _model.SetupModel();
-            Assert.AreEqual(5, transfersModel.Orders.Count);
-            Assert.AreEqual(5, transfersModel.Procurements.Count);
+            Assert.AreEqual(5, _model.Orders.Count);
+            Assert.AreEqual(5, _model.Procurements.Count);
         }
 
         [Test]
         public void ChangeTransferStateValidTest()
         {
-            var transfersModel = _model.SetupModel();
-
-            var orderToChange = transfersModel.Orders.ElementAt(0);
+            var orderToChange = _model.Orders.ElementAt(0);
 
             var changedOrder = _model.ChangeOrderState(orderToChange.OrderId, "completed");
 
             Assert.NotNull(changedOrder);
             Assert.AreEqual("completed", changedOrder.State);
 
-            var procurementToChange = transfersModel.Procurements.ElementAt(0);
+            var procurementToChange = _model.Procurements.ElementAt(0);
             var changedProcurement = _model.ChangeProcurementState(procurementToChange.ProcurementId, "completed");
 
             Assert.NotNull(changedProcurement);
@@ -134,15 +131,17 @@ namespace soen390_team01Tests.Services
         [Test]
         public void ChangeTransferStateInvalidTest()
         {
-            var transfersModel = _model.SetupModel();
             const int INVALID_ID = 12345;
-            var orderToChange = transfersModel.Orders.ElementAt(0);
+            var orderToChange = _model.Orders.ElementAt(0);
             Assert.Throws<InvalidValueException>(() => _model.ChangeOrderState(orderToChange.OrderId, "invalid_state"));
             Assert.Throws<NotFoundException>(() => _model.ChangeOrderState(INVALID_ID, "pending"));
 
-            var procurementToChange = transfersModel.Procurements.ElementAt(0);
+            var procurementToChange = _model.Procurements.ElementAt(0);
             Assert.Throws<InvalidValueException>(() => _model.ChangeProcurementState(procurementToChange.ProcurementId, "invalid_state"));
             Assert.Throws<NotFoundException>(() => _model.ChangeProcurementState(INVALID_ID, "pending"));
         }
+
+
+
     }
 }

@@ -4,7 +4,7 @@
 
 
 
-<div id="ofilterM" style="display:block">
+<div id="ofilterM" style="display:@(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "" : "none")">
     @foreach (var filter in Model.OrderFilters.List)
     {
         <p><strong>@filter.DisplayColumn</strong></p>
@@ -63,7 +63,7 @@
         }
     }
 </div>
-<div class="pb-4 justify-content-center" id="pfilterM" style="display: none;">
+<div class="pb-4 justify-content-center" id="pfilterM" style="display: @(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement"? "" : "none");">
     @foreach (var filter in Model.ProcurementFilters.List)
     {
         <p><strong>@filter.DisplayColumn</strong></p>

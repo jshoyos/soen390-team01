@@ -31,6 +31,5 @@ namespace soen390_team01.Services
         List<Procurement> GetProcurements();
         List<Order> GetFilteredOrderList(Filters filters);
         List<Order> GetOrders();
-        TransfersModel SetupModel();
     }
 }

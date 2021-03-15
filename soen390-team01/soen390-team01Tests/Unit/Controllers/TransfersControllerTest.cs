@@ -25,7 +25,7 @@ namespace soen390_team01Tests.Controllers
         {
             var transfersModel = CreateModel();
             var transfersModelMock = new Mock<TransfersModel>(new Mock<ErpDbContext>().Object);
-            transfersModelMock.Setup(i => i.SetupModel()).Returns(transfersModel);
+           // transfersModelMock.Setup(i => i.SetupModel()).Returns(transfersModel);
             var controller = new TransfersController(transfersModelMock.Object);
 
             var result = controller.Index() as ViewResult;
@@ -42,7 +42,7 @@ namespace soen390_team01Tests.Controllers
             transfersServiceMock.Setup(i => i.AddProcurements<Bike>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
             transfersServiceMock.Setup(i => i.AddProcurements<Part>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
             transfersServiceMock.Setup(i => i.AddProcurements<Material>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
-            transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
+            //transfersServiceMock.Setup(i => i.SetupModel()).Returns(transfersModel);
             var controller = new TransfersController(transfersServiceMock.Object);
 
             var inputModel = new TransfersModel(new ErpDbContext()) {
