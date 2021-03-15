@@ -26,6 +26,7 @@ namespace soen390_team01
         {
             services.AddSingleton<AuthenticationFirebaseService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
+            services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<TransfersService>();
             services.AddSingleton(s => new EncryptionService(
