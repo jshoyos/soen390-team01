@@ -21,7 +21,6 @@ namespace soen390_team01.Controllers
             _model = model;
         }
 
-
         #region Methods
 
         [HttpGet]
