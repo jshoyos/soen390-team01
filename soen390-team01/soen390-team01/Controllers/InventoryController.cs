@@ -8,6 +8,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Controllers
 {
+    [Authorize]
     public class InventoryController : Controller
     {
         private readonly InventoryService _invService;
@@ -19,13 +20,14 @@ namespace soen390_team01.Controllers
             _model = _invService.Model;
         }
 
-        [Authorize]
         [HttpGet]
         public IActionResult Index()
         {
             return View(_model);
         }
+
         [HttpPost]
+        [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult Refresh([FromBody] string selectedTab)
         {
             switch (selectedTab)
@@ -43,11 +45,9 @@ namespace soen390_team01.Controllers
                     _model.MaterialFilters = _invService.ResetMaterialFilters();
                     break;
             }
-
             _model.SelectedTab = selectedTab;
             // Workaround until we put logic in models
             _invService.Model = _model;
-
             return PartialView("InventoryBody", _model);
         }
 
@@ -90,6 +90,7 @@ namespace soen390_team01.Controllers
         /// </summary>
         /// <param name="inventory">updated inventory item</param>
         [HttpPost]
+        [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {
             if (inventory.Quantity >= 0)
