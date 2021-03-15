@@ -9,7 +9,6 @@
         display: none;
     }
 }
-
 .collapButton1{
     width: 25%;
     margin: 1px;
@@ -23,7 +22,12 @@
     padding: 15px;
     border-radius: 5px;
 }
-
+.elements {
+    margin: 10px 5px 5px 5px;
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
+}
 #LHS {
     border: 1px solid #5680A9;
     margin: 2px;

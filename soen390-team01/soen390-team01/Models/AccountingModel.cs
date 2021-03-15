@@ -13,7 +13,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Models
 {
-    public class AccountingModel : IAccountingService
+    public class AccountingModel: IAccountingService
     {
         private readonly ErpDbContext _context;
         public List<Payment> Payments { get; set; }

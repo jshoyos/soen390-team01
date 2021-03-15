@@ -7,6 +7,7 @@ using Npgsql;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
+using System;
 
 namespace soen390_team01.Services
 {
@@ -32,7 +33,6 @@ namespace soen390_team01.Services
     public class TransfersService : DisposableService
     {
         private readonly ErpDbContext _context;
-
         public TransfersService(ErpDbContext context)
         {
             _context = context;
@@ -148,7 +148,6 @@ namespace soen390_team01.Services
                 _context.Procurements.Add(procurement);
 
                 _context.SaveChanges();
-
                 return procurement;
             }
             catch (DbUpdateException e)

@@ -43,6 +43,10 @@ namespace soen390_team01.Data.Queries
                 {
                     filter = new RangeFilter(filter);
                 }
+                else if (filter.Input.DateRangeInput != null)
+                {
+                    filter = new DateRangeFilter(filter);
+                }
 
                 filters.List[i] = filter;
             }
