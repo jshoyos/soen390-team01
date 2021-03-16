@@ -34,22 +34,16 @@
     }
 }
 
-#all-filter {
-    border: 1px solid #5680A9;
+#payment-filter {
     padding: 15px;
-    border-radius: 5px;
 }
 
 #receivable-filter {
-    border: 1px solid #5680A9;
     padding: 15px;
-    border-radius: 5px;
 }
 
 #payable-filter {
-    border: 1px solid #5680A9;
     padding: 15px;
-    border-radius: 5px;
 }
 
 #filter-button {

@@ -80,37 +80,37 @@ namespace soen390_team01.Models
         public void ResetPayables()
         {
             Payables = GetPayables();
-            PayableFilters = ResetFilters("receivable");
+            PayableFilters = ResetFilters("payable");
         }
 
         public void ResetReceivables()
         {
             Receivables = GetReceivables();
-            ReceivableFilters = ResetFilters("payable");
+            ReceivableFilters = ResetFilters("receivable");
         }
 
         private Filters ResetFilters(string tabName)
         {
-            var filters = new Filters(tabName);
+            var filters = new Filters("payment");
 
-            filters.Add(new CheckboxFilter("payment", "State", "state", StatusValues));
-            filters.Add(new RangeFilter("payment", "Amount", "amount"));
-            filters.Add(new DateRangeFilter("payment", "Added", "added"));
-            filters.Add(new DateRangeFilter("payment", "Updated", "modified"));
+            filters.Add(new CheckboxFilter("payment", $"State-{tabName}", "state", StatusValues));
+            filters.Add(new RangeFilter("payment", $"Amount-{tabName}", "amount"));
+            filters.Add(new DateRangeFilter("payment", $"Added-{tabName}", "added"));
+            filters.Add(new DateRangeFilter("payment", $"Updated-{tabName}", "modified"));
 
             return filters;
         }
 
         public void FilterSelectedTab(Filters filters)
         {
-            switch (filters.Table)
+            switch (SelectedTab)
             {
                 case "receivable":
-                    Receivables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount >= 0") : GetReceivables();
+                    Receivables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount >= '0.0'") : GetReceivables();
                     ReceivableFilters = filters;
                     break;
                 case "payable":
-                    Payables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount <= 0") : GetPayables();
+                    Payables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount <= '0.0'") : GetPayables();
                     PayableFilters = filters;
                     break;
                 case "payment":

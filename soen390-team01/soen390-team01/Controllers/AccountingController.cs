@@ -13,7 +13,7 @@ using soen390_team01.Services;
 namespace soen390_team01.Controllers
 {
     [Authorize]
-    public class AccountingController : Controller 
+    public class AccountingController : Controller
     {
         private readonly IAccountingService _model;
 
@@ -39,12 +39,17 @@ namespace soen390_team01.Controllers
                 case "payable":
                     _model.ResetPayables();
                     break;
-                case "all":
+                case "payment":
                     _model.ResetPayments();
                     break;
+            }
+            return PartialView("AccountingBody", _model);
         }
-            _model.SelectedTab = selectedTab;
 
+        [HttpPost]
+        public IActionResult ChangeTab([FromBody] string selectedTab)
+        {
+            _model.SelectedTab = selectedTab;
             return PartialView("AccountingBody", _model);
         }
 
@@ -59,9 +64,7 @@ namespace soen390_team01.Controllers
             catch (DataAccessException e)
             {
                 TempData["errorMessage"] = e.ToString();
-    }
-
-            _model.SelectedTab = filters.Table;
+            }
 
             return PartialView("AccountingBody", _model);
         }

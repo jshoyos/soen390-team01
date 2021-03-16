@@ -3,22 +3,20 @@
 @model List<soen390_team01.Data.Entities.Payment>
 
 
-<div class="container">
-    <div class="row pt-4 pb-4 h-100 text-center">
-        <div class="col"><u>ID</u></div>
-        <div class="col"><u>Status</u></div>
-        <div class="col"><u>Value</u></div>
-        <div class="col"><u>Added</u></div>
-        <div class="col"><u>Updated</u></div>
-    </div>
-    @foreach (var rec in Model)
-    {
-        <div class="row pt-4 pb-4 h-100 text-center">
-            <div class="col">@rec.PaymentId</div>
-            <div class="col">@rec.State</div>
-            <div class="col">@rec.Amount</div>
-            <div class="col">@rec.Added.DateTimeLocalString()</div>
-            <div class="col">@rec.Updated.DateTimeLocalString()</div>
-        </div>
-    }
+<div class="row pt-4 pb-4 h-100 text-center">
+    <div class="col"><u>ID</u></div>
+    <div class="col"><u>Status</u></div>
+    <div class="col"><u>Value</u></div>
+    <div class="col"><u>Added</u></div>
+    <div class="col"><u>Updated</u></div>
 </div>
+@foreach (var rec in Model)
+{
+    <div class="row pt-4 pb-4 h-100 text-center">
+        <div class="col">@rec.PaymentId</div>
+        <div class="col">@rec.State</div>
+        <div class="col">@rec.Amount</div>
+        <div class="col">@rec.Added.DateTimeLocalString()</div>
+        <div class="col">@rec.Updated.DateTimeLocalString()</div>
+    </div>
+}
