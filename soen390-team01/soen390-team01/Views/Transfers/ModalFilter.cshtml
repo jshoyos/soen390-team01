@@ -8,26 +8,7 @@
     @foreach (var filter in Model.OrderFilters.List)
     {
         <p><strong>@filter.DisplayColumn</strong></p>
-        if (filter.GetType() == typeof(SelectFilter))
-        {
-            <select onchange="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { SelectInput: { SelectValue: this.value, PossibleValues: @JsonConvert.SerializeObject(((SelectFilter)filter).PossibleSelectValues) } })">
-                <option value="" selected></option>
-
-                @foreach (var item in ((SelectFilter)filter).PossibleSelectValues)
-                {
-                    if (((SelectFilter)filter).Value == item)
-                    {
-                        <option value="@item" selected>@item</option>
-                    }
-                    else
-                    {
-                        <option value="@item">@item</option>
-                    }
-                }
-            </select>
-            <br /><br />
-        }
-        else if (filter.GetType() == typeof(CheckboxFilter))
+        if (filter.GetType() == typeof(CheckboxFilter))
         {
             @foreach (var item in ((CheckboxFilter)filter).PossibleCheckboxValues)
             {
@@ -39,7 +20,7 @@
                 }
                 else
                 {
-                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" 
                            onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
                 }
                 <br />
@@ -52,13 +33,13 @@
             <input style="max-width: 200px;"
                    type="datetime-local"
                    value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } })" />
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } })" />
             <br />
             <div>To</div>
             <input style="max-width: 200px;"
                    type="datetime-local"
                    value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } })" />
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } })" />
             <br /><br />
         }
     }
@@ -94,12 +75,12 @@
                 <label>@item</label>
                 if (((CheckboxFilter)filter).Values.Contains(item))
                 {
-                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" checked="checked"
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" checked="checked" data-dismiss="modal"
                            onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
                 }
                 else
                 {
-                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" data-dismiss="modal"
                            onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
                 }
                 <br />
@@ -112,13 +93,13 @@
             <input style="max-width: 200px;"
                    type="datetime-local"
                    value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } })" />
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } })" />
             <br />
             <div>To</div>
             <input style="max-width: 200px;"
                    type="datetime-local"
                    value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } })" />
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } })" />
             <br /><br />
         }
     }

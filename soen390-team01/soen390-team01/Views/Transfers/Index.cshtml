@@ -34,7 +34,6 @@
         }
 
         function passingFilters(filters, displayedName, filterInput) {
-
             var list = filters.List.map(f => {
                 if (f.PossibleSelectValues) {
                     f.Input = {
@@ -46,6 +45,14 @@
                     };
                 } else if (f.hasOwnProperty("Value")) {
                     f.Input = { StringValue: f.Value };
+                } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
+                    f.Input = {
+                        RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
+                    };
+                } else if (f.hasOwnProperty("MinDate") || f.hasOwnProperty("MaxDate")) {
+                    f.Input = {
+                        DateRangeInput: { MinValue: !f.MinDate ? null : f.MinDate, MaxValue: !f.MaxDate ? null : f.MaxDate }
+                    };
                 }
                 return f;
             });
@@ -65,6 +72,8 @@
                 dataType: 'html',
                 success: function (result) {
                     $('.transfer-view').html(result);
+                    document.getElementById('filterModal');
+                    
                 }
             });
         };
@@ -101,6 +110,23 @@
             }
 
             return { CheckBoxInput: { Values: chosenCheckBoxes, PossibleValues: possibleValues } };
+        }
+        function cleanDateValue(value, isNew) {
+            if (value == null || value === "") {
+                return null;
+            }
+
+            return new Date(value);
+        }
+        function enforceMinMax(el) {
+            if (el.value !== "") {
+                if (parseInt(el.value) < parseInt(el.min)) {
+                    el.value = el.min;
+                }
+                if (parseInt(el.value) > parseInt(el.max)) {
+                    el.value = el.max;
+                }
+            }
         }
 
     </script>

@@ -27,9 +27,7 @@ namespace soen390_team01.Models
         public string SelectedTab { get; set; } = "Order";
         public bool ShowModal { get; set; } = false;
 
-        public TransfersModel()
-        {
-        }
+        public TransfersModel(){}
 
         public TransfersModel(ErpDbContext context)
         {
@@ -64,7 +62,8 @@ namespace soen390_team01.Models
 
             filters.Add(new SelectFilter("procurement", "Vendor", "vendor", _context.Procurements.Select(procurement => procurement.Vendor.Name).Distinct().OrderBy(v => v).ToList()));
             filters.Add(new CheckboxFilter("procurement", "State", "state", _context.Procurements.Select(procurement => procurement.State).Distinct().OrderBy(s => s).ToList()));
-
+            filters.Add(new DateRangeFilter("procurement", "Added", "added"));
+            filters.Add(new DateRangeFilter("procurement", "Updated", "modified"));
             return filters;
         }
 
@@ -73,7 +72,8 @@ namespace soen390_team01.Models
             var filters = new Filters("order");
 
             filters.Add(new CheckboxFilter("order", "Status", "state", _context.Procurements.Select(procurement => procurement.State).Distinct().OrderBy(s => s).ToList()));
-
+            filters.Add(new DateRangeFilter("order", "Added", "added"));
+            filters.Add(new DateRangeFilter("order", "Updated", "modified"));
             return filters;
         }
 
@@ -92,7 +92,7 @@ namespace soen390_team01.Models
         {
             try
             {
-                return _context.Orders.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                return _context.Orders.FromSqlRaw(TransfersQueryBuilder.FilterOrder(filters)).ToList();
             }
             catch (Exception)
             {
@@ -192,6 +192,8 @@ namespace soen390_team01.Models
 
                 _context.SaveChanges();
 
+                Procurements = GetProcurements();
+
                 return procurement;
             }
             catch (DbUpdateException e)
@@ -217,7 +219,7 @@ namespace soen390_team01.Models
             {
                 "pending",
                 "completed",
-                "cancelled"
+                "canceled"
             };
         }
 

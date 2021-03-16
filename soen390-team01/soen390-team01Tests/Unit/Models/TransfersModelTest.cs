@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using NUnit.Framework;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
+using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 
 namespace soen390_team01Tests.Services
@@ -105,10 +109,46 @@ namespace soen390_team01Tests.Services
         }
 
         [Test]
-        public void GetTransfersModelTest()
+        public void GetFilteredListInvalidTest()
         {
-            Assert.AreEqual(5, _model.Orders.Count);
-            Assert.AreEqual(5, _model.Procurements.Count);
+            List<string> list = new List<string>
+            {
+                "Vendor1",
+                "Vendor2",
+                "Vendor3"
+            };
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Procurements).Returns(new List<Procurement>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Vendors).Returns(new List<Vendor>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Payments).Returns(new List<Payment>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Orders).Returns(new List<Order>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Customers).Returns(new List<Customer>().AsQueryable().BuildMockDbSet().Object);
+
+            var filters = new Filters("procurement");
+            filters.Add(new SelectFilter("procurement", "Vendor", "vendor", list) { Value = "filtered_vendor" });
+            Assert.Throws<UnexpectedDataAccessException>(() => new TransfersModel(ctx.Object).GetFilteredProcurementList(filters));
+
+        }
+
+        [Test]
+        public void GetFilteredOrderListInvalidTest()
+        {
+            List<string> list = new List<string>
+            {
+                "pending",
+                "completed",
+                "canceled"
+            };
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Procurements).Returns(new List<Procurement>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Vendors).Returns(new List<Vendor>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Payments).Returns(new List<Payment>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Orders).Returns(new List<Order>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Customers).Returns(new List<Customer>().AsQueryable().BuildMockDbSet().Object);
+
+            var filters = new Filters("order");
+            filters.Add(new CheckboxFilter("order", "State", "state", list) { Values = { "filtered_state" } });
+            Assert.Throws<UnexpectedDataAccessException>(() => new TransfersModel(ctx.Object).GetFilteredOrderList(filters));
         }
 
         [Test]
@@ -141,7 +181,21 @@ namespace soen390_team01Tests.Services
             Assert.Throws<NotFoundException>(() => _model.ChangeProcurementState(INVALID_ID, "pending"));
         }
 
+        [Test]
+        public void ResetTest()
+        {
+            var initialProcurementCount = _model.Procurements.Count;
+            var initialProcurementFilterCount = _model.ProcurementFilters.List.Count;
+            _model.ResetProcurementFilters();
+            Assert.AreEqual(initialProcurementCount, _model.Procurements.Count);
+            Assert.AreEqual(initialProcurementFilterCount, _model.ProcurementFilters.List.Count);
 
+            var initialOrderCount = _model.Orders.Count;
+            var initialOrderFilterCount = _model.OrderFilters.List.Count;
+            _model.ResetOrderFilters();
+            Assert.AreEqual(initialOrderCount, _model.Orders.Count);
+            Assert.AreEqual(initialOrderFilterCount, _model.OrderFilters.List.Count);
 
+        }
     }
 }

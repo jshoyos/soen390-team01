@@ -1,4 +1,4 @@
-﻿@using Newtonsoft.Json
+﻿@using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Order>
 
 <div class="container">
@@ -6,6 +6,8 @@
         <div class="col"><u>ID</u></div>
         <div class="col"><u>State</u></div>
         <div class="col"><u>Customer</u></div>
+        <div class="col"><u>Added</u></div>
+        <div class="col"><u>Updated</u></div>
     </div>
     @foreach (var order in Model)
     {
@@ -13,6 +15,8 @@
             <div class="col">@order.OrderId</div>
             <div class="col">@order.State</div>
             <div class="col">@order.Customer.Name</div>
+            <div class="col">@order.Added.DateTimeLocalString()</div>
+            <div class="col">@order.Updated.DateTimeLocalString()</div>
         </div>
     }
 </div>

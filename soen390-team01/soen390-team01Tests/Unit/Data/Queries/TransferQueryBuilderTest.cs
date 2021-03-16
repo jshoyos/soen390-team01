@@ -19,7 +19,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
             filters.Add(new SelectFilter("procurement", "Vendor", "vendor",list) { Value = "Vendor1"});
 
             Assert.AreEqual(
-                "Select procurement.procurement_id, procurement.item_id, procurement.payment_id, procurement.item_quantity, procurement.state, procurement.type, procurement.vendor_id, vendor.name " +
+                "Select procurement.*, vendor.name " +
                 "From public.procurement, public.vendor where vendor.vendor_id = procurement.vendor_id and vendor.name= 'Vendor1'",
                 TransfersQueryBuilder.FilterProcurement(filters)
                 );
@@ -42,7 +42,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
             filters.Add(new CheckboxFilter("order", "Status", "state", list) { Values = list2 });
 
             Assert.AreEqual(
-                "Select * From public.order where order.state in ('Canceled')",
+                "Select * From public.order where public.order.state in ('Canceled')",
                 TransfersQueryBuilder.FilterOrder(filters)
             );
         }
