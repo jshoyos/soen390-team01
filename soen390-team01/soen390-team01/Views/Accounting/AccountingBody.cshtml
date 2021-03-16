@@ -1,0 +1,221 @@
+﻿@model soen390_team01.Services.IAccountingService
+
+<div id="payment-filter" class="filer-data" style="display:@(Model.SelectedTab == "payment" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters);}
+</div>
+<div id="receivable-filter" class="filer-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters);}
+</div>
+<div id="payable-filter" class="filer-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.PayableFilters);}
+</div>
+
+
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-filter">
+                <h5 class="text-center">STATUS</h5>
+
+                <div style="padding-left:30%; padding-right:30%;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                        <label class="form-check-label" for="pending">
+                            Pending
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                        <label class="form-check-label" for="pending">
+                            Completed
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                        <label class="form-check-label" for="pending">
+                            Canceled
+                        </label>
+                    </div>
+                </div>
+
+                <h5 class="text-center">DATE</h5>
+                <div class="container"></div>
+
+                <div class="row " style="padding-left:20%; padding-right:20%;">
+                    <div class="col-3 text-align: right;">
+                        From:
+                    </div>
+                    <div class="col-8">
+                        <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                    </div>
+                </div>
+                <div class="row " style="padding-left:20%; padding-right:20%;">
+                    <div class="col-3 text-align: right;">
+                        To:
+                    </div>
+                    <div class="col-8">
+                        <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    @*<div class="tab">
+        <button class="tablinks @(Model.SelectedTab == "all" ? "active": "")" id="allButton" onclick="openTab(event, 'all'),showFilter('all')">Accounting</button>
+    </div>
+    <div class="tab">
+        <button class="tablinks @(Model.SelectedTab == "receivable" ? "active": "")" id="receivableButton" onclick="openTab(event, 'receivable'),showFilter('receivable')">Receivable</button>
+        <button class="tablinks @(Model.SelectedTab == "payable" ? "active": "")" id="payableButton" onclick="openTab(event, 'payable'),showFilter('payable')">Payable</button>
+    </div>*@
+    <div class="col-lg-8 mx-lg-auto" id="LHS">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li style="width: 33.3%;text-align:center;">
+                <a class="nav-link" id="orderTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="true" onclick="showFilter('payment')">
+                    All
+                </a>
+
+            </li>
+            <li class="nav-item" style="width: 33.3%; text-align:center;">
+                <a class="nav-link" id="procTab" data-toggle="pill" href="#payableTabContent" role="tab" aria-controls="payableTabContent" aria-selected="false" onclick="showFilter('payable')">
+                    Payable
+                </a>
+            </li>
+            <li class="nav-item" style="width: 33.4%; text-align:center;">
+                <a class="nav-link" id="procTab" data-toggle="pill" href="#receivableTabContent" role="tab" aria-controls="receivableTabContent" aria-selected="false" onclick="showFilter('receivable')">
+                    Receivable
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show" id="allTabContent" role="tabpanel" aria-labelledby="allTab">
+                @{await Html.RenderPartialAsync("AccountingTable", Model.Payments);}
+            </div>
+            <div class="tab-pane fade show" id="receivableTabContent" role="tabpanel" aria-labelledby="receivableTab">
+                @{await Html.RenderPartialAsync("ReceivableTable", Model.Receivables);}
+            </div>
+            <div class="tab-pane fade show" id="payableTabContent" role="tabpanel" aria-labelledby="payableTab">
+                @{await Html.RenderPartialAsync("PayableTable", Model.Payables);}
+            </div>
+        </div>
+    </div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" id="filter-button">FILTER</button>
+        </div>
+        <div class="col-8">
+            <button class="btn btn-outline-primary" id="generateG-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 100%;">GENERATE GRAPH</button>
+        </div>
+    </div>
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-filter">
+                    <h5 class="text-center">STATUS</h5>
+
+                    <div style="padding-left:30%; padding-right:30%;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                            <label class="form-check-label" for="pending">
+                                Pending
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                            <label class="form-check-label" for="pending">
+                                Completed
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                            <label class="form-check-label" for="pending">
+                                Canceled
+                            </label>
+                        </div>
+                    </div>
+
+                    <h5 class="text-center">DATE</h5>
+                    <div class="container"></div>
+
+                    <div class="row " style="padding-left:20%; padding-right:20%;">
+                        <div class="col-3 text-align: right;">
+                            From:
+                        </div>
+                        <div class="col-8">
+                            <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                        </div>
+                    </div>
+                    <div class="row " style="padding-left:20%; padding-right:20%;">
+                        <div class="col-3 text-align: right;">
+                            To:
+                        </div>
+                        <div class="col-8">
+                            <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="row">
+        <div class="col-lg-3 text-center justify-content-center" id="filter">
+            <h3>FILTER</h3>
+            <br />
+            <h5>STATUS</h5>
+
+            <input type="checkbox" name="pending" value="Pending" class="align-left" />
+            <label for="pending">Pending</label><br>
+
+            <input type="checkbox" name="completed" value="Completed" />
+            <label for="completed">Completed</label><br>
+
+            <input type="checkbox" name="canceled" value="Canceled" />
+            <label for="canceled">Canceled</label><br><br />
+
+            <h5>DATE</h5>
+            <div class="container"></div>
+            <div class="row elements">
+                <div class="col mx-auto">
+                    From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                </div>
+
+            </div>
+            <div class="row elements">
+                <div class="col mx-auto">
+                    To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                </div>
+            </div>
+
+            <div class="row justify-content-center elements">
+                <button class="btn btn-primary">GENERATE GRAPH</button>
+            </div>
+        </div>
+    </div>*@

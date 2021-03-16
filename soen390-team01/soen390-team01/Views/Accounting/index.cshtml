@@ -1,7 +1,12 @@
-﻿
-@{ViewData["Title"] = "Accounting View";}
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@model soen390_team01.Services.IAccountingService
 
-<html>
+@{
+    ViewData["Title"] = "Accounting View";
+    ViewData["selectedTab"] = "";
+}
+
+@*<html>*@
 <head>
     <link rel="stylesheet" href="\css\Accounting.css">
     <link rel="stylesheet" href="\css\site.css">
@@ -11,10 +16,118 @@
 
     <script type="text/javascript">
 
+        function passingFilters(filters, displayedName, filterInput) {
+            var list = filters.List.map(f => {
+                if (f.PossibleSelectValues) {
+                    f.Input = {
+                        SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
+                    };
+                } else if (f.PossibleCheckboxValues) {
+                    f.Input = {
+                        CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
+                    };
+                } else if (f.hasOwnProperty("Value")) {
+                    f.Input = { StringValue: f.Value };
+                }
+                return f;
+            });
+
+            var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
+            var modifiedFilter = list[filterIndex];
+            modifiedFilter.Input = filterInput;
+            list[filterIndex] = modifiedFilter;
+            filters.List = list;
+
+            $.ajax({
+                url: '@Url.Action("FilterPaymentTable", "Accounting")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(filters),
+                dataType: 'html',
+                success: function (result) {
+                    $('.accounting-view').html(result);
+                }
+            });
+        };
+            function refreshFilter(type) {
+            $.ajax({
+                url: '@Url.Action("Refresh", "Accounting")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(type),
+                dataType: 'html',
+                success: function (result) {
+                    $('.accounting-view').html(result);
+                }
+            });
+            };
+
+            function createCheckboxInput(column, possibleValues) {
+                var checkBoxes = document.getElementsByName(column + "-checkbox");
+                var chosenCheckBoxes = [];
+                for (var i = 0; i < checkBoxes.length; i++) {
+                    if (checkBoxes[i].checked) {
+                        chosenCheckBoxes.push(checkBoxes[i].value);
+                    }
+                }
+                return { CheckBoxInput: { Values: chosenCheckBoxes, PossibleValues: possibleValues } };
+            }
+
+            function cleanDateValue(value, isNew) {
+                if (value == null || value === "") {
+                    return null;
+                }
+                return new Date(value);
+            }
+    </script>
+    <script>
+        function openTab(evt, tableName) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace("active", "");
+            }
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            console.log(document.getElementById(tableName))
+            document.getElementById(tableName).style.display = "block";
+            evt.currentTarget.className += " active";
+            document.getElementById("all-filter").style.display = "none";
+            document.getElementById("receivable-filter").style.display = "none";
+            document.getElementById("payable-filter").style.display = "none";
+            document.getElementById(tableName + "-filter").style.display = "block";
+        }
+        function hideFilter() {
+            // Declare all variables
+            var i, tabcontent;
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("filer-data");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+        }
+        function showFilter(type) {
+            document.getElementById("payment-filter").style.display = "none";
+            document.getElementById("receivable-filter").style.display = "none";
+            document.getElementById("payable-filter").style.display = "none";
+            console.log(type + "-filter --- TEST");
+            document.getElementById(type + "-filter").style.display = "block";
+        }
     </script>
 
 </head>
-<body>
+
+<div class="accounting-view">
+    @{await Html.RenderPartialAsync("AccountingBody", Model);}
+</div>
+<!-- Tab content -->
+<!--<body>
     <div class="container">
         <div class="row">
             <div class="col-4">
@@ -23,192 +136,120 @@
             <div class="col-8">
                 <button class="btn btn-outline-primary" id="generateG-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 100%;">GENERATE GRAPH</button>
             </div>
-        </div>
+        </div>-->
+<!-- Modal for filter in mobile mode-->
+<!--<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-filter">
+                <h5 class="text-center">STATUS</h5>
 
-            <!-- Modal for filter in mobile mode-->
-            <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body" id="modal-filter">
-                            <h5 class="text-center">STATUS</h5>
-
-                            <div style="padding-left:30%; padding-right:30%;">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="pending">
-                                        Pending
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="pending">
-                                        Completed
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="pending">
-                                        Canceled
-                                    </label>
-                                </div>
-                            </div>
-
-                            <h5 class="text-center">DATE</h5>
-                            <div class="container"></div>
-
-                            <div class="row " style="padding-left:20%; padding-right:20%;">
-                                <div class="col-3 text-align: right;">
-                                    From:
-                                </div>
-                                <div class="col-8">
-                                    <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-                                </div>
-                            </div>
-                                <div class="row " style="padding-left:20%; padding-right:20%;">
-                                    <div class="col-3 text-align: right;">
-                                        To:
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-                                    </div>
-
-                                </div>
-
-                                <div class="row justify-content-center elements">
-                                    <h5>CUSTOMER</h5>
-                                </div>
-                                <div class="row justify-content-center elements">
-                                    <select name="customer" id="customer">
-                                        <option value="c1">Customer</option>
-                                        <option value="c2">Customer</option>
-                                        <option value="c3">Customer</option>
-                                    </select>
-                                </div>
-                            </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Filter</button>
-                        </div>
+                <div style="padding-left:30%; padding-right:30%;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                        <label class="form-check-label" for="pending">
+                            Pending
+                        </label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                        <label class="form-check-label" for="pending">
+                            Completed
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                        <label class="form-check-label" for="pending">
+                            Canceled
+                        </label>
+                    </div>
+                </div>
+
+                <h5 class="text-center">DATE</h5>
+                <div class="container"></div>
+
+                <div class="row " style="padding-left:20%; padding-right:20%;">
+                    <div class="col-3 text-align: right;">
+                        From:
+                    </div>
+                    <div class="col-8">
+                        <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+                    </div>
+                </div>
+                <div class="row " style="padding-left:20%; padding-right:20%;">
+                    <div class="col-3 text-align: right;">
+                        To:
+                    </div>
+                    <div class="col-8">
+                        <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                    </div>
+
+                </div>
+
+                <div class="row justify-content-center elements">
+                    <h5>CUSTOMER</h5>
+                </div>
+                <div class="row justify-content-center elements">
+                    <select name="customer" id="customer">
+                        <option value="c1">Customer</option>
+                        <option value="c2">Customer</option>
+                        <option value="c3">Customer</option>
+                    </select>
                 </div>
             </div>
-        
-            <div class="row">
-                <!--Table with tabs-->
-                <div class="col-lg-8 mx-lg-auto" id="LHS">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li style="width: 33.3%;text-align:center;">
-                            <a class="nav-link" id="orderTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="true">
-                                All
-                            </a>
-                        </li>
-                        <li class="nav-item" style="width: 33.3%; text-align:center;">
-                            <a class="nav-link" id="procTab" data-toggle="pill" href="#payableTabContent" role="tab" aria-controls="payableTabContent" aria-selected="false">
-                                Payable
-                            </a>
-                        </li>
-                        <li class="nav-item" style="width: 33.4%; text-align:center;">
-                            <a class="nav-link" id="procTab" data-toggle="pill" href="#receivableTabContent" role="tab" aria-controls="receivableTabContent" aria-selected="false">
-                                Receivable
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show" id="payableTabConten" role="tabpanel" aria-labelledby="allTab">
-                            <div class="container">
-                                <div class="row pt-4 pb-4 h-100 text-center">
-                                    <div class="col"><u>ID</u></div>
-                                    <div class="col"><u>Status</u></div>
-                                    <div class="col"><u>Customer</u></div>
-                                    <div class="col"><u>Value</u></div>
-                                    <div class="col"><u>Added</u></div>
-                                    <div class="col"><u>Updated</u></div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show" id="receivableTabContent" role="tabpanel" aria-labelledby="allTab">
-                                <div class="container">
-                                    <div class="row pt-4 pb-4 h-100 text-center">
-                                        <div class="col"><u>ID</u></div>
-                                        <div class="col"><u>Status</u></div>
-                                        <div class="col"><u>Customer</u></div>
-                                        <div class="col"><u>Value</u></div>
-                                        <div class="col"><u>Added</u></div>
-                                        <div class="col"><u>Updated</u></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade show" id="allTabContent" role="tabpanel" aria-labelledby="allTab">
-                                <div class="container">
-                                    <div class="row pt-4 pb-4 h-100 text-center">
-                                        <div class="col"><u>ID</u></div>
-                                        <div class="col"><u>Status</u></div>
-                                        <div class="col"><u>Customer</u></div>
-                                        <div class="col"><u>Value</u></div>
-                                        <div class="col"><u>Added</u></div>
-                                        <div class="col"><u>Updated</u></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--/Table with tabs-->
-                <div class="col-lg-3 text-center justify-content-center" id="filter">
-                    <h3>FILTER</h3>
-                    <br />
-                    <h5>STATUS</h5>
+<div class="row">-->
+<!--Table with tabs-->
+<!--/Table with tabs-->
+<!--<div class="col-lg-3 text-center justify-content-center" id="filter">
+        <h3>FILTER</h3>
+        <br />
+        <h5>STATUS</h5>
 
-                    <input type="checkbox" name="pending" value="Pending" class="align-left" />
-                    <label for="pending">Pending</label><br>
+        <input type="checkbox" name="pending" value="Pending" class="align-left" />
+        <label for="pending">Pending</label><br>
 
-                    <input type="checkbox" name="completed" value="Completed" />
-                    <label for="completed">Completed</label><br>
+        <input type="checkbox" name="completed" value="Completed" />
+        <label for="completed">Completed</label><br>
 
-                    <input type="checkbox" name="canceled" value="Canceled" />
-                    <label for="canceled">Canceled</label><br><br />
+        <input type="checkbox" name="canceled" value="Canceled" />
+        <label for="canceled">Canceled</label><br><br />
 
-                    <h5>DATE</h5>
-                    <div class="container"></div>
-                    <div class="row elements">
-                        <div class="col mx-auto">
-                            From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-                        </div>
+        <h5>DATE</h5>
+        <div class="container"></div>
+        <div class="row elements">
+            <div class="col mx-auto">
+                From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
+            </div>
 
-                    </div>
-                    <div class="row elements">
-                        <div class="col mx-auto">
-                            To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-                        </div>
-                    </div>
+        </div>
+        <div class="row elements">
+            <div class="col mx-auto">
+                To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+            </div>
+        </div>
 
-                    <div class="row justify-content-center elements">
-                        <h5>CUSTOMER</h5>
-                    </div>
-                    <div class="row justify-content-center elements">
-                        <select name="customer" id="customer">
-                            <option value="c1">Customer</option>
-                            <option value="c2">Customer</option>
-                            <option value="c3">Customer</option>
-                        </select>
-                    </div>
-
-                    <div class="row justify-content-center elements">
-                        <button class="btn btn-primary">GENERATE GRAPH</button>
-                    </div>
-                </div>
-             </div>
+        <div class="row justify-content-center elements">
+            <button class="btn btn-primary">GENERATE GRAPH</button>
+        </div>
+    </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-</body>
-</html>
+</body>-->
+@*</html>*@

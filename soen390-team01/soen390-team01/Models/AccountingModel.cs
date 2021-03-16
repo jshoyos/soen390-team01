@@ -22,17 +22,20 @@ namespace soen390_team01.Models
         public Filters PaymentFilters { get; set; }
         public Filters ReceivableFilters { get; set; }
         public Filters PayableFilters { get; set; }
-        public string SelectedTab { get; set; } = "All";
+        public string SelectedTab { get; set; } = "payment";
 
-        private static readonly List<string> StatusValues = new List<string> { "Pending", "Completed", "Cancelled" };
+        private static readonly List<string> StatusValues = new List<string> { "Pending", "Completed", "Canceled" };
     
 
         public AccountingModel(ErpDbContext context)
         {
             _context = context;
-            PaymentFilters = ResetFilters();
-            ReceivableFilters = ResetFilters();
-            PayableFilters = ResetFilters();
+            PaymentFilters = ResetFilters("payment");
+            ReceivableFilters = ResetFilters("receivable");
+            PayableFilters = ResetFilters("payable");
+            Payments = GetPayments();
+            Receivables = GetReceivables();
+            Payables = GetPayables();
         }
 
         public List<Payment> GetPayments()
@@ -71,27 +74,29 @@ namespace soen390_team01.Models
         public void ResetPayments()
         {
             Payments = GetPayments();
-            PaymentFilters = ResetFilters();
+            PaymentFilters = ResetFilters("payment");
         }
 
         public void ResetPayables()
         {
             Payables = GetPayables();
-            PayableFilters = ResetFilters();
+            PayableFilters = ResetFilters("receivable");
         }
 
         public void ResetReceivables()
         {
             Receivables = GetReceivables();
-            ReceivableFilters = ResetFilters();
+            ReceivableFilters = ResetFilters("payable");
         }
 
-        private Filters ResetFilters()
+        private Filters ResetFilters(string tabName)
         {
-            var filters = new Filters("payment");
+            var filters = new Filters(tabName);
 
-            filters.Add(new CheckboxFilter("payment", "Status", "status", StatusValues));
+            filters.Add(new CheckboxFilter("payment", "State", "state", StatusValues));
             filters.Add(new RangeFilter("payment", "Amount", "amount"));
+            filters.Add(new DateRangeFilter("payment", "Added", "added"));
+            filters.Add(new DateRangeFilter("payment", "Updated", "modified"));
 
             return filters;
         }
@@ -101,26 +106,26 @@ namespace soen390_team01.Models
             switch (filters.Table)
             {
                 case "receivable":
-                    Receivables = filters.AnyActive() ? GetFilteredPaymentList(filters) : GetReceivables();
+                    Receivables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount >= 0") : GetReceivables();
                     ReceivableFilters = filters;
                     break;
                 case "payable":
-                    Payables = filters.AnyActive() ? GetFilteredPaymentList(filters) : GetPayables();
+                    Payables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount <= 0") : GetPayables();
                     PayableFilters = filters;
                     break;
-                case "all":
-                    Payments = filters.AnyActive() ? GetFilteredPaymentList(filters) : GetPayments();
+                case "payment":
+                    Payments = filters.AnyActive() ? GetFilteredPaymentList(filters, "") : GetPayments();
                     PaymentFilters = filters;
                     break;
             }
         }
 
-        private List<Payment> GetFilteredPaymentList(Filters filters)
+        private List<Payment> GetFilteredPaymentList(Filters filters, string condition)
         {
             try
             {
                 return _context.Payments
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(new Filters("payment", filters.List), condition)).ToList();
             }
             catch (Exception)
             {

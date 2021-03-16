@@ -30,7 +30,6 @@ namespace soen390_team01
             services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<TransfersService>();
-            services.AddSingleton<UserManagementService>();
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
                 ));

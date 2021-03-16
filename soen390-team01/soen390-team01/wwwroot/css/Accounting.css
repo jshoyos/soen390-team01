@@ -4,6 +4,24 @@
     }
 }
 
+@media only screen and (max-width: 1026px) {
+    #all-filter {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 1026px) {
+    #receivable-filter {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 1026px) {
+    #payable-filter {
+        display: none;
+    }
+}
+
 @media only screen and (min-width: 1026px) {
     #filter-button {
         display: none;
@@ -14,6 +32,24 @@
     #generateG-button {
         display: none;
     }
+}
+
+#all-filter {
+    border: 1px solid #5680A9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#receivable-filter {
+    border: 1px solid #5680A9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#payable-filter {
+    border: 1px solid #5680A9;
+    padding: 15px;
+    border-radius: 5px;
 }
 
 #filter-button {
