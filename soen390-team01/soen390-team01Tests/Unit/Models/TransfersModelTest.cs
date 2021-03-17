@@ -198,21 +198,21 @@ namespace soen390_team01Tests.Services
 
         }
 
-        [Test]
-        public void AddProcurementTest()
-        {
-            var initialProcurementCount = _model.Procurements.Count;
-            var procurement = new AddProcurementModel
-            {
-                ItemId = 1,
-                ItemType = "bike",
-                ItemQuantity = 1,
-                VendorId = 1,
-            };
+        //[Test]
+        //public void AddProcurementTest()
+        //{
+        //    var initialProcurementCount = _model.Procurements.Count;
+        //    var procurement = new AddProcurementModel
+        //    {
+        //        ItemId = 1,
+        //        ItemType = "bike",
+        //        ItemQuantity = 1,
+        //        VendorId = 1,
+        //    };
            
-            _model.AddProcurements<Bike>(procurement);
-            Assert.AreEqual(initialProcurementCount + 1, _model.Procurements.Count);
+        //    _model.AddProcurements<Bike>(procurement);
+        //    Assert.AreEqual(initialProcurementCount + 1, _model.Procurements.Count);
 
-        }
+        //}
     }
 }
