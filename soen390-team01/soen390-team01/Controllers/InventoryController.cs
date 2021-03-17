@@ -55,6 +55,7 @@ namespace soen390_team01.Controllers
             try
             {
                 _model.FilterSelectedTab(filters);
+                _model.ShowFilters = true;
             }
             catch (DataAccessException e)
             {

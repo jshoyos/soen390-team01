@@ -12,7 +12,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Models
 { 
-    public class InventoryModel : Inventory, IInventoryService
+    public class InventoryModel : Inventory, IInventoryService, IFilteredModel
     {
 
         private readonly ErpDbContext _context;
@@ -28,6 +28,7 @@ namespace soen390_team01.Models
         public Filters MaterialFilters { get; set; }
 
         public string SelectedTab { get; set; } = "inventory";
+        public bool ShowFilters { get; set; }
 
         public InventoryModel(ErpDbContext context)
         {

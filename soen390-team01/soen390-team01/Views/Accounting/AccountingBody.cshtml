@@ -8,7 +8,6 @@
     <title>Accounting</title>
     <link rel="stylesheet" href="\css\Accounting.css">
     <link rel="stylesheet" href="\css\site.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width" />
     <script>
         function changeTab(tab) {
@@ -78,15 +77,15 @@
 
         <div class="col-lg-3 text-center justify-content-center" id="filter">
             <div id="payment-filter" class="filer-data" style="display:@(Model.SelectedTab == "payment" ? "block": "none")">
-                @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters);}
+                @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
                 <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject("payment"))">
             </div>
             <div id="receivable-filter" class="filer-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
-                @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters);}
+                @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
                 <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject("receivable"))">
             </div>
             <div id="payable-filter" class="filer-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
-                @{await Html.RenderPartialAsync("Filter", Model.PayableFilters);}
+                @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
                 <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject("payable"))">
             </div>
             <div class="row justify-content-center elements">
@@ -95,7 +94,8 @@
         </div>
 
         <!-- Modal for filter in mobile mode-->
-        <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+        <div class="modal fade @(Model.ShowFilters  ? "show": "")" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true" style="display:@(Model.ShowFilters  ? "block": "none")">
+            @{ Model.ShowFilters = false;}
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -106,21 +106,17 @@
                     </div>
                     <div class="modal-body" id="modal-filter">
                         <div id="payment-filter" class="filer-data" style="display:@(Model.SelectedTab == "payment" ? "block": "none")">
-                            @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters);}
+                            @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                             <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject("payment"))">
                         </div>
                         <div id="receivable-filter" class="filer-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
-                            @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters);}
+                            @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                             <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject("receivable"))">
                         </div>
                         <div id="payable-filter" class="filer-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
-                            @{await Html.RenderPartialAsync("Filter", Model.PayableFilters);}
+                            @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                             <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject("payable"))">
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Filter</button>
                     </div>
                 </div>
             </div>

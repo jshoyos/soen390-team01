@@ -3,7 +3,6 @@
 @model Filters
 
 <link rel="stylesheet" href="\css\Filter.css">
-
 <h1 class="display-4">Filter</h1>
 @foreach (var filter in Model.List)
 {
@@ -15,13 +14,13 @@
             <label>@item</label>
             if (((CheckboxFilter)filter).Values.Contains(item))
             {
-                <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item-cb" value="@item" checked="checked"
-                       onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                <input type="checkbox" name="@(ViewData["Mobile"] != null && (bool)ViewData["Mobile"] ? "mobile-":  "")@filter.DisplayColumn-checkbox" id="@item-cb" value="@item" checked="checked"
+                       onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject((ViewData["Mobile"] != null && (bool)ViewData["Mobile"] ? "mobile-":  "") + @filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
             }
             else
             {
-                <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item-cb" value="@item"
-                       onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                <input type="checkbox" name="@(ViewData["Mobile"] != null && (bool)ViewData["Mobile"] ? "mobile-":  "")@filter.DisplayColumn-checkbox" id="@item-cb" value="@item"
+                       onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject((ViewData["Mobile"] != null && (bool)ViewData["Mobile"] ? "mobile-":  "") + @filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
             }
             <br />
         }

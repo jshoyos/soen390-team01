@@ -8,12 +8,6 @@ namespace soen390_team01.Data.Queries
         {
             return $"Select * From public.{filters.Table} where {filters.GetConditionsString()}";
         }
-
-        public static string FilterProduct(Filters filters, string condition)
-        {
-            return $"Select * From public.payment where {filters.GetConditionsString()} {condition}";
-        }
-
         public static string GetProduct(string table, long itemId)
         {
             return $"Select * From public.{table} where item_id = {itemId}";
