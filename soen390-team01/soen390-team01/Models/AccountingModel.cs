@@ -22,7 +22,7 @@ namespace soen390_team01.Models
         public Filters PayableFilters { get; set; }
         public string SelectedTab { get; set; } = "payment";
 
-        private static readonly List<string> StatusValues = new() { "Pending", "Completed", "Canceled" };
+        private static readonly List<string> StatusValues = new() { "pending", "completed", "canceled" };
     
 
         public AccountingModel(ErpDbContext context)
