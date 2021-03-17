@@ -125,7 +125,7 @@ namespace soen390_team01.Models
             try
             {
                 return _context.Payments
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(new Filters("payment", filters.List), condition)).ToList();
+                    .FromSqlRaw(PaymentQueryBuilder.FilterPayment(filters, condition)).ToList();
             }
             catch (Exception)
             {

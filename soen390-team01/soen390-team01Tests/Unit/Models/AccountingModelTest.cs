@@ -77,6 +77,12 @@ namespace soen390_team01Tests.Services
         }
 
         [Test]
+        public void FilterSelectedTabTest()
+        {
+            _model.
+        }
+
+        [Test]
         public void ResetPaymentsTest()
         {
             var initialPaymentCount = _model.Payments.Count;
