@@ -1,32 +1,24 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using soen390_team01.Data.Entities;
+using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace soen390_team01.Controllers
 {
     public class AuthenticationController : Controller
     {
         #region fields
-
         private readonly AuthenticationFirebaseService _authService;
+        private readonly IUserManagementService _userManagementService;
         #endregion
 
-        public AuthenticationController(AuthenticationFirebaseService authService) 
+        public AuthenticationController(AuthenticationFirebaseService authService,
+            IUserManagementService userManagementService)
         {
             _authService = authService;
+            _userManagementService = userManagementService;
         }
-        #region properties
-        [BindProperty]
-        public LoginModel Input { get; set; }
-        [TempData]
-        public string StringErrorMessage { get; set; }
-        #endregion
 
         #region Methods
         /// <summary>
@@ -44,28 +36,35 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> IndexAsync(LoginModel model)
+        public IActionResult IndexAsync(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var email = model.Email;
-                var password = model.Password;
-                var user = AuthenticateUser(email, password);
-                if (user == null)
+                try
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid authentication");
-                    return View(model);
+                    var email = model.Email;
+                    var password = model.Password;
+                    var user = AuthenticateUser(email, password);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid authentication");
+                        return View(model);
+                    }
+                    _authService.SetAuthCookie(email, user.Role, this.HttpContext);
+                    return LocalRedirect("/Home/Privacy");
                 }
-                await SetAuthCookie(email, this.HttpContext);
-                return LocalRedirect("/Home/Privacy");
+                catch (DataAccessException)
+                {
+                    TempData["errorMessage"] = "User does not exist";
+                }
             }
 
             return View(model);
         }
 
-        public async Task<IActionResult> LogoutAsync()
+        public IActionResult LogoutAsync()
         {
-            await RemoveAuthCookie(this.HttpContext);
+            _authService.RemoveAuthCookie(this.HttpContext);
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>
@@ -84,15 +83,22 @@ namespace soen390_team01.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(LoginModel model)
+        public IActionResult ForgotPassword(LoginModel model)
         {
-            if (!string.IsNullOrEmpty(model.Email))
+            if (string.IsNullOrEmpty(model.Email))
             {
-                await _authService.RequestPasswordChange(model.Email);
-                return LocalRedirect("/Authentication/Index");
+                return View(model);
             }
 
-            return View(model);
+            _authService.RequestPasswordChange(model.Email);
+            return LocalRedirect("/Authentication/Index");
+
+        }
+
+        [HttpGet]
+        public IActionResult PermissionDenied()
+        {
+            return View();
         }
 
         /// <summary>
@@ -101,42 +107,16 @@ namespace soen390_team01.Controllers
         /// <param name="email">User's email</param>
         /// <param name="password">User's password</param>
         /// <returns>returns the current user</returns>
-        private string AuthenticateUser(string email, string password)
+        private User AuthenticateUser(string email, string password)
         {
-            if (_authService.AuthenticateUser(email, password).Result)
+            var user = _userManagementService.GetUserByEmail(email);
+            if (user != null && _authService.AuthenticateUser(email, password))
             {
-                //TODO: return more than just a string
-                return "User";
+                return user;
             }
             return null;
         }
 
-        /// <summary>
-        /// Sets the authentication cookie so user is remembered in the browser
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="context"></param>
-        private static async Task SetAuthCookie(string email, HttpContext context)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, email)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            {
-                AllowRefresh = true,
-            };
-
-            await AuthenticationHttpContextExtensions.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-        }
-
-        private static async Task RemoveAuthCookie(HttpContext context)
-        {
-            await AuthenticationHttpContextExtensions.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
-        }
         #endregion
     }
 }

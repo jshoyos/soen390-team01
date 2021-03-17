@@ -1,73 +1,55 @@
-﻿@model soen390_team01.Models.InventoryModel
+﻿@model soen390_team01.Services.IInventoryService
 
+<div id="inventory-filter" class="filer-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
+</div>
+<div id="bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
+</div>
+<div id="part-filter" class="filer-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
+</div>
+<div id="material-filter" class="filer-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
+    @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
+</div>
 
-<!--Table and its contents-->
-<div class="container">
-    <div class="bikeTable">
-        <div class="row">
-            <!--Tabs-->
-            <div class="col-lg-12 mx-lg-auto">
-                <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
-                    <li style="width: 100%;text-align:center;">
-                        <a class="nav-link @(Model.SelectedTab == "All" ? "active" : "")" id="allTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="false" hideFilter()>
-                            View All Components
-                        </a>
-                    </li>
+<div class="bike-components">
+    <div class="tab">
+        <button class="tablinks @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
+    </div>
+    <div class="tab">
+        <button class="tablinks @(Model.SelectedTab == "bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'bike'),showFilter('bike')">Bike</button>
+        <button class="tablinks @(Model.SelectedTab == "part" ? "active": "")" id="partButton" onclick="openTab(event, 'part'),showFilter('part')">Part</button>
+        <button class="tablinks @(Model.SelectedTab == "material" ? "active": "")" id="matButton" onclick="openTab(event, 'material'),showFilter('material')">Material</button>
+    </div>
+    <div id="inventory" class="tabcontent" style="display: @(Model.SelectedTab == "inventory" ? "block": "none")" onclick="showFilter('inventory')">
 
-                    <li style="width: 33.33%;text-align:center;">
-                        <a class="nav-link @(Model.SelectedTab == "Bike" ? "active" : "")" id="bikeTab" data-toggle="pill" href="#bikeTabContent" role="tab" aria-controls="bikeTabContent" aria-selected="false" onclick="showFilter('Bikes')">
-                            Bikes
-                        </a>
-                    </li>
-                    <li class="nav-item" style="width: 33.33%; text-align:center;">
-                        <a class="nav-link @(Model.SelectedTab == "Part" ? "active" : "")" id="partTab" data-toggle="pill" href="#partTabContent" role="tab" aria-controls="partTabContent" aria-selected="false" onclick="showFilter('Parts')">
-                            Parts
-                        </a>
-                    </li>
-                    <li class="nav-item" style="width: 33.33%; text-align:center;">
-                        <a class="nav-link @(Model.SelectedTab == "Material" ? "active" : "")" id="materialTab" data-toggle="pill" href="#materialTabContent" role="tab" aria-controls="materialTabContent" aria-selected="false" onclick="showFilter('Material')">
-                            Material
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <h3>Inventory</h3>
+
+        @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
+    </div>
+    <!-- Tab content -->
+    <div id="bike" class="tabcontent" style="display: @(Model.SelectedTab == "bike" ? "block": "none")" onclick="showFilter('bike')">
+
+        <h3>Bikes</h3>
+        <div class="Bike-table">
+            @{await Html.RenderPartialAsync("BikeTable", Model.BikeList);}
         </div>
-        <!--/Tabs-->
-        <!--Tab contents-->
-        <div class="tab-content" id="pills-tabContent">
-            <!--All components Tab-->
-            <div class="tab-pane fade show @(Model.SelectedTab == "All" ? "active" : "")" role="tabpanel" aria-labelledby="allTab" id="allTabContent">
-                <h4 style="text-align: center">All Compenents</h4>
-                <div class="All-table text-center">
-                    @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
-                </div>
-            </div>
-            <!--/All components Tab-->
-            <!--Bikes Tab-->
-            <div class="tab-pane fade show @(Model.SelectedTab == "Material" ? "active" : "")" role="tabpanel" aria-labelledby="bikeTab" id="bikeTabContent">
-                <h4 style="text-align: center">Bikes</h4>
-                <div class="Bike-table text-center">
-                    @{await Html.RenderPartialAsync("BikeTable", Model.BikeList);}
-                </div>
-            </div>
-            <!--/Bikes Tab-->
-            <!--Parts Tab-->
-            <div class="tab-pane fade show @(Model.SelectedTab == "Parts" ? "active" : "")" role="tabpanel" aria-labelledby="partTab" id="partTabContent">
-                <h4 style="text-align: center">Parts</h4>
-                <div class="Part-table text-center">
-                    @{await Html.RenderPartialAsync("PartTable", Model.PartList);}
-                </div>
-            </div>
-            <!--/Parts Tab-->
-            <!--Material Tab-->
-            <div class="tab-pane fade show @(Model.SelectedTab == "Material" ? "active" : "")" role="tabpanel" aria-labelledby="materialTab" id="materialTabContent">
-                <h4 style="text-align: center">Material</h4>
-                <div class="Material-table text-center">
-                    @{await Html.RenderPartialAsync("MaterialTable", Model.MaterialList);}
-                </div>
-            </div>
-            <!--/Material Tab-->
+
+    </div>
+
+    <div id="part" class="tabcontent" style="display: @(Model.SelectedTab == "part" ? "block": "none")" onclick="showFilter('part')">
+        <h3>Parts</h3>
+        <div class="Part-table">
+            @{await Html.RenderPartialAsync("PartTable", Model.PartList);}
         </div>
-        <!--/Tab contents-->
+
+    </div>
+
+    <div id="material" class="tabcontent" style="display: @(Model.SelectedTab == "material" ? "block": "none")" onclick="showFilter('material')">
+        <h3>Material</h3>
+        <div class="Material-table">
+            @{await Html.RenderPartialAsync("MaterialTable", Model.MaterialList);}
+        </div>
     </div>
 </div>

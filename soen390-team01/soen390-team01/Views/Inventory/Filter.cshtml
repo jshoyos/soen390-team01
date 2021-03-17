@@ -1,23 +1,88 @@
 ﻿@using Newtonsoft.Json
-@model SelectFilters
+@using soen390_team01.Data.Queries
+@model Filters
 
-<div id="@Model.Type-filter" class="filter-data">
+<link rel="stylesheet" href="\css\Filter.css">
+
+<div id="@Model.Table-filter" class="filter-data">
     <h1 class="display-4">Filter</h1>
-    <form method="post" asp-controller="Inventory" asp-action="Index" asp-route-returnurl="">
-        @foreach (KeyValuePair<string, SelectList> pair in Model)
+    @foreach (var filter in Model.List)
+    {
+        <p><strong>@filter.DisplayColumn</strong></p>
+        if (filter.GetType() == typeof(SelectFilter))
         {
-            <p><strong>@pair.Key</strong></p>
-            <select onchange="passingFilter(@JsonConvert.SerializeObject(@Model.Type),@JsonConvert.SerializeObject(pair.Key),this.value)">
-                <option value="" selected disabled hidden>Choose here</option>
-                @foreach (SelectListItem item in pair.Value)
+            <select onchange="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { SelectInput: { SelectValue: this.value, PossibleValues: @JsonConvert.SerializeObject(((SelectFilter)filter).PossibleSelectValues) } })">
+                <option value="" selected></option>
+
+                @foreach (var item in ((SelectFilter)filter).PossibleSelectValues)
                 {
-                    <option value="@item.Text">@item.Text</option>
+                    if (((SelectFilter)filter).Value == item)
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
                 }
             </select>
             <br /><br />
-
         }
-        <br>
-
-    </form>
+        else if (filter.GetType() == typeof(CheckboxFilter))
+        {
+            @foreach (var item in ((CheckboxFilter)filter).PossibleCheckboxValues)
+            {
+                <label>@item</label>
+                if (((CheckboxFilter)filter).Values.Contains(item))
+                {
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item-cb" value="@item" checked="checked"
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                }
+                else
+                {
+                    <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item-cb" value="@item"
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                }
+                <br />
+            }
+            <br />
+        }
+        else if (filter.GetType() == typeof(StringFilter))
+        {
+            <input type="text" value="@(((StringFilter)filter).Value)" onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { StringValue: this.value })" />
+            <br /><br />
+        }
+        else if (filter.GetType() == typeof(RangeFilter))
+        {
+            <input type="number" class="price-text" min="0" max="1000000"
+                   value="@(((RangeFilter)filter).Min)"
+                   onkeyup="enforceMinMax(this)"
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(this.value), MaxValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Max)) } })" />
+            <span>To</span>
+            <input type="number" class="price-text" min="0" max="1000000"
+                   value="@(((RangeFilter)filter).Max)"
+                   onkeyup="enforceMinMax(this)"
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } })" />
+            <br /><br />
+        }
+        else if (filter.GetType() == typeof(DateRangeFilter))
+        {
+            <div>From</div>
+            <input 
+                style="max-width: 200px;"
+                type="datetime-local"
+                value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } })" />
+            <br/>
+            <div>To</div>
+            <input 
+                style="max-width: 200px;"
+                type="datetime-local"
+                value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } })" />
+            <br/><br/>
+        }
+    }
+    <br /><br />
+    <input class="filter-data" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Table)), showFilter(@JsonConvert.SerializeObject(Model.Table))">
 </div>

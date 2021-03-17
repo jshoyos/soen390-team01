@@ -1,0 +1,72 @@
+﻿@media only screen and (max-width: 1026px) {
+    #filter {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 1026px) {
+    #filter-button {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 1026px) {
+    #generateG-button {
+        display: none;
+    }
+}
+
+#filter-button {
+    font-size: 12px;
+    margin: 1px;
+    padding:2px;
+    width: 100%;
+}
+
+#g-button {
+    font-size: 12px;
+    margin: 1px;
+    padding: 2px;
+    width: 100%;
+}
+
+#filter {
+    border: 1px solid #5680A9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+
+.generateGraph{
+    color: white;
+    padding: 3px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.generateGraph:hover {
+    background-color: #909090;
+
+}
+
+.elements{
+    margin: 10px 5px 5px 5px;
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
+}
+
+#custumer{
+    border-radius:3px;
+}
+
+
+.form-check{
+    margin-right: auto;
+    margin-left: auto;
+}
+#LHS {
+    border: 1px solid #5680A9;
+    margin: 2px;
+    padding: 0 0 5px 0;
+    border-radius: 5px;
+}

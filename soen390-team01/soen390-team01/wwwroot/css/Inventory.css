@@ -32,6 +32,13 @@ div.quantity::after {
     zoom: 1;
 }
 
+div.inventory-view {
+    border-style: solid;
+    border-width: thin;
+    border-color: lightgrey;
+    padding: 10px;
+    border-radius: 8px;
+}
 
 div.bike-components {
     float: left;
@@ -51,20 +58,42 @@ input.filer-data {
     border-width: thin;
     float: right;
 }
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: white;
+}
+
+.tablinks {
+    background-color: white;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    width: 33%;
+}
 
 .bike-components {
     width: 78.7%;
 }
 
-.tablinks:hover , .allTab:hover {
-    background-color: #1b6ec2;
+.tablinks:hover {
+    background-color: #ccc;
 }
 
-.tablinks.active , allTab:hover{
-    background-color: #1b6ec2;
+.tablinks.active {
+    background-color: #ccc;
 }
 
-
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+    height: 400px;
+}
 
 .scroll {
     color: lightgray;
@@ -107,7 +136,19 @@ input.filer-data {
     -moz-appearance: textfield !important;
 }
 
-.quantity-text::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+.price-text {
+    height: 28px;
+    text-align: center;
+    width: 24px;
+    -moz-appearance: textfield !important;
+}
+
+.quantity-text::-webkit-inner-spin-button, .quantity-text::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+.price-text::-webkit-inner-spin-button, .price-text::-webkit-outer-spin-button {
     -webkit-appearance: none !important;
     margin: 0 !important;
 }
@@ -115,18 +156,9 @@ input.filer-data {
 .filter-data {
     text-align: center
 }
-/**/
-.bikeTable , .filter {
-    border: 1px solid #1861ac;
-    background-color: white;
-    border-radius: 5px;
+.elements {
+    margin: 10px 5px 5px 5px;
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
 }
-
-.bikeTable li {
-   border-bottom: 1px solid #1861ac;
-}
-
-#bikeTab, #partTab {
-    border-right: 1px solid #1861ac;
-}
-

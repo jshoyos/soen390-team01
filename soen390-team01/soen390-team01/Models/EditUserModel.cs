@@ -1,27 +1,12 @@
 ﻿using soen390_team01.Data.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace soen390_team01.Models
 {
     public class EditUserModel : User
     {
-        public EditUserModel()
-        {
-            Email = "";
-            Role = "";
-            PhoneNumber = "";
-            LastName = "";
-            FirstName = "";
-        }
-        public EditUserModel(User user)
-        {
-            Email = user.Email;
-            Role = user.Role;
-            PhoneNumber = user.PhoneNumber;
-            LastName = user.LastName;
-            FirstName = user.FirstName;
-            UserId = user.UserId;
-        }
+        #region properties
         [Required]
         public override string Role { get; set; }
         [Display(Name = "Phone Number")]
@@ -36,5 +21,23 @@ namespace soen390_team01.Models
         [Display(Name = "First Name")]
         [Required]
         public override string FirstName { get; set; }
+        #endregion
+
+        public EditUserModel()
+        {
+            Email = "";
+            PhoneNumber = "";
+            LastName = "";
+            FirstName = "";
+        }
+        public EditUserModel(User user)
+        {
+            Email = user.Email;
+            Role = user.Role;
+            PhoneNumber = user.PhoneNumber;
+            LastName = user.LastName;
+            FirstName = user.FirstName;
+            UserId = user.UserId;
+        }
     }
 }

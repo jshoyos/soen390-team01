@@ -34,9 +34,12 @@
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                         <div class="col">
-                            <label asp-for="Role"></label>
-                            <input asp-for="Role" class="form-control" />
-                            <span asp-validation-for="Role" class="text-danger"></span>
+                            <label asp-for="Role">Role</label>
+                            <select asp-for="Role"
+                                    class="form-control"
+                                    asp-items="new SelectList(Enum.GetNames(typeof(Roles)))">
+                                <option>Select type ...</option>
+                            </select>
                         </div>
                     </div>
                 </form>

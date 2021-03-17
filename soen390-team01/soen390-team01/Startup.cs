@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using soen390_team01.Data;
 using soen390_team01.Services;
 using System;
+using soen390_team01.Models;
 
 namespace soen390_team01
 {
@@ -23,10 +24,10 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<AuthenticationFirebaseService>();
-            services.AddScoped<InventoryService>();
-            services.AddScoped<TransfersService>();
-            services.AddScoped<UserManagementService>();
+            services.AddSingleton<AuthenticationFirebaseService>();
+            services.AddSingleton<IInventoryService, InventoryModel>();
+            services.AddSingleton<IUserManagementService, UserManagementModel>();
+            services.AddSingleton<TransfersService>();
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
                 ));

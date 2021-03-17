@@ -6,17 +6,7 @@ namespace soen390_team01.Models
 {
     public class AddUserModel : User
     {
-
-        public AddUserModel()
-        {
-            Email = "";
-            Role = "";
-            PhoneNumber = "";
-            LastName = "";
-            FirstName = "";
-            Password = "";
-            ConfirmPassword = "";
-        }
+        #region properties
         [Display(Name = "Email Address")]
         [Required]
         [EmailAddress]
@@ -46,5 +36,16 @@ namespace soen390_team01.Models
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+        #endregion
+
+        public AddUserModel()
+        {
+            Email = "";
+            PhoneNumber = "";
+            LastName = "";
+            FirstName = "";
+            Password = "";
+            ConfirmPassword = "";
+        }
     }
 }

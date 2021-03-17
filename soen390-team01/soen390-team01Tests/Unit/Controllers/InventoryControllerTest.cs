@@ -1,17 +1,27 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
-using soen390_team01.Data;
 using soen390_team01.Data.Entities;
-using soen390_team01.Models;
+using soen390_team01.Data.Exceptions;
+using soen390_team01.Data.Queries;
 using soen390_team01.Services;
 
 namespace soen390_team01Tests.Controllers
 {
     public class InventoryControllerTest
     {
+        Mock<IInventoryService> _modelMock;
+
+        [SetUp]
+        public void Setup()
+        {
+            _modelMock = new Mock<IInventoryService>();
+        }
+
         [Test]
         public void IndexTest()
         {
@@ -35,22 +45,17 @@ namespace soen390_team01Tests.Controllers
                 );
             }
 
-            var inventoryModel = new InventoryModel
-            {
-                AllList = allList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.SetupModel()).Returns(inventoryModel);
-            var controller = new InventoryController(inventoryServiceMock.Object);
+            _modelMock.Setup(m => m.AllList).Returns(allList);
+
+            var controller = new InventoryController(_modelMock.Object);
 
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(9, (result.Model as InventoryModel).AllList.Count);
+            Assert.AreEqual(9, (result.Model as IInventoryService).AllList.Count);
         }
 
         [Test]
-        public void ChangeQuantityTest()
+        public void ChangeQuantityValidTest()
         {
             var inventory = new Inventory
             {
@@ -60,10 +65,10 @@ namespace soen390_team01Tests.Controllers
                 Type = "bike",
                 Warehouse = "Warehouse 1"
             };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.SetupAllProperties();
-            var controller = new InventoryController(inventoryServiceMock.Object);
+
+            _modelMock.Setup(m => m.Update(It.IsAny<Inventory>())).Returns(inventory);
+
+            var controller = new InventoryController(_modelMock.Object);
 
             var result = controller.ChangeQuantity(inventory) as PartialViewResult;
             Assert.IsNotNull(result);
@@ -71,85 +76,62 @@ namespace soen390_team01Tests.Controllers
         }
 
         [Test]
-        public void FilterProductTableBikeTest()
+        public void ChangeQuantityInValidTest()
         {
-            var bikeList = new List<Bike>();
-            var input = new ProductFilterInput
+            var inventory = new Inventory
             {
-                Type = "Bike",
-                Value = "Bike 1",
-                Name = "name"
+                ItemId = 1,
+                InventoryId = 1,
+                Quantity = -5,
+                Type = "bike",
+                Warehouse = "Warehouse 1"
             };
 
-            bikeList.Add(new Bike
-            {
+            var controller = new InventoryController(_modelMock.Object);
+
+            var result = controller.ChangeQuantity(inventory) as PartialViewResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, ((Inventory) result.Model).Quantity, "Quantity should be 0 when the incoming quantity is negative");
+
+            _modelMock.Setup(i => i.Update(It.IsAny<Inventory>())).Throws(new UnexpectedDataAccessException("some_code"));
+
+            controller = new InventoryController(_modelMock.Object) {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            Assert.IsNotNull(controller.ChangeQuantity(inventory) as PartialViewResult);
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
+        }
+
+        [Test]
+        public void FilterProductTableTest()
+        {
+            var bikeList = new List<Bike>();
+            var filters = new Filters("bike");
+            filters.Add(new StringFilter("bike", "Grade", "grade") { Value = "some_value" });
+            bikeList.Add(new Bike {
                 ItemId = 1,
                 Grade = "copper",
                 Name = "Bike 1",
                 Size = "M",
                 Price = 1
-            }
-            );
+            });
 
-            var inventoryModel = new InventoryModel
-            {
-                BikeList = bikeList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.GetFilteredProductList<Bike>(input)).Returns(bikeList);
-            var controller = new InventoryController(inventoryServiceMock.Object);
+            _modelMock.Setup(m => m.BikeList).Returns(bikeList);
+            _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>()));
 
-            var result = controller.FilterProductTable(input) as PartialViewResult;
+            var controller = new InventoryController(_modelMock.Object);
+            var result = controller.FilterProductTable(filters) as PartialViewResult;
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, (result.Model as List<Bike>).Count);
+            Assert.AreEqual(1, (result.Model as IInventoryService).BikeList.Count);
         }
 
         [Test]
-        public void FilterProductTablePartTest()
-        {
-            var partList = new List<Part>();
-            var input = new ProductFilterInput
-            {
-                Type = "Part",
-                Value = "Part 1",
-                Name = "name"
-            };
-
-            partList.Add(new Part
-            {
-                ItemId = 1,
-                Grade = "copper",
-                Name = "Part 1",
-                Size = "L",
-                Price = 1
-            }
-            );
-
-            var inventoryModel = new InventoryModel
-            {
-                PartList = partList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.GetFilteredProductList<Part>(input)).Returns(partList);
-            var controller = new InventoryController(inventoryServiceMock.Object);
-
-            var result = controller.FilterProductTable(input) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, (result.Model as List<Part>).Count);
-        }
-
-        [Test]
-        public void FilterProductTableMaterialTest()
+        public void FilterProductTableExceptionTest()
         {
             var materialList = new List<Material>();
-            var input = new ProductFilterInput
-            {
-                Type = "Material",
-                Value = "Material 1",
-                Name = "name"
-            };
+            var filters = new Filters("material");
+            filters.Add(new StringFilter("material", "Name", "name") { Value = "some_value" });
 
             materialList.Add(new Material
             {
@@ -157,170 +139,31 @@ namespace soen390_team01Tests.Controllers
                 Grade = "copper",
                 Name = "Material 1",
                 Price = 1
-            }
-            );
+            });
 
-            var inventoryModel = new InventoryModel
-            {
-                MaterialList = materialList
+            _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code") );
+            var controller = new InventoryController(_modelMock.Object) {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.GetFilteredProductList<Material>(input)).Returns(materialList);
-            var controller = new InventoryController(inventoryServiceMock.Object);
-
-            var result = controller.FilterProductTable(input) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, (result.Model as List<Material>).Count);
-        }
-
-        [Test]
-        public void FilterProductTableBikeClearTest()
-        {
-            var bikeList = new List<Bike>();
-            var input = new ProductFilterInput
-            {
-                Type = "Bike",
-                Value = "clear",
-                Name = ""
-            };
-            for (var i = 1; i <= 3; i++)
-            {
-                bikeList.Add(new Bike
-                {
-                    ItemId = i,
-                    Grade = "Copper " + i,
-                    Name = "Bike " + i,
-                    Size = "L",
-                    Price = i
-                }
-                );
-            }
-
-            var inventoryModel = new InventoryModel
-            {
-                BikeList = bikeList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.GetAllBikes()).Returns(bikeList);
-            var controller = new InventoryController(inventoryServiceMock.Object);
-
-            var result = controller.FilterProductTable(input) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(3, (result.Model as List<Bike>).Count);
-        }
-
-        [Test]
-        public void FilterProductTablePartClearTest()
-        {
-            var partList = new List<Part>();
-            var input = new ProductFilterInput
-            {
-                Type = "Part",
-                Value = "clear",
-                Name = ""
-            };
-            for (var i = 1; i <= 3; i++)
-            {
-                partList.Add(new Part
-                {
-                    ItemId = i,
-                    Grade = "Copper " + i,
-                    Name = "Part " + i,
-                    Size = "L",
-                    Price = i
-                }
-                );
-            }
-
-            var inventoryModel = new InventoryModel
-            {
-                PartList = partList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.GetAllParts()).Returns(partList);
-            var controller = new InventoryController(inventoryServiceMock.Object);
-
-            var result = controller.FilterProductTable(input) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(3, (result.Model as List<Part>).Count);
-        }
-
-        [Test]
-        public void FilterProductTableMaterialClearTest()
-        {
-            var materialList = new List<Material>();
-            var input = new ProductFilterInput
-            {
-                Type = "Material",
-                Value = "clear",
-                Name = ""
-            };
-            for (var i = 1; i <= 3; i++)
-            {
-                materialList.Add(new Material
-                {
-                    ItemId = i,
-                    Grade = "Copper " + i,
-                    Name = "Material " + i,
-                    Price = i
-                }
-                );
-            }
-
-            var inventoryModel = new InventoryModel
-            {
-                MaterialList = materialList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.GetAllMaterials()).Returns(materialList);
-            var controller = new InventoryController(inventoryServiceMock.Object);
-
-            var result = controller.FilterProductTable(input) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(3, (result.Model as List<Material>).Count);
+            Assert.IsNotNull(controller.FilterProductTable(filters) as PartialViewResult);
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
         }
 
         [Test]
         public void RefreshTest()
         {
-            var allList = new List<Inventory>();
+            _modelMock.Setup(m => m.ResetBikes());
+            _modelMock.Setup(m => m.ResetParts());
+            _modelMock.Setup(m => m.ResetMaterials());
 
-            string selectedTab = "Bike";
-            for (var i = 1; i <= 9; i++)
-            {
-                var type = (9 % i) switch
-                {
-                    0 => "bike",
-                    1 => "part",
-                    _ => "material"
-                };
-                allList.Add(new Inventory
-                {
-                    ItemId = i,
-                    InventoryId = i,
-                    Quantity = i,
-                    Type = type,
-                    Warehouse = "Warehouse " + i
-                }
-                );
-            }
+            var controller = new InventoryController(_modelMock.Object);
 
-            var inventoryModel = new InventoryModel
-            {
-                AllList = allList
-            };
-            var context = new Mock<ErpDbContext>();
-            var inventoryServiceMock = new Mock<InventoryService>(context.Object);
-            inventoryServiceMock.Setup(i => i.SetupModel()).Returns(inventoryModel);
-            var controller = new InventoryController(inventoryServiceMock.Object);
-
-            var result = controller.Refresh(selectedTab) as PartialViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(9, (result.Model as InventoryModel).AllList.Count);
+            controller.Refresh("bike");
+            _modelMock.Verify(m => m.ResetBikes(), Times.Once());
+            controller.Refresh("part");
+            _modelMock.Verify(m => m.ResetParts(), Times.Once());
+            controller.Refresh("material");
+            _modelMock.Verify(m => m.ResetMaterials(), Times.Once());
         }
     }
 }

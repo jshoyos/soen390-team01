@@ -6,38 +6,34 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Controllers
 {
+    [Authorize]
     public class UserManagementController : Controller
     {
         #region fields
         private readonly AuthenticationFirebaseService _authService;
-        private readonly UserManagementService _userManagementService;
+        private readonly IUserManagementService _model;
         #endregion
 
         public UserManagementController(AuthenticationFirebaseService authService,
-            UserManagementService userManagementService)
+            IUserManagementService model)
         {
             _authService = authService;
-            _userManagementService = userManagementService;
+            _model = model;
         }
-
 
         #region Methods
 
         [HttpGet]
-        [Authorize]
+        [ModulePermission(Roles = Role.Admin)]
         public IActionResult Index()
         {
-            var model = new UserManagementModel
-            {
-                Users = _userManagementService.GetAllUsers(),
-                AddUser = new AddUserModel()
-            };
+            _model.Reset();
 
-            return View("Index", model);
+            return View("Index", _model);
         }
 
         /// <summary>
-        ///     Event Handler when the there is a request to add a new user
+        /// Event Handler when the there is a request to add a new user
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -48,7 +44,7 @@ namespace soen390_team01.Controllers
             {
                 try
                 {
-                    RegisterUser(model.AddUser);
+                    RegisterUser(model.AddUserModel);
                 }
                 catch (DataAccessException e)
                 {
@@ -61,13 +57,19 @@ namespace soen390_team01.Controllers
 
         public IActionResult GetUserById(long userId)
         {
-            var user = _userManagementService.GetUserById(userId);
-
-            if (user != null)
+            try
             {
-                return PartialView("_UserModalPartial", new EditUserModel(user));
-            }
+                var user = _model.GetUserById(userId);
 
+                if (user != null)
+                {
+                    return PartialView("_UserModalPartial", new EditUserModel(user));
+                }
+            }
+            catch (NotFoundException e)
+            {
+                TempData["errorMessage"] = e.Message;
+            }
             return Index();
         }
 
@@ -76,7 +78,7 @@ namespace soen390_team01.Controllers
         {
             if (ModelState.IsValid)
             {
-                var editedUser = _userManagementService.EditUser(user);
+                var editedUser = _model.EditUser(user);
                 return PartialView("_UserRowPartial", editedUser);
             }
 
@@ -85,13 +87,13 @@ namespace soen390_team01.Controllers
 
         private void RegisterUser(AddUserModel user)
         {
-            var addedUser = _userManagementService.AddUser(user);
-            if (_authService.RegisterUser(addedUser.Email, user.Password).Result)
+            var addedUser = _model.AddUser(user);
+            if (_authService.RegisterUser(addedUser.Email, user.Password))
             {
                 return;
             }
 
-            _userManagementService.RemoveUser(user);
+            _model.RemoveUser(user);
             throw new AccountRegistrationException();
         }
 
