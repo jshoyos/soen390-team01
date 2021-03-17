@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" href="\css\Transfers.css">
     <meta name="viewport" content="width=device-width" />
-
     <script>
         function showButton() {
             document.getElementById("procbutton").style.display = "";
@@ -34,36 +33,38 @@
         }
 
         function passingFilters(filters, displayedName, filterInput) {
-            var list = filters.List.map(f => {
-                if (f.PossibleSelectValues) {
-                    f.Input = {
-                        SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
-                    };
-                } else if (f.PossibleCheckboxValues) {
-                    f.Input = {
-                        CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
-                    };
-                } else if (f.hasOwnProperty("Value")) {
-                    f.Input = { StringValue: f.Value };
-                } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
-                    f.Input = {
-                        RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
-                    };
-                } else if (f.hasOwnProperty("MinDate") || f.hasOwnProperty("MaxDate")) {
-                    f.Input = {
-                        DateRangeInput: { MinValue: !f.MinDate ? null : f.MinDate, MaxValue: !f.MaxDate ? null : f.MaxDate }
-                    };
-                }
-                return f;
-            });
+            if (filters == null || (displayedName != "submit" && filterInput != "submit")) {
+                var list = filters.List.map(f => {
+                    if (f.PossibleSelectValues) {
+                        f.Input = {
+                            SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
+                        };
+                    } else if (f.PossibleCheckboxValues) {
+                        f.Input = {
+                            CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
+                        };
+                    } else if (f.hasOwnProperty("Value")) {
+                        f.Input = { StringValue: f.Value };
+                    } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
+                        f.Input = {
+                            RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
+                        };
+                    } else if (f.hasOwnProperty("MinDate") || f.hasOwnProperty("MaxDate")) {
+                        f.Input = {
+                            DateRangeInput: { MinValue: !f.MinDate ? null : f.MinDate, MaxValue: !f.MaxDate ? null : f.MaxDate }
+                        };
+                    }
+                    return f;
+                });
 
-            var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
-            var modifiedFilter = list[filterIndex];
-            modifiedFilter.Input = filterInput;
-            list[filterIndex] = modifiedFilter;
-
-            filters.List = list;
-
+                var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
+                var modifiedFilter = list[filterIndex];
+                modifiedFilter.Input = filterInput;
+                list[filterIndex] = modifiedFilter;
+                console.log("test");
+                filters.List = list;
+            }
+            
             $.ajax({
                 url: '@Url.Action("FilterTransferTable", "Transfers")',
                 type: 'POST',
@@ -71,11 +72,12 @@
                 data: JSON.stringify(filters),
                 dataType: 'html',
                 success: function (result) {
+                    $("#filterModal").modal('hide');
                     $('.transfer-view').html(result);
-                    document.getElementById('filterModal');
                     
                 }
             });
+            
         };
         function refreshFilter(type) {
 
@@ -89,7 +91,6 @@
                     $('.transfer-view').html(result);
                     if (type == "procurement") {
                         showFilter();
-                        console.log("show proc")
                     }
                     else {
                         hideFilter();
@@ -98,6 +99,8 @@
             });
 
         };
+
+
 
         function createCheckboxInput(column, possibleValues) {
             var checkBoxes = document.getElementsByName(column + "-checkbox");

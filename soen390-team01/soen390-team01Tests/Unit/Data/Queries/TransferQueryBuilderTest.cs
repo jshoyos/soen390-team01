@@ -16,6 +16,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
                 "Vendor3"
             };
             var filters = new Filters("procurement");
+            var filters2 = new Filters("procurement");
             filters.Add(new SelectFilter("procurement", "Vendor", "vendor",list) { Value = "Vendor1"});
 
             Assert.AreEqual(
@@ -23,6 +24,11 @@ namespace soen390_team01Tests.Unit.Data.Queries
                 "From public.procurement, public.vendor where vendor.vendor_id = procurement.vendor_id and vendor.name= 'Vendor1'",
                 TransfersQueryBuilder.FilterProcurement(filters)
                 );
+            Assert.AreEqual(
+               "Select procurement.*, vendor.name " +
+               "From public.procurement, public.vendor where vendor.vendor_id = procurement.vendor_id ",
+               TransfersQueryBuilder.FilterProcurement(filters2)
+               );
         }
 
         [Test]
@@ -46,8 +52,5 @@ namespace soen390_team01Tests.Unit.Data.Queries
                 TransfersQueryBuilder.FilterOrder(filters)
             );
         }
-
-
-        // return $"Select * From public.{filters.Table} where {filters.GetConditionsString()}";
     }
 }

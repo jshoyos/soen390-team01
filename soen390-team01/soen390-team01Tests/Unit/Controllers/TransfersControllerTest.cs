@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
@@ -67,80 +69,84 @@ namespace soen390_team01Tests.Controllers
 
         }
 
-        //[Test]
-        //public void AddProcurementTest()
-        //{
-        //    var transfersModel = CreateModel();
-        //    var transfersServiceMock = new Mock<TransfersModel>(new Mock<ErpDbContext>().Object);
-        //    transfersServiceMock.Setup(i => i.AddProcurements<Bike>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
-        //    transfersServiceMock.Setup(i => i.AddProcurements<Part>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
-        //    transfersServiceMock.Setup(i => i.AddProcurements<Material>(It.IsAny<AddProcurementModel>())).Returns(new Procurement());
+        [Test]
+        public void AddProcurementTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Procurements).Returns(new List<Procurement>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Vendors).Returns(new List<Vendor>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Payments).Returns(new List<Payment>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Orders).Returns(new List<Order>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Customers).Returns(new List<Customer>().AsQueryable().BuildMockDbSet().Object);
 
-        //    var controller = new TransfersController(transfersServiceMock.Object);
+            var transfersModel = CreateModel();
+            var controller = new TransfersController(transfersModel);
 
-        //    var inputModel = new TransfersModel(new ErpDbContext())
-        //    {
-        //        AddProcurement = new AddProcurementModel
-        //        {
-        //            ItemId = 0,
-        //            ItemType = "Bike",
-        //            ItemQuantity = 1,
-        //            VendorId = 1
-        //        }
-        //    };
+            var inputModel = new TransfersModel(ctx.Object)
+            {
+                AddProcurement = new AddProcurementModel
+                {
+                    ItemId = 0,
+                    ItemType = "Bike",
+                    ItemQuantity = 1,
+                    VendorId = 1
+                }
+            };
 
-        //    var resultBike = controller.AddProcurement(inputModel) as ViewResult;
-        //    inputModel.AddProcurement.ItemType = "Part";
-        //    var resultPart = controller.AddProcurement(inputModel) as ViewResult;
-        //    inputModel.AddProcurement.ItemType = "Material";
-        //    var resultMaterial = controller.AddProcurement(inputModel) as ViewResult;
+            var resultBike = controller.AddProcurement(inputModel) as ViewResult;
+            inputModel.AddProcurement.ItemType = "Part";
+            var resultPart = controller.AddProcurement(inputModel) as ViewResult;
+            inputModel.AddProcurement.ItemType = "Material";
+            var resultMaterial = controller.AddProcurement(inputModel) as ViewResult;
 
-        //    transfersServiceMock.Verify(t => t.AddProcurements<Bike>(It.IsAny<AddProcurementModel>()), Times.Once());
-        //    transfersServiceMock.Verify(t => t.AddProcurements<Part>(It.IsAny<AddProcurementModel>()), Times.Once());
-        //    transfersServiceMock.Verify(t => t.AddProcurements<Material>(It.IsAny<AddProcurementModel>()), Times.Once());
+            Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
+            Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
+            Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
+        }
 
-        //    Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
-        //    Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-        //    Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
-        //    Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-        //    Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
-        //    Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-        //}
+        private static TransfersModel CreateModel()
+        {
+            var orders = new List<Order>();
+            var procurements = new List<Procurement>();
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Procurements).Returns(new List<Procurement>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Vendors).Returns(new List<Vendor>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Payments).Returns(new List<Payment>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Orders).Returns(new List<Order>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Customers).Returns(new List<Customer>().AsQueryable().BuildMockDbSet().Object);
 
-        //private static TransfersModel CreateModel()
-        //{
-        //    var orders = new List<Order>();
-        //    var procurements = new List<Procurement>();
+            var transfersModel = new TransfersModel(ctx.Object)
+            {
+                Orders = orders,
+                Procurements = procurements
+            };
 
-        //    var transfersModel = new TransfersModel(new Mock<ErpDbContext>().Object)
-        //    {
-        //        Orders = orders,
-        //        Procurements = procurements
-        //    };
+            for (var i = 1; i <= 5; i++)
+            {
+                orders.Add(new Order
+                {
+                    OrderId = i,
+                    CustomerId = i,
+                    State = "pending",
+                    PaymentId = i
+                });
+                procurements.Add(new Procurement
+                {
+                    ProcurementId = i,
+                    ItemId = i,
+                    PaymentId = i,
+                    ItemQuantity = i,
+                    State = "pending",
+                    Type = "bike",
+                    VendorId = i
+                });
+            }
 
-        //    for (var i = 1; i <= 5; i++)
-        //    {
-        //        orders.Add(new Order
-        //        {
-        //            OrderId = i,
-        //            CustomerId = i,
-        //            State = "pending",
-        //            PaymentId = i
-        //        });
-        //        procurements.Add(new Procurement
-        //        {
-        //            ProcurementId = i,
-        //            ItemId = i,
-        //            PaymentId = i,
-        //            ItemQuantity = i,
-        //            State = "pending",
-        //            Type = "bike",
-        //            VendorId = i
-        //        });
-        //    }
-
-        //    return transfersModel;
-        //}
+            return transfersModel;
+        }
 
         [Test]
         public void FilterTransferTableTest()
