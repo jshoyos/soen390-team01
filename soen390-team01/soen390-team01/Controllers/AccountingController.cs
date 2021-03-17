@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
@@ -30,9 +25,9 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        public IActionResult Refresh([FromBody] string selectedTab)
+        public IActionResult Refresh([FromBody] RefreshTabInput refreshTabInput)
         {
-            switch (selectedTab)
+            switch (refreshTabInput.SelectedTab)
             {
                 case "receivable":
                     _model.ResetReceivables();
@@ -44,30 +39,34 @@ namespace soen390_team01.Controllers
                     _model.ResetPayments();
                     break;
             }
-            _model.ShowFilters = true;
-            return PartialView("AccountingBody", _model);
-        }
 
-        [HttpPost]
-        public IActionResult ChangeTab([FromBody] string selectedTab)
-        {
-            _model.SelectedTab = selectedTab;
+            if (refreshTabInput.Mobile)
+            {
+                _model.ShowFilters = true;
+            }
+
+            _model.SelectedTab = refreshTabInput.SelectedTab;
             return PartialView("AccountingBody", _model);
         }
 
         [HttpPost]
         [FiltersAction]
-        public IActionResult FilterPaymentTable([FromBody] Filters filters)
+        public IActionResult FilterPaymentTable([FromBody] MobileFiltersInput mobileFiltersInput)
         {
             try
             {
-                _model.FilterSelectedTab(filters);
-                _model.ShowFilters = true;
+                _model.FilterSelectedTab(mobileFiltersInput.Filters);
+                if (mobileFiltersInput.Mobile)
+                {
+                    _model.ShowFilters = true;
+                }
             }
             catch (DataAccessException e)
             {
                 TempData["errorMessage"] = e.ToString();
             }
+
+            _model.SelectedTab = mobileFiltersInput.Filters.Tab;
 
             return PartialView("AccountingBody", _model);
         }

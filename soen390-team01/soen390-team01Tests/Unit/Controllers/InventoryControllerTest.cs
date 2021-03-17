@@ -8,6 +8,7 @@ using soen390_team01.Controllers;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
+using soen390_team01.Models;
 using soen390_team01.Services;
 
 namespace soen390_team01Tests.Controllers
@@ -121,7 +122,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>()));
 
             var controller = new InventoryController(_modelMock.Object);
-            var result = controller.FilterProductTable(filters) as PartialViewResult;
+            var result = controller.FilterProductTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as IInventoryService).BikeList.Count);
         }
@@ -145,7 +146,7 @@ namespace soen390_team01Tests.Controllers
             var controller = new InventoryController(_modelMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
-            Assert.IsNotNull(controller.FilterProductTable(filters) as PartialViewResult);
+            Assert.IsNotNull(controller.FilterProductTable(new MobileFiltersInput { Filters = filters, Mobile = true }) as PartialViewResult);
             Assert.IsNotNull(controller.TempData["errorMessage"]);
         }
 
@@ -158,11 +159,11 @@ namespace soen390_team01Tests.Controllers
 
             var controller = new InventoryController(_modelMock.Object);
 
-            controller.Refresh("bike");
+            controller.Refresh(new RefreshTabInput { SelectedTab = "bike", Mobile = true});
             _modelMock.Verify(m => m.ResetBikes(), Times.Once());
-            controller.Refresh("part");
+            controller.Refresh(new RefreshTabInput { SelectedTab = "part", Mobile = false });
             _modelMock.Verify(m => m.ResetParts(), Times.Once());
-            controller.Refresh("material");
+            controller.Refresh(new RefreshTabInput { SelectedTab = "material", Mobile = false });
             _modelMock.Verify(m => m.ResetMaterials(), Times.Once());
         }
     }

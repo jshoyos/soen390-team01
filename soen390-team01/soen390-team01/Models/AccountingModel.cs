@@ -22,7 +22,7 @@ namespace soen390_team01.Models
         public Filters PayableFilters { get; set; }
         public string SelectedTab { get; set; } = "payment";
 
-        private static readonly List<string> StatusValues = new List<string> { "Pending", "Completed", "Canceled" };
+        private static readonly List<string> StatusValues = new() { "Pending", "Completed", "Canceled" };
     
 
         public AccountingModel(ErpDbContext context)
@@ -38,36 +38,18 @@ namespace soen390_team01.Models
 
         public List<Payment> GetPayments()
         {
-            List<Payment> list = _context.Payments.ToList();
-            return list;
+            return _context.Payments.ToList();
         }
 
         public List<Payment> GetReceivables()
         {
-            List<Payment> list = _context.Payments.ToList();
-            List<Payment> receivablesList = new List<Payment>();
-            foreach (Payment p in list)
-            {
-                if (p.Amount > 0)
-                {
-                    receivablesList.Add(p);
-                }
-            }
-            return receivablesList;
+            return _context.Payments.Where(p => p.Amount > 0).ToList();
         }
 
         public List<Payment> GetPayables()
         {
-            List<Payment> list = _context.Payments.ToList();
-            List<Payment> payablesList = new List<Payment>();
-            foreach (Payment p in list)
-            {
-                if (p.Amount < 0)
-                {
-                    payablesList.Add(p);
-                }
-            }
-            return payablesList;
+            return _context.Payments.Where(p => p.Amount < 0).ToList();
+
         }
         public void ResetPayments()
         {
@@ -89,19 +71,19 @@ namespace soen390_team01.Models
 
         private Filters ResetFilters(string tabName)
         {
-            var filters = new Filters("payment");
+            var filters = new Filters("payment", tabName);
 
-            filters.Add(new CheckboxFilter("payment", $"State-{tabName}", "state", StatusValues));
-            filters.Add(new RangeFilter("payment", $"Amount-{tabName}", "amount"));
-            filters.Add(new DateRangeFilter("payment", $"Added-{tabName}", "added"));
-            filters.Add(new DateRangeFilter("payment", $"Updated-{tabName}", "modified"));
+            filters.Add(new CheckboxFilter("payment", "State", "state", StatusValues));
+            filters.Add(new RangeFilter("payment", "Amount", "amount"));
+            filters.Add(new DateRangeFilter("payment", "Added", "added"));
+            filters.Add(new DateRangeFilter("payment", "Updated", "modified"));
 
             return filters;
         }
 
         public void FilterSelectedTab(Filters filters)
         {
-            switch (SelectedTab)
+            switch (filters.Tab)
             {
                 case "receivable":
                     Receivables = filters.AnyActive() ? GetFilteredPaymentList(filters, " and amount >= '0.0'") : GetReceivables();
@@ -122,8 +104,7 @@ namespace soen390_team01.Models
         {
             try
             {
-                return _context.Payments
-                    .FromSqlRaw(PaymentQueryBuilder.FilterPayment(filters, condition)).ToList();
+                return _context.Payments.FromSqlRaw(PaymentQueryBuilder.FilterPayment(filters, condition)).ToList();
             }
             catch (Exception)
             {

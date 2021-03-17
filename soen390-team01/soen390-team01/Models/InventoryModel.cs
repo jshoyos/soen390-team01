@@ -12,7 +12,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Models
 { 
-    public class InventoryModel : Inventory, IInventoryService, IFilteredModel
+    public class InventoryModel : Inventory, IInventoryService
     {
 
         private readonly ErpDbContext _context;
