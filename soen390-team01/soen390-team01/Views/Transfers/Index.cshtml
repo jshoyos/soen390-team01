@@ -33,6 +33,7 @@
         }
 
         function passingFilters(filters, displayedName, filterInput) {
+            console.log(filters);
             if (filters == null || (displayedName != "submit" && filterInput != "submit")) {
                 var list = filters.List.map(f => {
                     if (f.PossibleSelectValues) {
@@ -61,8 +62,8 @@
                 var modifiedFilter = list[filterIndex];
                 modifiedFilter.Input = filterInput;
                 list[filterIndex] = modifiedFilter;
-                console.log("test");
                 filters.List = list;
+                console.log(JSON.stringify(filters));
             }
             
             $.ajax({
@@ -72,9 +73,7 @@
                 data: JSON.stringify(filters),
                 dataType: 'html',
                 success: function (result) {
-                    $("#filterModal").modal('hide');
                     $('.transfer-view').html(result);
-                    
                 }
             });
             
@@ -102,8 +101,9 @@
 
 
 
-        function createCheckboxInput(column, possibleValues) {
-            var checkBoxes = document.getElementsByName(column + "-checkbox");
+        function createCheckboxInput(column, possibleValues, check) {
+            var mobileCheck = check ? "-mobile" : "";
+            var checkBoxes = document.getElementsByName(column + "-checkbox" + mobileCheck);
             var chosenCheckBoxes = [];
 
             for (var i = 0; i < checkBoxes.length; i++) {

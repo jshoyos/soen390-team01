@@ -36,12 +36,12 @@
                 if (((CheckboxFilter)filter).Values.Contains(item))
                 {
                     <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" checked="checked"
-                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues),false))" />
                 }
                 else
                 {
                     <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
-                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.ProcurementFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues),false))" />
                 }
                 <br />
             }
@@ -102,12 +102,12 @@
                 if (((CheckboxFilter)filter).Values.Contains(item))
                 {
                     <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item" checked="checked"
-                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues),false))" />
                 }
                 else
                 {
                     <input type="checkbox" name="@filter.DisplayColumn-checkbox" id="@item" value="@item"
-                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues)))" />
+                           onclick="passingFilters(@JsonConvert.SerializeObject(@Model.OrderFilters), @JsonConvert.SerializeObject(filter.DisplayColumn), createCheckboxInput(@JsonConvert.SerializeObject(@filter.DisplayColumn), @JsonConvert.SerializeObject(((CheckboxFilter)filter).PossibleCheckboxValues),false))" />
                 }
                 <br />
             }

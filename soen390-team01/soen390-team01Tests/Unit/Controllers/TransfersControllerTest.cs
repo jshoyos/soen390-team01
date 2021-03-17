@@ -149,6 +149,53 @@ namespace soen390_team01Tests.Controllers
         }
 
         [Test]
+        public void EmptyFilterTransferTableTest()
+        {
+            List<string> list = new List<string>
+            {
+                "pending",
+                "completed",
+                "canceled"
+            };
+
+            var orderList = new List<Order>();
+            var procurementList = new List<Procurement>();
+            var filters = new Filters("order");
+            var filters2 = new Filters("procurement");
+            filters.Add(new CheckboxFilter("order", "State", "state", list) );
+            filters2.Add(new CheckboxFilter("procurement", "State", "state", list) );
+            orderList.Add(new Order
+            {
+                OrderId = 1,
+                CustomerId = 1,
+                State = "pending",
+                PaymentId = 1
+            });
+            procurementList.Add(new Procurement
+            {
+                ProcurementId = 1,
+                ItemId = 1,
+                PaymentId = 1,
+                ItemQuantity = 1,
+                State = "pending",
+                Type = "bike",
+                VendorId = 1
+            });
+
+            _modelMock.Setup(m => m.Orders).Returns(orderList);
+            _modelMock.Setup(i => i.GetOrders());
+            _modelMock.Setup(m => m.Procurements).Returns(procurementList);
+            _modelMock.Setup(i => i.GetProcurements());
+
+            var controller = new TransfersController(_modelMock.Object);
+            var result = controller.FilterTransferTable(filters) as PartialViewResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, (result.Model as ITransferService).Orders.Count);
+            Assert.AreEqual(1, (result.Model as ITransferService).Procurements.Count);
+        }
+
+
+            [Test]
         public void FilterTransferTableTest()
         {
             List<string> list = new List<string>
@@ -159,8 +206,11 @@ namespace soen390_team01Tests.Controllers
             };
 
             var orderList = new List<Order>();
+            var procurementList = new List<Procurement>();
             var filters = new Filters("order");
+            var filters2 = new Filters("procurement");
             filters.Add(new CheckboxFilter("order", "State", "state", list) { Values = { "some_value" } });
+            filters2.Add(new CheckboxFilter("procurement", "State", "state", list) { Values = { "some_value" } });
 
             orderList.Add(new Order
             {
@@ -169,14 +219,27 @@ namespace soen390_team01Tests.Controllers
                 State = "pending",
                 PaymentId = 1
             });
-
-            _modelMock.Setup(i => i.GetFilteredOrderList(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code"));
-            var controller = new TransfersController(_modelMock.Object)
+            procurementList.Add(new Procurement
             {
-                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
-            };
-            Assert.IsNotNull(controller.FilterTransferTable(filters) as PartialViewResult);
-            Assert.IsNotNull(controller.TempData["errorMessage"]);
+                ProcurementId = 1,
+                ItemId = 1,
+                PaymentId = 1,
+                ItemQuantity = 1,
+                State = "pending",
+                Type = "bike",
+                VendorId = 1
+            });
+
+            _modelMock.Setup(m => m.Orders).Returns(orderList);
+            _modelMock.Setup(i => i.GetFilteredOrderList(It.IsAny<Filters>()));
+            _modelMock.Setup(m => m.Procurements).Returns(procurementList);
+            _modelMock.Setup(i => i.GetFilteredProcurementList(It.IsAny<Filters>()));
+
+            var controller = new TransfersController(_modelMock.Object);
+            var result = controller.FilterTransferTable(filters) as PartialViewResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, (result.Model as ITransferService).Orders.Count);
+            Assert.AreEqual(1, (result.Model as ITransferService).Procurements.Count);
         }
 
 

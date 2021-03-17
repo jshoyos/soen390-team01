@@ -71,7 +71,7 @@ namespace soen390_team01Tests.Services
                     Type = "bike",
                     VendorId = i
                 });
-                
+
                 _context.SaveChanges();
             }
 
@@ -109,7 +109,7 @@ namespace soen390_team01Tests.Services
         }
 
         [Test]
-        public void GetFilteredListInvalidTest()
+        public void GetFilteredProcurementListInvalidTest()
         {
             List<string> list = new List<string>
             {
@@ -195,6 +195,23 @@ namespace soen390_team01Tests.Services
             _model.ResetOrderFilters();
             Assert.AreEqual(initialOrderCount, _model.Orders.Count);
             Assert.AreEqual(initialOrderFilterCount, _model.OrderFilters.List.Count);
+
+        }
+
+        [Test]
+        public void AddProcurementTest()
+        {
+            var initialProcurementCount = _model.Procurements.Count;
+            var procurement = new AddProcurementModel
+            {
+                ItemId = 1,
+                ItemType = "bike",
+                ItemQuantity = 1,
+                VendorId = 1,
+            };
+           
+            _model.AddProcurements<Bike>(procurement);
+            Assert.AreEqual(initialProcurementCount + 1, _model.Procurements.Count);
 
         }
     }
