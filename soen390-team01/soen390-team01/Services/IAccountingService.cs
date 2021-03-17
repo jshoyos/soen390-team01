@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Queries;
+using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public interface IAccountingService
+    public interface IAccountingService : IFilteredModel
     {
         public List<Payment> Payments { get; set; }
         public List<Payment> Receivables { get; set; }

@@ -6,11 +6,10 @@
     ViewData["selectedTab"] = "";
 }
 
+
 <head>
     <link rel="stylesheet" href="\css\Accounting.css">
     <link rel="stylesheet" href="\css\site.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width" />
 
     <script type="text/javascript">
@@ -57,6 +56,9 @@
                 dataType: 'html',
                 success: function (result) {
                     $('.accounting-view').html(result);
+                    //$('.modal-backdrop').hide();
+                    //$('#filterModal').modal('show');
+
                 }
             });
         };
@@ -70,6 +72,7 @@
             dataType: 'html',
             success: function (result) {
                 $('.accounting-view').html(result);
+                $('.modal-backdrop').hide();
             }
         });
         };

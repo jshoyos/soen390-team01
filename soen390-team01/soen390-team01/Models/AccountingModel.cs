@@ -3,17 +3,15 @@ using soen390_team01.Data;
 using soen390_team01.Data.Entities;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using soen390_team01.Data.Queries;
-using System.Globalization;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Services;
 
 namespace soen390_team01.Models
 {
-    public class AccountingModel: IAccountingService
+    public class AccountingModel: FilteredModel, IAccountingService
     {
         private readonly ErpDbContext _context;
         public List<Payment> Payments { get; set; }

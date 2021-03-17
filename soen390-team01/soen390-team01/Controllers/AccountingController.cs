@@ -25,6 +25,7 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            _model.ShowFilters = false;
             return View(_model);
         }
 
@@ -43,6 +44,7 @@ namespace soen390_team01.Controllers
                     _model.ResetPayments();
                     break;
             }
+            _model.ShowFilters = true;
             return PartialView("AccountingBody", _model);
         }
 
@@ -60,6 +62,7 @@ namespace soen390_team01.Controllers
             try
             {
                 _model.FilterSelectedTab(filters);
+                _model.ShowFilters = true;
             }
             catch (DataAccessException e)
             {

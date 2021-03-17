@@ -11,7 +11,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Models
 { 
-    public class UserManagementModel : IUserManagementService
+    public class UserManagementModel : FilteredModel, IUserManagementService
     {
         public AddUserModel AddUserModel { get; set; }
         public EditUserModel EditUserModel { get; set; }

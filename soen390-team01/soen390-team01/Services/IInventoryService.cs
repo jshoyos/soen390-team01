@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Queries;
+using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public interface IInventoryService
+    public interface IInventoryService : IFilteredModel
     {
         public List<Inventory> AllList { get; set; }
         public List<Bike> BikeList { get; set; }
