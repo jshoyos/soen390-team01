@@ -1,0 +1,53 @@
+﻿@model List<soen390_team01.Data.Entities.Payment>
+@using Newtonsoft.Json;
+@using soen390_team01.Services; 
+   
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+
+<body>
+
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <script>
+        console.log('Before');
+        const graphData =  @Html.Raw(JsonConvert.SerializeObject(@Model.CreateGraphData()));
+        console.log(graphData);
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: graphData.Labels,
+                datasets: [{
+                    label: '# of Votes',
+                    data: graphData.Values,
+                    backgroundColor:
+                        'rgba(255, 99, 132, 0.2)'
+
+                    ,
+                    borderColor:
+                        'rgba(255, 99, 132, 1)'
+
+                    ,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+
+</body>
+
+
+
+
+

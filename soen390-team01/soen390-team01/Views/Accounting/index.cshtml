@@ -1,5 +1,24 @@
-﻿
-@{ViewData["Title"] = "Accounting View";}
+﻿@using soen390_team01.Data.Entities;
+@{ViewData["Title"] = "Accounting View";
+    var payments = new List<Payment>();
+
+    for (int i = 1; i <= 7; i++)
+    {
+        payments.Add(new Payment { Amount = i, Updated = new DateTime(2021, 1, i) });
+    }
+
+    for (int i = 1; i <= 10; i++)
+    {
+        payments.Add(new Payment { Amount = i, Updated = new DateTime(2021, 2, i) });
+    }
+    for (int i = 1; i <= 15; i++)
+    {
+        payments.Add(new Payment { Amount = i, Updated = new DateTime(2021,3,i) });
+    }
+
+
+
+}
 
 <html>
 <head>
@@ -8,6 +27,35 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width" />
+    <script>
+        $(document).ready(function () {
+
+
+            $('#generateG-button').on('click', function () {
+
+
+                $('#LHS').hide();
+                $('#graphID').show();
+                //$('#refresh-button').show();
+
+            });
+
+            $('#generateButton').on('click', function () {
+
+
+                $('#LHS').hide();
+                $('#graphID').show();
+                $('#refresh-button').show();
+
+            });
+            //$('#refresh-button').click(function () {
+            //    $("#graphID").load(document.URL + " #graphID")
+
+            //    $('.graph').show();
+            //});
+        });
+
+    </script>
 
 </head>
 <body>
@@ -21,102 +69,119 @@
             </div>
         </div>
 
-            <!-- Modal for filter in mobile mode-->
-            <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+        <!-- Modal for filter in mobile mode-->
+        <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-filter">
+                        <h5 class="text-center">STATUS</h5>
+
+                        <div style="padding-left:30%; padding-right:30%;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="pending">
+                                    Pending
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="pending">
+                                    Completed
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="pending">
+                                    Canceled
+                                </label>
+                            </div>
                         </div>
-                        <div class="modal-body" id="modal-filter">
-                            <h5 class="text-center">STATUS</h5>
 
-                            <div style="padding-left:30%; padding-right:30%;">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="pending">
-                                        Pending
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="pending">
-                                        Completed
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                    <label class="form-check-label" for="pending">
-                                        Canceled
-                                    </label>
-                                </div>
+                        <h5 class="text-center">DATE</h5>
+                        <div class="container"></div>
+
+                        <div class="row " style="padding-left:20%; padding-right:20%;">
+                            <div class="col-3 text-align: right;">
+                                From:
                             </div>
-
-                            <h5 class="text-center">DATE</h5>
-                            <div class="container"></div>
-
-                            <div class="row " style="padding-left:20%; padding-right:20%;">
-                                <div class="col-3 text-align: right;">
-                                    From:
-                                </div>
-                                <div class="col-8">
-                                    <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-                                </div>
+                            <div class="col-8">
+                                <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
                             </div>
-                                <div class="row " style="padding-left:20%; padding-right:20%;">
-                                    <div class="col-3 text-align: right;">
-                                        To:
-                                    </div>
-                                    <div class="col-8">
-                                        <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-                                    </div>
-
-                                </div>
-
-                                <div class="row justify-content-center elements">
-                                    <h5>CUSTOMER</h5>
-                                </div>
-                                <div class="row justify-content-center elements">
-                                    <select name="customer" id="customer">
-                                        <option value="c1">Customer</option>
-                                        <option value="c2">Customer</option>
-                                        <option value="c3">Customer</option>
-                                    </select>
-                                </div>
-                            </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Filter</button>
                         </div>
+                        <div class="row " style="padding-left:20%; padding-right:20%;">
+                            <div class="col-3 text-align: right;">
+                                To:
+                            </div>
+                            <div class="col-8">
+                                <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
+                            </div>
+
+                        </div>
+
+                        <div class="row justify-content-center elements">
+                            <h5>CUSTOMER</h5>
+                        </div>
+                        <div class="row justify-content-center elements">
+                            <select name="customer" id="customer">
+                                <option value="c1">Customer</option>
+                                <option value="c2">Customer</option>
+                                <option value="c3">Customer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Filter</button>
                     </div>
                 </div>
             </div>
-        
-            <div class="row">
-                <!--Table with tabs-->
-                <div class="col-lg-8 mx-lg-auto" id="LHS">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li style="width: 33.3%;text-align:center;">
-                            <a class="nav-link" id="orderTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="true">
-                                All
-                            </a>
-                        </li>
-                        <li class="nav-item" style="width: 33.3%; text-align:center;">
-                            <a class="nav-link" id="procTab" data-toggle="pill" href="#payableTabContent" role="tab" aria-controls="payableTabContent" aria-selected="false">
-                                Payable
-                            </a>
-                        </li>
-                        <li class="nav-item" style="width: 33.4%; text-align:center;">
-                            <a class="nav-link" id="procTab" data-toggle="pill" href="#receivableTabContent" role="tab" aria-controls="receivableTabContent" aria-selected="false">
-                                Receivable
-                            </a>
-                        </li>
-                    </ul>
+        </div>
+
+        <div class="row">
+            <div class="graph col-lg-8 mx-lg-auto" id="graphID" style="display:none">
+                @{await Html.RenderPartialAsync("Graph", payments);}
+            </div>
+            <!--Table with tabs-->
+            <div class="col-lg-8 mx-lg-auto" id="LHS">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li style="width: 33.3%;text-align:center;">
+                        <a class="nav-link" id="orderTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="true">
+                            All
+                        </a>
+                    </li>
+                    <li class="nav-item" style="width: 33.3%; text-align:center;">
+                        <a class="nav-link" id="procTab" data-toggle="pill" href="#payableTabContent" role="tab" aria-controls="payableTabContent" aria-selected="false">
+                            Payable
+                        </a>
+                    </li>
+                    <li class="nav-item" style="width: 33.4%; text-align:center;">
+                        <a class="nav-link" id="procTab" data-toggle="pill" href="#receivableTabContent" role="tab" aria-controls="receivableTabContent" aria-selected="false">
+                            Receivable
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show" id="payableTabConten" role="tabpanel" aria-labelledby="allTab">
+                        <div class="container">
+                            <div class="row pt-4 pb-4 h-100 text-center">
+                                <div class="col"><u>ID</u></div>
+                                <div class="col"><u>Status</u></div>
+                                <div class="col"><u>Customer</u></div>
+                                <div class="col"><u>Value</u></div>
+                                <div class="col"><u>Added</u></div>
+                                <div class="col"><u>Updated</u></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show" id="payableTabConten" role="tabpanel" aria-labelledby="allTab">
+                        <div class="tab-pane fade show" id="receivableTabContent" role="tabpanel" aria-labelledby="allTab">
                             <div class="container">
                                 <div class="row pt-4 pb-4 h-100 text-center">
                                     <div class="col"><u>ID</u></div>
@@ -128,83 +193,69 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show" id="receivableTabContent" role="tabpanel" aria-labelledby="allTab">
-                                <div class="container">
-                                    <div class="row pt-4 pb-4 h-100 text-center">
-                                        <div class="col"><u>ID</u></div>
-                                        <div class="col"><u>Status</u></div>
-                                        <div class="col"><u>Customer</u></div>
-                                        <div class="col"><u>Value</u></div>
-                                        <div class="col"><u>Added</u></div>
-                                        <div class="col"><u>Updated</u></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade show" id="allTabContent" role="tabpanel" aria-labelledby="allTab">
-                                <div class="container">
-                                    <div class="row pt-4 pb-4 h-100 text-center">
-                                        <div class="col"><u>ID</u></div>
-                                        <div class="col"><u>Status</u></div>
-                                        <div class="col"><u>Customer</u></div>
-                                        <div class="col"><u>Value</u></div>
-                                        <div class="col"><u>Added</u></div>
-                                        <div class="col"><u>Updated</u></div>
-                                    </div>
+                        <div class="tab-pane fade show" id="allTabContent" role="tabpanel" aria-labelledby="allTab">
+                            <div class="container">
+                                <div class="row pt-4 pb-4 h-100 text-center">
+                                    <div class="col"><u>ID</u></div>
+                                    <div class="col"><u>Status</u></div>
+                                    <div class="col"><u>Customer</u></div>
+                                    <div class="col"><u>Value</u></div>
+                                    <div class="col"><u>Added</u></div>
+                                    <div class="col"><u>Updated</u></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--/Table with tabs-->
-                <div class="col-lg-3 text-center justify-content-center" id="filter">
-                    <h3>FILTER</h3>
-                    <br />
-                    <h5>STATUS</h5>
+            </div>
+            <!--/Table with tabs-->
+            <div class="col-lg-3 text-center justify-content-center" id="filter">
+                <h3>FILTER</h3>
+                <br />
+                <h5>STATUS</h5>
 
-                    <input type="checkbox" name="pending" value="Pending" class="align-left" />
-                    <label for="pending">Pending</label><br>
+                <input type="checkbox" name="pending" value="Pending" class="align-left" />
+                <label for="pending">Pending</label><br>
 
-                    <input type="checkbox" name="completed" value="Completed" />
-                    <label for="completed">Completed</label><br>
+                <input type="checkbox" name="completed" value="Completed" />
+                <label for="completed">Completed</label><br>
 
-                    <input type="checkbox" name="canceled" value="Canceled" />
-                    <label for="canceled">Canceled</label><br><br />
+                <input type="checkbox" name="canceled" value="Canceled" />
+                <label for="canceled">Canceled</label><br><br />
 
-                    <h5>DATE</h5>
-                    <div class="container"></div>
-                    <div class="row elements">
-                        <div class="col mx-auto">
-                            From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
-                        </div>
-
-                    </div>
-                    <div class="row elements">
-                        <div class="col mx-auto">
-                            To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
-                        </div>
+                <h5>DATE</h5>
+                <div class="container"></div>
+                <div class="row elements">
+                    <div class="col mx-auto">
+                        From:  <input type="date" name="date-from" min="2000-01-01" max="2021-03-01">
                     </div>
 
-                    <div class="row justify-content-center elements">
-                        <h5>CUSTOMER</h5>
-                    </div>
-                    <div class="row justify-content-center elements">
-                        <select name="customer" id="customer">
-                            <option value="c1">Customer</option>
-                            <option value="c2">Customer</option>
-                            <option value="c3">Customer</option>
-                        </select>
-                    </div>
-
-                    <div class="row justify-content-center elements">
-                        <button class="btn btn-primary">GENERATE GRAPH</button>
+                </div>
+                <div class="row elements">
+                    <div class="col mx-auto">
+                        To:  <input type="date" name="date-to" min="2000-01-01" max="2021-03-01">
                     </div>
                 </div>
-             </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+                <div class="row justify-content-center elements">
+                    <h5>CUSTOMER</h5>
+                </div>
+                <div class="row justify-content-center elements">
+                    <select name="customer" id="customer">
+                        <option value="c1">Customer</option>
+                        <option value="c2">Customer</option>
+                        <option value="c3">Customer</option>
+                    </select>
+                </div>
+
+                <div class="row justify-content-center elements">
+                    <button class="btn btn-primary" id="generateButton">GENERATE GRAPH</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>*@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

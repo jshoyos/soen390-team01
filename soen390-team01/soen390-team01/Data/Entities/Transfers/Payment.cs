@@ -23,5 +23,7 @@ namespace soen390_team01.Data.Entities
         public DateTime Updated { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Procurement> Procurements { get; set; }
+
+        public new string ToString => " Amount: " + Amount + " Updated:" + Updated ;
     }
 }
