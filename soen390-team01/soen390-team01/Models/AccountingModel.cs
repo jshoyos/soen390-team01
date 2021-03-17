@@ -120,7 +120,7 @@ namespace soen390_team01.Models
             }
         }
 
-        private List<Payment> GetFilteredPaymentList(Filters filters, string condition)
+        public List<Payment> GetFilteredPaymentList(Filters filters, string condition)
         {
             try
             {
