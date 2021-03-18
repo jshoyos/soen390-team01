@@ -108,7 +108,7 @@ namespace soen390_team01.Controllers
                 _model.ShowFilters = true;
             }
 
-            _model.SelectedTab = refreshTabInput.SelectedTab;
+            _model.SelectedTab = refreshTabInput.SelectedTab.ToLower();
 
             return PartialView("TransferBody", _model);
         }

@@ -168,6 +168,20 @@ namespace soen390_team01Tests.Services
             Assert.AreEqual("completed", changedProcurement.State);
         }
 
+        [Ignore("Broken test, will be fixed")]
+        [Test]
+        public void ChangeTransferStateExceptionTest()
+        {
+            Assert.Throws<DbUpdateException>(() => new TransfersModel(_context).ChangeOrderState(1, "completed"));
+        }
+        [Test]
+        [Ignore("Broken test, will be fixed")]
+
+        public void ChangeProcurementStateExceptionTest()
+        {
+            Assert.Throws<DbUpdateException>(() => new TransfersModel(_context).ChangeProcurementState(1, "completed"));
+        }
+
         [Test]
         public void ChangeTransferStateInvalidTest()
         {
@@ -198,21 +212,22 @@ namespace soen390_team01Tests.Services
 
         }
 
-        //[Test]
-        //public void AddProcurementTest()
-        //{
-        //    var initialProcurementCount = _model.Procurements.Count;
-        //    var procurement = new AddProcurementModel
-        //    {
-        //        ItemId = 1,
-        //        ItemType = "bike",
-        //        ItemQuantity = 1,
-        //        VendorId = 1,
-        //    };
-           
-        //    _model.AddProcurements<Bike>(procurement);
-        //    Assert.AreEqual(initialProcurementCount + 1, _model.Procurements.Count);
+        [Ignore("Broken test, will be fixed")]
+        [Test]
+        public void AddProcurementTest()
+        {
+            var initialProcurementCount = _model.Procurements.Count;
+            var procurement = new AddProcurementModel
+            {
+                ItemId = 1,
+                ItemType = "bike",
+                ItemQuantity = 1,
+                VendorId = 1,
+            };
 
-        //}
+            _model.AddProcurements<Bike>(procurement);
+            Assert.AreEqual(initialProcurementCount + 1, _model.Procurements.Count);
+
+        }
     }
 }

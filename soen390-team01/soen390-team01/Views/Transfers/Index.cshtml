@@ -18,20 +18,6 @@
             document.getElementById("procbutton").style.display = "none";
         }
 
-        function showFilter() {
-            document.getElementById("ofilter").style.display = "none";
-            document.getElementById("ofilterM").style.display = "none";
-            document.getElementById("pfilter").style.display = "";
-            document.getElementById("pfilterM").style.display = "";
-        }
-
-        function hideFilter() {
-            document.getElementById("pfilter").style.display = "none";
-            document.getElementById("pfilterM").style.display = "none";
-            document.getElementById("ofilterM").style.display = "";
-            document.getElementById("ofilter").style.display = "";
-        }
-
         function passingFilters(filters, displayedName, filterInput, mobile) {
             filters.List = adjustFilters(filters, displayedName, filterInput);
             

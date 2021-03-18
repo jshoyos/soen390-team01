@@ -6,7 +6,7 @@
     <div class="container justify-content-center">
         <div class="row" id="mobileButtons">
             <button class="btn btn-outline-primary collapButton1" data-toggle="modal" data-target="#filterModal">Filter</button>
-            <button class="btn btn-outline-primary collapButton2" style="display:@(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement"? "" : "none");" id="procbutton" data-toggle="modal" data-target="#procModal">Add Procurement</button>
+            <button class="btn btn-outline-primary collapButton2" style="display:@(Model.SelectedTab == "procurement" ? "" : "none");" id="procbutton" data-toggle="modal" data-target="#procModal">Add Procurement</button>
         </div>
     </div>
     <!--/Buttons that only appear in mobile version-->
@@ -22,10 +22,10 @@
                     </button>
                 </div>
                 <div class="modal-body" id="modal-filter">
-                    <div id="procurement-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement" ? "block": "none")">
+                    <div id="procurement-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "procurement" ? "block": "none")">
                         @{await Html.RenderPartialAsync("Filter", Model.ProcurementFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                     </div>
-                    <div id="order-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "block": "none")">
+                    <div id="order-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "order" ? "block": "none")">
                         @{await Html.RenderPartialAsync("Filter", Model.OrderFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                     </div>
                 </div>
@@ -39,24 +39,24 @@
         <div class="col-lg-8 mx-lg-auto" id="LHS">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 50%;text-align:center;">
-                    <a class="nav-link @(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="@(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "true": "false")" onclick="hideButton();">
+                    <a class="nav-link @(Model.SelectedTab == "order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="@(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "true": "false")" onclick="hideButton(),showFilter('order',true);">
                         Order
                     </a>
                 </li>
                 <li class="nav-item" style="width: 50%; text-align:center;">
-                    <a class="nav-link @(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="@(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement" ? "true": "false")" onclick="showButton(); ">
+                    <a class="nav-link @(Model.SelectedTab == "procurement" ? "active" : "")" id="procTab" data-toggle="pill" href="#procTabContent" role="tab" aria-controls="procTabContent" aria-selected="@(Model.SelectedTab == "procurement" ? "true": "false")" onclick="showButton(),showFilter('procurement',true); ">
                         Procurement
                     </a>
                 </li>
 
             </ul>
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show @(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement"? "active": "")" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
+                <div class="tab-pane fade show @(Model.SelectedTab == "procurement"? "active": "")" id="procTabContent" role="tabpanel" aria-labelledby="procTab">
                     <div class="container">
                         @{await Html.RenderPartialAsync("ProcurementTable", Model.Procurements);}
                     </div>
                 </div>
-                <div class="tab-pane fade show @(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "active": "")" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
+                <div class="tab-pane fade show @(Model.SelectedTab == "order" ? "active": "")" id="orderTabContent" role="tabpanel" aria-labelledby="orderTab">
                     <div class="container">
                         @{await Html.RenderPartialAsync("OrderTable", Model.Orders);}
                     </div>
@@ -67,10 +67,10 @@
         <!--/Table with tabs-->
         <!--Filter area-->
         <div class="col-lg-3 text-center justify-content-center" id="filter">
-            <div id="procurement-filter" class="filter-data" style="display:@(Model.SelectedTab == "procurement" || Model.SelectedTab == "Procurement" ? "block": "none")">
+            <div id="procurement-filter" class="filter-data" style="display:@(Model.SelectedTab == "procurement" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.ProcurementFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
             </div>
-            <div id="order-filter" class="filter-data" style="display:@(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "block": "none")">
+            <div id="order-filter" class="filter-data" style="display:@(Model.SelectedTab == "order" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.OrderFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
             </div>
         </div>

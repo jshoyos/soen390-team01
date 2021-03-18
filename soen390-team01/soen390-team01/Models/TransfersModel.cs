@@ -24,7 +24,7 @@ namespace soen390_team01.Models
         public Filters ProcurementFilters { get; set; }
         public Filters OrderFilters { get; set; }
 
-        public string SelectedTab { get; set; } = "Order";
+        public string SelectedTab { get; set; } = "order";
         public bool ShowModal { get; set; } = false;
 
         public TransfersModel(){}
