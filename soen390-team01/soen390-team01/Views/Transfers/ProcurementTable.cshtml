@@ -1,0 +1,31 @@
+﻿@using Newtonsoft.Json
+@using soen390_team01.Data
+@model List<soen390_team01.Data.Entities.Procurement>
+
+
+<div class="container">
+    <div class="row pt-4 pb-4 h-100 text-center">
+
+        <div class="col"><u>ID</u></div>
+        <div class="col"><u>State</u></div>
+        <div class="col"><u>Vendor</u></div>
+        <div class="col"><u>Item Id</u></div>
+        <div class="col"><u>Quantity</u></div>
+        <div class="col"><u>Price</u></div>
+        <div class="col"><u>Added</u></div>
+        <div class="col"><u>Updated</u></div>
+    </div>
+    @foreach (var proc in Model)
+    {
+        <div class="row pt-4 pb-4 h-100 text-center">
+            <div class="col">@proc.ProcurementId</div>
+            <div class="col">@proc.State</div>
+            <div class="col">@proc.Vendor.Name</div>
+            <div class="col">@proc.ItemId</div>
+            <div class="col">@proc.ItemQuantity</div>
+            <div class="col">@proc.Payment.Amount</div>
+            <div class="col">@proc.Added.DateTimeLocalString()</div>
+            <div class="col">@proc.Updated.DateTimeLocalString()</div>
+        </div>
+    }
+</div>

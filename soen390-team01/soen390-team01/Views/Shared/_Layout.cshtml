@@ -30,11 +30,11 @@
 
         function showFilter(type, mobile) {
             var filters = $(".filter-data");
-
+            console.log(type);
             for (var i = 0; i < filters.length; i++) {
                 filters[i].style.display = "none";
             }
-
+            console.log(document.getElementById(type + "-filter"));
             document.getElementById(type + "-filter").style.display = "block";
             if (mobile) {
                 document.getElementById(type + "-mobile-filter").style.display = "block";

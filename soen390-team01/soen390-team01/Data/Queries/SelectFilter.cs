@@ -19,7 +19,7 @@ namespace soen390_team01.Data.Queries
 
         public override string GetConditionString()
         {
-            return Column + " = '" + Value + "'";
+            return Table+"."+ Column + " = '" + Value + "'";
         }
     }
 }
