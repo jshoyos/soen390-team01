@@ -36,8 +36,6 @@ namespace soen390_team01Tests.Unit.Services
             }
             var test = new GraphData(monthAmounts.Keys.ToList(), monthAmounts.Values.ToList());
 
-
-
             Assert.AreEqual(AccountingGraphService.CreateGraphData(payments).Values.Count, test.Values.Count);
             Assert.AreEqual(AccountingGraphService.CreateGraphData(payments).Labels, test.Labels);
             Assert.AreEqual(AccountingGraphService.CreateGraphData(payments).Values, test.Values);

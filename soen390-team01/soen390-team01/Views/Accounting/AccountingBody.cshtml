@@ -1,8 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using soen390_team01.Data.Entities;
-@{ViewData["Title"] = "Accounting View";
-    List<Payment> payments = new();
-    payments.Add(new Payment { Amount = 100, Updated = new DateTime(2021, 1, 1) });}
+@{ViewData["Title"] = "Accounting View";    
 @model soen390_team01.Services.IAccountingService
 
 <head>
