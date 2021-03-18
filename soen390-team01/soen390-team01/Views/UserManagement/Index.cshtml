@@ -9,56 +9,80 @@
     <link rel="stylesheet" href="\css\UserManagement.css">
 </head>
 
-<h1>User Management</h1>
 
-<hr />
+<div class="container">
+    <h1>User Management</h1>
 
-<div id="PlaceHolderHere" ></div>
-<div class="row">
-    <div class="col-md-4">
-        <div class="form-group">
-            <form method="post" asp-controller="UserManagement" asp-action="AddUser">
-                <div>
-                    <label asp-for="AddUserModel.FirstName">First Name</label>
-                    <input asp-for="AddUserModel.FirstName" class="form-control" />
-                    <span asp-validation-for="AddUserModel.FirstName" class="text-danger"></span>
+    <hr />
+    <div id="PlaceHolderHere"></div>
+
+    <div class="row">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addUser" style="margin: 5px;">Add a user</button>
+    </div>
+    <div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="addUserLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="form-group">
+                <div class="modal-content">
+                    <form method="post" asp-controller="UserManagement" asp-action="AddUser">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="addUserLabel">Add a user</h3>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body mx-sm-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <input asp-for="AddUserModel.FirstName" class="form-control" placeholder="First name" required />
+                                    <span asp-validation-for="AddUserModel.FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <input asp-for="AddUserModel.LastName" class="form-control" placeholder="Last name" required />
+                                    <span asp-validation-for="AddUserModel.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input asp-for="AddUserModel.PhoneNumber" class="form-control" placeholder="Phone Number" required />
+                                    <span asp-validation-for="AddUserModel.PhoneNumber" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <select asp-for="AddUserModel.Role"
+                                            class="form-control"
+                                            asp-items="new SelectList(Enum.GetNames(typeof(Roles)))">
+                                        <option>Select Role ...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input asp-for="AddUserModel.Email" class="form-control" placeholder="Email" required />
+                                    <span asp-validation-for="AddUserModel.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input asp-for="AddUserModel.Password" class="form-control" placeholder="Password" required />
+                                    <span asp-validation-for="AddUserModel.Password" class="text-danger"></span>
+                                </div>
+                                <div class="col">
+                                    <input asp-for="AddUserModel.ConfirmPassword" class="form-control" placeholder="Re-enter Password" required />
+                                    <span asp-validation-for="AddUserModel.ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input class="btn btn-primary" type="submit" value="Add User" />
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
-                <div>
-                    <label asp-for="AddUserModel.LastName">Last Name</label>
-                    <input asp-for="AddUserModel.LastName" class="form-control" />
-                    <span asp-validation-for="AddUserModel.LastName" class="text-danger"></span>
-                </div>
-                <div>
-                    <label asp-for="AddUserModel.PhoneNumber">Phone Number</label>
-                    <input asp-for="AddUserModel.PhoneNumber" class="form-control" />
-                    <span asp-validation-for="AddUserModel.PhoneNumber" class="text-danger"></span>
-                </div>
-                <div>
-                    <label asp-for="AddUserModel.Role">Role</label>
-                    <select asp-for="AddUserModel.Role" asp-items="new SelectList(Enum.GetNames(typeof(Roles)))"></select>
-                </div>
-                <div>
-                    <label asp-for="AddUserModel.Email"></label>
-                    <input asp-for="AddUserModel.Email" class="form-control" />
-                    <span asp-validation-for="AddUserModel.Email" class="text-danger"></span>
-                </div>
-                <div>
-                    <label asp-for="AddUserModel.Password"></label>
-                    <input asp-for="AddUserModel.Password" class="form-control" />
-                    <span asp-validation-for="AddUserModel.Password" class="text-danger"></span>
-                </div>
-                <div>
-                    <label asp-for="AddUserModel.ConfirmPassword">Confirm Password</label>
-                    <input asp-for="AddUserModel.ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="AddUserModel.ConfirmPassword" class="text-danger"></span>
-                </div>
-                <input class="btn btn-primary btn-lg" type="submit" value="Add User"/>
-            </form>
+            </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="table">
-            <table class="table table-bordered table-hover" aria-label="Tables">
+    <div class="row">
+        <div class="col-lg-12">
+            <table id="userDesktop" class="table table-bordered table-hover" aria-label="Tables">
                 <tr>
                     @{
                         foreach (var head in TableHeader)
@@ -68,7 +92,6 @@
                     }
                 </tr>
                 @{
-                    var users = ViewData["Users"] as List<soen390_team01.Data.Entities.User>;
                     foreach (var user in Model.Users)
                     {
                         <tr id="@("userRow" + user.UserId)">
@@ -77,6 +100,22 @@
                     }
                 }
             </table>
+            <table id="userMobile" class="table table-bordered table-hover" aria-label="Tables">
+                <tr>
+                    <th scope="col">Action</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Email</th>
+                </tr>
+                @{
+                    foreach (var user in Model.Users)
+                    {
+                        <tr id="@("userRow" + user.UserId)">
+                            @{await Html.RenderPartialAsync("_UserRowPartialMobile", user);}
+                        </tr>
+                    }
+                }
+            </table>
         </div>
     </div>
 </div>
+

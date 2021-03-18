@@ -19,6 +19,7 @@
                 var currentUserId = userIdString.substring(7);
                 $('#userRow' + currentUserId).html(data);
                 placeHolderElement.find('.modal').modal('hide');
+                location.reload();
             });
         });
     $(document).ajaxError(function (event, jqxhr, settings, exception) {
