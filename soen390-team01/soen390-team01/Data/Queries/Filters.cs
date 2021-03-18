@@ -8,10 +8,12 @@ namespace soen390_team01.Data.Queries
     {
         public List<Filter> List { get; set; }
         public string Table { get; set; }
+        public string Tab { get; set; }
 
-        public Filters(string table, List<Filter> list = null)
+        public Filters(string table, string tab = null, List<Filter> list = null)
         {
             Table = table;
+            Tab = tab ?? Table;
             List = list ?? new List<Filter>();
         }
 

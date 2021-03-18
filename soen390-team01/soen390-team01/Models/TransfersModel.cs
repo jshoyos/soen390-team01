@@ -13,7 +13,7 @@ using System.Globalization;
 
 namespace soen390_team01.Models
 {
-    public class TransfersModel : ITransferService
+    public class TransfersModel : FilteredModel, ITransferService
     {
         private readonly ErpDbContext _context;
         public List<Order> Orders { get; set; }

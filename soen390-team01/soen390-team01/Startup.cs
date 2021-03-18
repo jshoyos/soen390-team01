@@ -9,7 +9,6 @@ using soen390_team01.Data;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System;
-using soen390_team01.Models;
 
 namespace soen390_team01
 {
@@ -27,6 +26,7 @@ namespace soen390_team01
         {
             services.AddSingleton<AuthenticationFirebaseService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
+            services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<ITransferService, TransfersModel>();
             services.AddSingleton(s => new EncryptionService(

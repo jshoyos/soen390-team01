@@ -44,14 +44,18 @@ div.bike-components {
     float: left;
 }
 
-div.filer-data {
+.filter-data {
+    text-align: center;
+}
+
+div.filter-data {
     border-style: solid;
     border-color: lightgrey;
     padding: 10px;
     border-width: thin;
     float: right;
 }
-input.filer-data {
+input.filter-data {
     border-style: solid;
     border-color: lightgrey;
     padding: 10px;
@@ -151,10 +155,6 @@ input.filer-data {
 .price-text::-webkit-inner-spin-button, .price-text::-webkit-outer-spin-button {
     -webkit-appearance: none !important;
     margin: 0 !important;
-}
-
-.filter-data {
-    text-align: center
 }
 .elements {
     margin: 10px 5px 5px 5px;

@@ -4,12 +4,15 @@ using soen390_team01.Models;
 
 namespace soen390_team01.Services
 {
-    public interface IUserManagementService
+    public interface IUserManagementService : IFilteredModel
     {
+        #region properties
         public AddUserModel AddUserModel { get; set; }
         public EditUserModel EditUserModel { get; set; }
         public List<User> Users { get; set; }
+        #endregion
 
+        #region methods
         public void Reset();
 
         /// <summary>
@@ -46,5 +49,6 @@ namespace soen390_team01.Services
         /// <param name="email"></param>
         /// <returns></returns>
         public User GetUserByEmail(string email);
+        #endregion
     }
 }

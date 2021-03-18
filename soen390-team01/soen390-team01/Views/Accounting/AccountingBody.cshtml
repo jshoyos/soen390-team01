@@ -1,0 +1,104 @@
+﻿@using Newtonsoft.Json
+@{ViewData["Title"] = "Accounting View";}
+@model soen390_team01.Services.IAccountingService
+
+<head>
+    <title>Accounting</title>
+    <link rel="stylesheet" href="\css\Accounting.css">
+    <link rel="stylesheet" href="\css\site.css">
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" id="filter-button">FILTER</button>
+            </div>
+            <div class="col-8">
+                <button class="btn btn-outline-primary" id="generateG-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 100%;">GENERATE GRAPH</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!--Table with tabs-->
+        <div class="col-lg-8 mx-lg-auto" id="LHS">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li style="width: 33.3%;text-align:center;" onclick="showFilter('payment', true)">
+                    <a class="nav-link @(Model.SelectedTab == "payment" ? "active": "")" id="allTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="@(Model.SelectedTab == "payment" ? "true": "false")">
+                        All
+                    </a>
+                </li>
+                <li class="nav-item" style="width: 33.3%; text-align:center;" onclick="showFilter('payable', true)">
+                    <a class="nav-link @(Model.SelectedTab == "payable" ? "active": "")" id="payableTab" data-toggle="pill" href="#payableTabContent" role="tab" aria-controls="payableTabContent" aria-selected="@(Model.SelectedTab == "payable" ? "true": "false")">
+                        Payable
+                    </a>
+                </li>
+                <li class="nav-item" style="width: 33.4%; text-align:center;" onclick="showFilter('receivable', true)">
+                    <a class="nav-link @(Model.SelectedTab == "receivable" ? "active": "")" id="receivableTab" data-toggle="pill" href="#receivableTabContent" role="tab" aria-controls="receivableTabContent" aria-selected="@(Model.SelectedTab == "receivable" ? "true": "false")">
+                        Receivable
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show @(Model.SelectedTab == "payment" ? "active": "")" id="allTabContent" role="tabpanel" aria-labelledby="allTab" >
+                    <div class="container">
+                        @{await Html.RenderPartialAsync("AccountingTable", Model.Payments);}
+                    </div>
+                </div>
+                <div class="tab-pane fade show @(Model.SelectedTab == "payable" ? "active": "")" id="payableTabContent" role="tabpanel" aria-labelledby="payableTab">
+                    <div class="container">
+                        @{await Html.RenderPartialAsync("PayableTable", Model.Payables);}
+                    </div>
+                </div>
+                <div class="tab-pane fade show @(Model.SelectedTab == "receivable" ? "active": "")" id="receivableTabContent" role="tabpanel" aria-labelledby="receivableTab">
+                    <div class="container">
+                        @{await Html.RenderPartialAsync("ReceivableTable", Model.Receivables);}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 text-center justify-content-center" id="filter">
+            <div id="payment-filter" class="filter-data" style="display:@(Model.SelectedTab == "payment" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+            </div>
+            <div id="receivable-filter" class="filter-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+            </div>
+            <div id="payable-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+            </div>
+            <div class="row justify-content-center elements">
+                <button class="btn btn-primary">GENERATE GRAPH</button>
+            </div>
+        </div>
+
+        <!-- Modal for filter in mobile mode-->
+        <div class="modal fade @(Model.ShowFilters  ? "show": "")" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true" style="display:@(Model.ShowFilters  ? "block": "none")">
+            @{ Model.ShowFilters = false;}
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                        <button type="button" class="close" data-dismiss="filterModal" aria-label="Close" onclick="hideFilterModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-filter">
+                        <div id="payment-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "payment" ? "block": "none")">
+                            @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                        </div>
+                        <div id="receivable-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
+                            @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                        </div>
+                        <div id="payable-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+                            @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
