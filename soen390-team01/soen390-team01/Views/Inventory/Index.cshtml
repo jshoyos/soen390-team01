@@ -93,26 +93,8 @@
     </script>
 </head>
 
-<div class="container">
-    <div class="row">
-        <div class="col-8">
-            @{await Html.RenderPartialAsync("InventoryBody", Model);}
-        </div>
-        <div class="col-3 filter">
-            <div id="Bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "Bike" ? "block": "none")">
-                @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
-                <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Bike'),showFilter('Bike')">
-            </div>
-            <div id="Part-filter" class="filer-data" style="display:@(Model.SelectedTab == "Part" ? "block": "none")">
-                @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
-                <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Part'),showFilter('Part')">
-            </div>
-            <div id="Material-filter" class="filer-data" style="display:@(Model.SelectedTab == "Material" ? "block": "none")">
-                @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
-                <input class="filter-data" type="submit" value="Clear Filter" onclick="refreshFilter('Material'),showFilter('Material')">
-            </div>
 
-        </div>
-    </div>
-    
+<div class="row inventory-view">
+    @{await Html.RenderPartialAsync("InventoryBody", Model);}
 </div>
+

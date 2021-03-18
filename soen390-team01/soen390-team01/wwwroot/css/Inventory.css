@@ -42,6 +42,7 @@ div.inventory-view {
 
 div.bike-components {
     float: left;
+    overflow: scroll;
 }
 
 .filter-data {
