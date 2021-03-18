@@ -21,8 +21,8 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-8 ">
-            <button class="btn btn-outline-primary" id="back-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 100%; display:none;" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.SelectedTab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.SelectedTab))">CLOSE GRAPH</button>
+        <div class="col-8 d-flex justify-content-lg-end">
+            <button class="btn btn-outline-primary" id="back-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 30%; display:none;" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.SelectedTab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.SelectedTab))">CLOSE GRAPH</button>
         </div>
         <div class="graph col-lg-8 mx-lg-auto" id="graphID" style="display:none">
             @{await Html.RenderPartialAsync("Graph", Model.Payments);}

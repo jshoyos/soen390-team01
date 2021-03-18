@@ -10,6 +10,11 @@ namespace soen390_team01.Services
 {
     public static class AccountingGraphService
     {
+        /// <summary>
+        /// This method will generate a graph with payments
+        /// </summary>
+        /// <param name="payments"></param>
+        /// <returns>GraphData</returns>
         public static GraphData CreateGraphData(this List<Payment> payments)
         {
             var monthAmounts = new Dictionary<string, decimal>();
