@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Routing;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Data.Queries;
+using soen390_team01.Models;
 
 namespace soen390_team01Tests.Unit.Data.Queries
 {
@@ -51,7 +52,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
             });
             filters.Add(new Filter("bike", "Grade", "grade"));
 
-            actionArguments["filters"] = filters;
+            actionArguments["mobileFiltersInput"] = new MobileFiltersInput { Filters = filters };
 
             var context = new ActionExecutingContext(
                 new ActionContext(
@@ -67,7 +68,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
 
             attribute.OnActionExecuting(context);
 
-            var modifiedFilters = context.ActionArguments["filters"] as Filters;
+            var modifiedFilters = (context.ActionArguments["mobileFiltersInput"] as MobileFiltersInput)?.Filters;
 
             Assert.NotNull(modifiedFilters);
             Assert.IsTrue(modifiedFilters.AnyActive());
@@ -83,7 +84,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
         public void NullFiltersTest()
         {
             var attribute = new FiltersActionAttribute();
-            var actionArguments = new Dictionary<string, object> {["filters"] = null};
+            var actionArguments = new Dictionary<string, object> {["mobileFiltersInput"] = null};
 
             var context = new ActionExecutingContext(
                 new ActionContext(
@@ -99,7 +100,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
 
             attribute.OnActionExecuting(context);
 
-            Assert.Null(context.ActionArguments["filters"]);
+            Assert.Null(context.ActionArguments["mobileFiltersInput"]);
         }
     }
 }

@@ -28,6 +28,7 @@ namespace soen390_team01.Models
         public Filters MaterialFilters { get; set; }
 
         public string SelectedTab { get; set; } = "inventory";
+        public bool ShowFilters { get; set; }
 
         public InventoryModel(ErpDbContext context)
         {

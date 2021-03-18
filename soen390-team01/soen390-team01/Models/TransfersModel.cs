@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace soen390_team01.Models
 {
-    public class TransfersModel
+    public class TransfersModel : FilteredModel
     {
         public List<Order> Orders { get; set; }
         public List<Procurement> Procurements { get; set; }
