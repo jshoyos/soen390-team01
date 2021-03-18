@@ -1,55 +1,64 @@
 ﻿@model soen390_team01.Services.IInventoryService
 
-<div id="inventory-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
-    @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
-</div>
-<div id="bike-filter" class="filter-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
-    @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
-</div>
-<div id="part-filter" class="filter-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
-    @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
-</div>
-<div id="material-filter" class="filter-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
-    @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
-</div>
 
-<div class="bike-components">
-    <div class="tab">
-        <button class="tablinks @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
-    </div>
-    <div class="tab">
-        <button class="tablinks @(Model.SelectedTab == "bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'bike'),showFilter('bike')">Bike</button>
-        <button class="tablinks @(Model.SelectedTab == "part" ? "active": "")" id="partButton" onclick="openTab(event, 'part'),showFilter('part')">Part</button>
-        <button class="tablinks @(Model.SelectedTab == "material" ? "active": "")" id="matButton" onclick="openTab(event, 'material'),showFilter('material')">Material</button>
-    </div>
-    <div id="inventory" class="tabcontent" style="display: @(Model.SelectedTab == "inventory" ? "block": "none")" onclick="showFilter('inventory')">
 
-        <h3>Inventory</h3>
+<div class="container bike-components">
+    <div class="row">
+        <div class="col-8">
+            <div class="tab">
+                <button class="btn @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
+            </div>
+            <div class="tab">
+                <button class="tablinks @(Model.SelectedTab == "bike" ? "active": "")" id="bikeButton" onclick="openTab(event, 'bike'),showFilter('bike')">Bike</button>
+                <button class="tablinks @(Model.SelectedTab == "part" ? "active": "")" id="partButton" onclick="openTab(event, 'part'),showFilter('part')">Part</button>
+                <button class="tablinks @(Model.SelectedTab == "material" ? "active": "")" id="matButton" onclick="openTab(event, 'material'),showFilter('material')">Material</button>
+            </div>
+            <div id="inventory" class="tabcontent" style="display: @(Model.SelectedTab == "inventory" ? "block": "none")" onclick="showFilter('inventory')">
 
-        @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
-    </div>
-    <!-- Tab content -->
-    <div id="bike" class="tabcontent" style="display: @(Model.SelectedTab == "bike" ? "block": "none")" onclick="showFilter('bike')">
+                <h4 class="tabTitle">Inventory</h4>
 
-        <h3>Bikes</h3>
-        <div class="Bike-table">
-            @{await Html.RenderPartialAsync("BikeTable", Model.BikeList);}
+                @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
+            </div>
+            <!-- Tab content -->
+            <div id="bike" class="tabcontent" style="display: @(Model.SelectedTab == "bike" ? "block": "none")" onclick="showFilter('bike')">
+
+                <h4 class="tabTitle">Bikes</h4>
+                <div class="Bike-table">
+                    @{await Html.RenderPartialAsync("BikeTable", Model.BikeList);}
+                </div>
+
+            </div>
+
+            <div id="part" class="tabcontent" style="display: @(Model.SelectedTab == "part" ? "block": "none")" onclick="showFilter('part')">
+                <h4 class="tabTitle">Parts</h4>
+                <div class="Part-table">
+                    @{await Html.RenderPartialAsync("PartTable", Model.PartList);}
+                </div>
+
+            </div>
+
+            <div id="material" class="tabcontent" style="display: @(Model.SelectedTab == "material" ? "block": "none")" onclick="showFilter('material')">
+                <h4 class="tabTitle">Material</h4>
+                <div class="Material-table">
+                    @{await Html.RenderPartialAsync("MaterialTable", Model.MaterialList);}
+                </div>
+            </div>
         </div>
-
-    </div>
-
-    <div id="part" class="tabcontent" style="display: @(Model.SelectedTab == "part" ? "block": "none")" onclick="showFilter('part')">
-        <h3>Parts</h3>
-        <div class="Part-table">
-            @{await Html.RenderPartialAsync("PartTable", Model.PartList);}
-        </div>
-
-    </div>
-
-    <div id="material" class="tabcontent" style="display: @(Model.SelectedTab == "material" ? "block": "none")" onclick="showFilter('material')">
-        <h3>Material</h3>
-        <div class="Material-table">
-            @{await Html.RenderPartialAsync("MaterialTable", Model.MaterialList);}
+        <div class="col-3">
+            <div id="inventory-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
+            </div>
+            <div id="bike-filter" class="filter-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
+            </div>
+            <div id="part-filter" class="filter-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
+            </div>
+            <div id="material-filter" class="filter-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
+            </div>
         </div>
     </div>
+    
+
 </div>
