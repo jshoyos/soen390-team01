@@ -19,7 +19,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
 
             filters.Add(new Filter("bike", "Invalid", "invalid"));
 
-            Assert.AreEqual("grade LIKE '%some_value%' and name = 'some_other_value'", filters.GetConditionsString());
+            Assert.AreEqual("grade LIKE '%some_value%' and bike.name = 'some_other_value'", filters.GetConditionsString());
         }
 
         [Test]

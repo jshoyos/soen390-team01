@@ -19,7 +19,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
 
             Assert.AreEqual(2, filter.Values.Count);
             Assert.AreEqual(3, filter.PossibleCheckboxValues.Count);
-            Assert.AreEqual("grade in ('some_value','some_other_other_value')", filter.GetConditionString());
+            Assert.AreEqual("bike.grade in ('some_value','some_other_other_value')", filter.GetConditionString());
         }
 
         [Test]
