@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using soen390_team01.Data.Queries;
 
 namespace soen390_team01Tests.Unit.Data.Queries

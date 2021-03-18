@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc.Filters;
+using soen390_team01.Models;
 
 namespace soen390_team01.Data.Queries
 {
@@ -11,9 +12,10 @@ namespace soen390_team01.Data.Queries
         /// <param name="context">action call context</param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var filters = (Filters) context.ActionArguments["filters"];
+            var mobileFiltersInput = (MobileFiltersInput) context.ActionArguments["mobileFiltersInput"];
+            Filters filters;
 
-            if (filters == null)
+            if (mobileFiltersInput == null || (filters = mobileFiltersInput.Filters) == null)
             {
                 return;
             }

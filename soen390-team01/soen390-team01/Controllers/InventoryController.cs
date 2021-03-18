@@ -25,9 +25,9 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        public IActionResult Refresh([FromBody] string selectedTab)
+        public IActionResult Refresh([FromBody] RefreshTabInput refreshTabInput)
         {
-            switch (selectedTab)
+            switch (refreshTabInput.SelectedTab)
             {
 
                 case "inventory":
@@ -43,25 +43,29 @@ namespace soen390_team01.Controllers
                     _model.ResetMaterials();
                     break;
             }
-            _model.SelectedTab = selectedTab;
+            _model.SelectedTab = refreshTabInput.SelectedTab;
 
             return PartialView("InventoryBody", _model);
         }
 
         [HttpPost]
         [FiltersAction]
-        public IActionResult FilterProductTable([FromBody] Filters filters)
+        public IActionResult FilterProductTable([FromBody] MobileFiltersInput mobileFiltersInput)
         {
             try
             {
-                _model.FilterSelectedTab(filters);
+                _model.FilterSelectedTab(mobileFiltersInput.Filters);
+                if (mobileFiltersInput.Mobile)
+                {
+                    _model.ShowFilters = true;
+                }
             }
             catch (DataAccessException e)
             {
                 TempData["errorMessage"] = e.ToString();
             }
 
-            _model.SelectedTab = filters.Table;
+            _model.SelectedTab = mobileFiltersInput.Filters.Tab;
 
             return PartialView("InventoryBody", _model);
         }

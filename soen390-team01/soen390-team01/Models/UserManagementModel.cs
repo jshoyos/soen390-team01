@@ -11,17 +11,25 @@ using soen390_team01.Services;
 
 namespace soen390_team01.Models
 { 
-    public class UserManagementModel : IUserManagementService
+    public class UserManagementModel : FilteredModel, IUserManagementService
     {
+        #region fields
+        private readonly ErpDbContext _context;
+        private readonly EncryptionService _encryption;
+        #endregion
+
+        #region properties
         public AddUserModel AddUserModel { get; set; }
         public EditUserModel EditUserModel { get; set; }
         public List<User> Users { get; set; }
+        #endregion
+        public UserManagementModel() { }
 
-        private readonly ErpDbContext _context;
-        private readonly EncryptionService _encryption;
-
-        public UserManagementModel() {}
-
+        /// <summary>
+        /// User Management Constructor taking the database context and the encryption service
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="encryption"></param>
         public UserManagementModel(ErpDbContext context, EncryptionService encryption)
         {
             _context = context;
@@ -29,6 +37,10 @@ namespace soen390_team01.Models
             Users = GetAllUsers();
         }
 
+        #region methods
+        /// <summary>
+        /// Gets all the users in the database and empties the addusermodel as well as the edit user model
+        /// </summary>
         public void Reset()
         {
             Users = GetAllUsers();
@@ -72,6 +84,10 @@ namespace soen390_team01.Models
             }
         }
 
+        /// <summary>
+        /// Removes a specific user from the database
+        /// </summary>
+        /// <param name="user"></param>
         public void RemoveUser(User user)
         {
             _context.Users.Remove(_context.Users.FirstOrDefault(u => u.Email.Equals(user.Email))!);
@@ -131,6 +147,11 @@ namespace soen390_team01.Models
             }
         }
 
+        /// <summary>
+        /// Gets an user from the database with a specific email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public User GetUserByEmail(string email)
         {
             try
@@ -144,6 +165,8 @@ namespace soen390_team01.Models
             }
         }
 
+        // Used to encrypt all the data that can be linked to an user (i.e email, name..)
+        // This method is used when adding or updating an user into the database
         private User EncryptUser(User user, byte[] iv = null)
         {
             iv ??= Convert.FromBase64String(user.Iv);
@@ -156,6 +179,8 @@ namespace soen390_team01.Models
             return user;
         }
 
+        // Used to decrypt all the encrypted data of an user
+        // This method is used when getting an user from the database
         private User DecryptUser(User user)
         {
             var iv = Convert.FromBase64String(user.Iv);
@@ -172,5 +197,6 @@ namespace soen390_team01.Models
                 Iv = Convert.ToBase64String(iv)
             };
         }
+        #endregion
     }
 }

@@ -1,15 +1,15 @@
 ﻿@model soen390_team01.Services.IInventoryService
 
-<div id="inventory-filter" class="filer-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
+<div id="inventory-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
 </div>
-<div id="bike-filter" class="filer-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
+<div id="bike-filter" class="filter-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.BikeFilters);}
 </div>
-<div id="part-filter" class="filer-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
+<div id="part-filter" class="filter-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.PartFilters);}
 </div>
-<div id="material-filter" class="filer-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
+<div id="material-filter" class="filter-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
     @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters);}
 </div>
 

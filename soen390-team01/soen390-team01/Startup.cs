@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using soen390_team01.Data;
 using soen390_team01.Services;
+using soen390_team01.Models;
 using System;
 using soen390_team01.Models;
 
@@ -26,6 +27,7 @@ namespace soen390_team01
         {
             services.AddSingleton<AuthenticationFirebaseService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
+            services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<TransfersService>();
             services.AddSingleton(s => new EncryptionService(

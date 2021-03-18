@@ -12,15 +12,15 @@
     <canvas id="myChart" width="400" height="400"></canvas>
     <script>
         console.log('Before');
-        const graphData =  @Html.Raw(JsonConvert.SerializeObject(@Model.CreateGraphData()));
+        var graphData =  @Html.Raw(JsonConvert.SerializeObject(@Model.CreateGraphData()));
         console.log(graphData);
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: graphData.Labels,
                 datasets: [{
-                    label: '# of Votes',
+                    label: 'Net Income ($)',
                     data: graphData.Values,
                     backgroundColor:
                         'rgba(255, 99, 132, 0.2)'
