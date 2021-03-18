@@ -32,45 +32,17 @@
             document.getElementById("ofilter").style.display = "";
         }
 
-        function passingFilters(filters, displayedName, filterInput) {
-            console.log(filters);
-            if (filters == null || (displayedName != "submit" && filterInput != "submit")) {
-                var list = filters.List.map(f => {
-                    if (f.PossibleSelectValues) {
-                        f.Input = {
-                            SelectInput: { SelectValue: f.Value, PossibleValues: f.PossibleSelectValues }
-                        };
-                    } else if (f.PossibleCheckboxValues) {
-                        f.Input = {
-                            CheckBoxInput: { Values: f.Values, PossibleValues: f.PossibleCheckboxValues }
-                        };
-                    } else if (f.hasOwnProperty("Value")) {
-                        f.Input = { StringValue: f.Value };
-                    } else if (f.hasOwnProperty("Min") || f.hasOwnProperty("Max")) {
-                        f.Input = {
-                            RangeInput: { MinValue: !f.Min ? null : Number(f.Min), MaxValue: !f.Max ? null : Number(f.Max) }
-                        };
-                    } else if (f.hasOwnProperty("MinDate") || f.hasOwnProperty("MaxDate")) {
-                        f.Input = {
-                            DateRangeInput: { MinValue: !f.MinDate ? null : f.MinDate, MaxValue: !f.MaxDate ? null : f.MaxDate }
-                        };
-                    }
-                    return f;
-                });
-
-                var filterIndex = list.findIndex(f => f.DisplayColumn === displayedName);
-                var modifiedFilter = list[filterIndex];
-                modifiedFilter.Input = filterInput;
-                list[filterIndex] = modifiedFilter;
-                filters.List = list;
-                console.log(JSON.stringify(filters));
-            }
+        function passingFilters(filters, displayedName, filterInput, mobile) {
+            filters.List = adjustFilters(filters, displayedName, filterInput);
             
             $.ajax({
                 url: '@Url.Action("FilterTransferTable", "Transfers")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(filters),
+                data: JSON.stringify({
+                    "filters": filters,
+                    "mobile": mobile
+                }),
                 dataType: 'html',
                 success: function (result) {
                     $('.transfer-view').html(result);
@@ -78,59 +50,23 @@
             });
             
         };
-        function refreshFilter(type) {
+        function refreshFilter(type, mobile) {
 
             $.ajax({
                 url: '@Url.Action("Refresh", "Transfers")',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(type),
+                data: JSON.stringify({
+                    selectedTab: type,
+                    mobile: mobile
+                }),
                 dataType: 'html',
                 success: function (result) {
-                    $('.transfer-view').html(result);
-                    if (type == "procurement") {
-                        showFilter();
-                    }
-                    else {
-                        hideFilter();
-                    }
+                    $('.transfer-view').html(result);  
                 }
             });
 
         };
-
-
-
-        function createCheckboxInput(column, possibleValues, check) {
-            var mobileCheck = check ? "-mobile" : "";
-            var checkBoxes = document.getElementsByName(column + "-checkbox" + mobileCheck);
-            var chosenCheckBoxes = [];
-
-            for (var i = 0; i < checkBoxes.length; i++) {
-                if (checkBoxes[i].checked) {
-                    chosenCheckBoxes.push(checkBoxes[i].value);
-                }
-            }
-
-            return { CheckBoxInput: { Values: chosenCheckBoxes, PossibleValues: possibleValues } };
-        }
-        function cleanDateValue(value, isNew) {
-            if (value == null || value === "") {
-                return null;
-            }
-
-            return new Date(value);
-        }
-        function enforceMinMax(el) {
-            if (el.value !== "") {
-                if (parseInt(el.value) < parseInt(el.min)) {
-                    el.value = el.min;
-                }
-                if (parseInt(el.value) > parseInt(el.max)) {
-                    el.value = el.max;
-                }
-            }
-        }
 
     </script>
 </head>

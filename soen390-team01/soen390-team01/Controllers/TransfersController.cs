@@ -22,6 +22,7 @@ namespace soen390_team01.Controllers
         [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep + "," + Role.Admin)]
         public IActionResult Index()
         {
+            _model.ShowFilters = false;
             return View(_model);
         }
 
@@ -51,26 +52,30 @@ namespace soen390_team01.Controllers
                 showModal = true;
             }
 
-            _model.SelectedTab = "Procurement";
+            _model.SelectedTab = "procurement";
             _model.ShowModal = showModal;
 
             return View("Index", _model);
         }
         [HttpPost]
         [FiltersAction]
-        public IActionResult FilterTransferTable([FromBody] Filters filters)
+        public IActionResult FilterTransferTable([FromBody] MobileFiltersInput mobileFiltersInput)
         {
             try
             {
-                switch (filters.Table)
+                if (mobileFiltersInput.Mobile)
+                {
+                    _model.ShowFilters = true;
+                }
+                switch (mobileFiltersInput.Filters.Table)
                 {
                     case "procurement":
-                        _model.Procurements = true ? _model.GetFilteredProcurementList(filters) : _model.GetProcurements();
-                        _model.ProcurementFilters = filters;
+                        _model.Procurements = true ? _model.GetFilteredProcurementList(mobileFiltersInput.Filters) : _model.GetProcurements();
+                        _model.ProcurementFilters = mobileFiltersInput.Filters;
                         break;
                     case "order":
-                        _model.Orders = filters.AnyActive() ? _model.GetFilteredOrderList(filters) : _model.GetOrders();
-                        _model.OrderFilters = filters;
+                        _model.Orders = mobileFiltersInput.Filters.AnyActive() ? _model.GetFilteredOrderList(mobileFiltersInput.Filters) : _model.GetOrders();
+                        _model.OrderFilters = mobileFiltersInput.Filters;
                         break;
                 }
             }
@@ -79,14 +84,14 @@ namespace soen390_team01.Controllers
                 TempData["errorMessage"] = e.ToString();
             }
 
-            _model.SelectedTab = filters.Table;
+            _model.SelectedTab = mobileFiltersInput.Filters.Table;
 
             return PartialView("TransferBody", _model);
         }
         [HttpPost]
-        public IActionResult Refresh([FromBody] string selectedTab)
+        public IActionResult Refresh([FromBody] RefreshTabInput refreshTabInput)
         {
-            switch (selectedTab)
+            switch (refreshTabInput.SelectedTab)
             {
                 case "procurement":
                     _model.Procurements = _model.GetProcurements();
@@ -98,7 +103,12 @@ namespace soen390_team01.Controllers
                     break;
             }
 
-            _model.SelectedTab = selectedTab;
+            if (refreshTabInput.Mobile)
+            {
+                _model.ShowFilters = true;
+            }
+
+            _model.SelectedTab = refreshTabInput.SelectedTab;
 
             return PartialView("TransferBody", _model);
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace soen390_team01.Services
 {
-    public interface ITransferService
+    public interface ITransferService : IFilteredModel
     {
 
         public List<Order> Orders { get; set; }

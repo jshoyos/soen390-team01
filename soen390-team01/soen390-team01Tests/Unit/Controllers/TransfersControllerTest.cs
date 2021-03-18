@@ -99,11 +99,11 @@ namespace soen390_team01Tests.Controllers
             inputModel.AddProcurement.ItemType = "Material";
             var resultMaterial = controller.AddProcurement(inputModel) as ViewResult;
 
-            Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual("procurement", (resultBike.Model as TransfersModel).SelectedTab);
             Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-            Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual("procurement", (resultBike.Model as TransfersModel).SelectedTab);
             Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-            Assert.AreEqual("Procurement", (resultBike.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual("procurement", (resultBike.Model as TransfersModel).SelectedTab);
             Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
         }
 
@@ -188,7 +188,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(i => i.GetProcurements());
 
             var controller = new TransfersController(_modelMock.Object);
-            var result = controller.FilterTransferTable(filters) as PartialViewResult;
+            var result = controller.FilterTransferTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as ITransferService).Orders.Count);
             Assert.AreEqual(1, (result.Model as ITransferService).Procurements.Count);
@@ -236,7 +236,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(i => i.GetFilteredProcurementList(It.IsAny<Filters>()));
 
             var controller = new TransfersController(_modelMock.Object);
-            var result = controller.FilterTransferTable(filters) as PartialViewResult;
+            var result = controller.FilterTransferTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as ITransferService).Orders.Count);
             Assert.AreEqual(1, (result.Model as ITransferService).Procurements.Count);
@@ -272,7 +272,7 @@ namespace soen390_team01Tests.Controllers
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
-            Assert.IsNotNull(controller.FilterTransferTable(filters) as PartialViewResult);
+            Assert.IsNotNull(controller.FilterTransferTable(new MobileFiltersInput { Filters = filters, Mobile = true }) as PartialViewResult);
             Assert.IsNotNull(controller.TempData["errorMessage"]);
 
         }
@@ -288,10 +288,10 @@ namespace soen390_team01Tests.Controllers
 
             var controller = new TransfersController(_modelMock.Object);
 
-            controller.Refresh("procurement");
+            controller.Refresh(new RefreshTabInput { SelectedTab = "procurement", Mobile = true });
             _modelMock.Verify(m => m.GetProcurements(), Times.Once());
             _modelMock.Verify(m => m.ResetProcurementFilters(), Times.Once());
-            controller.Refresh("order");
+            controller.Refresh(new RefreshTabInput { SelectedTab = "order", Mobile = false });
             _modelMock.Verify(m => m.GetOrders(), Times.Once());
             _modelMock.Verify(m => m.ResetOrderFilters(), Times.Once());
         }

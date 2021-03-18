@@ -20,7 +20,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
             filters.Add(new CheckboxFilter("payment", $"State-{tabName}", "state", list) { Values = { "filtered_state" } });
 
             Assert.AreEqual(
-                "Select * From public.payment where state in ('filtered_state') and amount >= '0.0'",
+                "Select * From public.payment where payment.state in ('filtered_state') and amount >= '0.0'",
                 PaymentQueryBuilder.FilterPayment(filters, "and amount >= '0.0'")
                 );
         }
