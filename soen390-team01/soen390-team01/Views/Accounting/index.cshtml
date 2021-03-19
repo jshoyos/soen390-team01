@@ -9,30 +9,23 @@
 <head>
     <link rel="stylesheet" href="\css\Accounting.css">
     <link rel="stylesheet" href="\css\site.css">
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script>
-        $(document).ready(function () {
-                $('#generateG-button').on('click', function () {
-                $('#LHS').hide();
-                $('#graphID').show();
-                $('#filter').hide();
-                $('#filter-button').hide();
-                $('#generateG-button').hide();
-                $('#back-button').show();
-            });
 
-            $('#generateButton').on('click', function () {
-                $('#LHS').hide();
-                $('#graphID').show();
-                $('#filter').hide();
-                $('#filter-button').hide();
-                $('#generateG-button').hide();
-                $('#back-button').show();
+        function showGraph(type) {
+            $('#LHS').hide();
+            $('#graph-' + type).show();
+            $('#filter').hide();
+            $('#back-button-' + type).show();
+        };
 
-            });
-                       
-        });
-
+        function hideGraph(type) {
+            $('#LHS').show();
+            $('#graph-' + type).hide();
+            $('#filter').show();
+            $('#back-button-' + type).hide();
+        };
 
         function passingFilters(filters, displayedName, filterInput, mobile) {
             filters.List = adjustFilters(filters, displayedName, filterInput);
@@ -46,7 +39,7 @@
                     "mobile": mobile
                 }),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     $('.accounting-view').html(result);
                 }
             });
@@ -63,7 +56,7 @@
                     mobile: mobile
                 }),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     $('.accounting-view').html(result);
                 }
             });
