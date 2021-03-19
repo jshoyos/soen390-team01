@@ -4,6 +4,10 @@
 
 @{ var type = ViewData["type"] as string; }
 
+<head>
+    <title>Graph</title>
+</head>
+
 <div class="row d-flex justify-content-center">
     <button class="btn btn-outline-primary" id="back-button-@ViewData["type"]" style=" font-size: 12px; margin: 1px; padding: 2px; width: 30%; display:none;" onclick="hideGraph(@JsonConvert.SerializeObject(type))">CLOSE GRAPH</button>
 </div>
