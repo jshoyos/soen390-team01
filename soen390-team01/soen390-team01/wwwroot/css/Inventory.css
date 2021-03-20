@@ -63,7 +63,6 @@ input.filter-data {
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
-    width: 33.33%;
 }
 
 
@@ -141,27 +140,16 @@ input.filter-data {
     text-align: center;
 }
 
-#allButton {
-    width: 100%;
-    text-align: center;
-    align-items: center;
-    background-color: white;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-}
 
-#allButton:hover, .tablinks:hover {
+
+.tablinks:hover {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
     transition: 0.3s;
 }
 
-#allButton.active, .tablinks.active {
+.tablinks:active {
     background-color: #1b6ec2;
     border-color: #1861ac;
     color: #fff;
