@@ -65,6 +65,24 @@ input.filter-data {
     transition: 0.3s;
 }
 
+.tablinks:hover {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    transition: 0.3s;
+}
+
+.tablinks.active {
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    color: #fff;
+}
+
+.tabTitle {
+    text-align: center;
+    padding: 7px;
+}
+
 
 .tabcontent {
     display: none;
@@ -140,22 +158,4 @@ input.filter-data {
     text-align: center;
 }
 
-
-
-.tablinks:hover {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-    transition: 0.3s;
-}
-
-.tablinks:active {
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-    color: #fff;
-}
-.tabTitle {
-    text-align: center;
-    padding: 7px;
-}
 
