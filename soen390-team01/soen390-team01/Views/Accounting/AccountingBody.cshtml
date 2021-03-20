@@ -1,5 +1,6 @@
 ﻿@using Newtonsoft.Json
-@{ViewData["Title"] = "Accounting View";}
+@using soen390_team01.Data.Entities;
+@{ViewData["Title"] = "Accounting View"; }
 @model soen390_team01.Services.IAccountingService
 
 <head>
@@ -20,6 +21,12 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-8 d-flex justify-content-lg-end">
+            <button class="btn btn-outline-primary" id="back-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 30%; display:none;" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.SelectedTab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.SelectedTab))">CLOSE GRAPH</button>
+        </div>
+        <div class="graph col-lg-8 mx-lg-auto" id="graphID" style="display:none">
+            @{await Html.RenderPartialAsync("Graph", Model.Payments);}
+        </div>
         <!--Table with tabs-->
         <div class="col-lg-8 mx-lg-auto" id="LHS">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -41,7 +48,7 @@
             </ul>
 
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show @(Model.SelectedTab == "payment" ? "active": "")" id="allTabContent" role="tabpanel" aria-labelledby="allTab" >
+                <div class="tab-pane fade show @(Model.SelectedTab == "payment" ? "active": "")" id="allTabContent" role="tabpanel" aria-labelledby="allTab">
                     <div class="container">
                         @{await Html.RenderPartialAsync("AccountingTable", Model.Payments);}
                     </div>
@@ -70,7 +77,7 @@
                 @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
             </div>
             <div class="row justify-content-center elements">
-                <button class="btn btn-primary">GENERATE GRAPH</button>
+                <button class="btn btn-primary" id="generateButton">GENERATE GRAPH</button>
             </div>
         </div>
 

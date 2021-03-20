@@ -1,18 +1,39 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using soen390_team01.Data.Entities;
 @model soen390_team01.Services.IAccountingService
 
-@{
-    ViewData["Title"] = "Accounting View";
-    ViewData["selectedTab"] = "";
-}
+@{ ViewData["Title"] = "Accounting View";
+    ViewData["selectedTab"] = ""; }
 
 
 <head>
     <link rel="stylesheet" href="\css\Accounting.css">
     <link rel="stylesheet" href="\css\site.css">
     <meta name="viewport" content="width=device-width" />
+    <script>
+        $(document).ready(function () {
+                $('#generateG-button').on('click', function () {
+                $('#LHS').hide();
+                $('#graphID').show();
+                $('#filter').hide();
+                $('#filter-button').hide();
+                $('#generateG-button').hide();
+                $('#back-button').show();
+            });
 
-    <script type="text/javascript">
+            $('#generateButton').on('click', function () {
+                $('#LHS').hide();
+                $('#graphID').show();
+                $('#filter').hide();
+                $('#filter-button').hide();
+                $('#generateG-button').hide();
+                $('#back-button').show();
+
+            });
+                       
+        });
+
+
         function passingFilters(filters, displayedName, filterInput, mobile) {
             filters.List = adjustFilters(filters, displayedName, filterInput);
 
@@ -32,6 +53,7 @@
         };
 
         function refreshFilter(type, mobile) {
+            location.reload();
             $.ajax({
                 url: '@Url.Action("Refresh", "Accounting")',
                 type: 'POST',

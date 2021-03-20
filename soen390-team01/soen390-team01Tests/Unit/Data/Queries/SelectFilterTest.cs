@@ -18,7 +18,7 @@ namespace soen390_team01Tests.Unit.Data.Queries
                 });
 
             Assert.AreEqual(2, filter.PossibleSelectValues.Count);
-            Assert.AreEqual("grade = 'some_value'", filter.GetConditionString());
+            Assert.AreEqual("bike.grade = 'some_value'", filter.GetConditionString());
         }
     }
 }
