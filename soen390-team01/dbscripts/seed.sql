@@ -487,12 +487,12 @@ INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('11', '
 INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('12', 'part', '11', 'Warehouse2');
 
 INSERT INTO public.payment(payment_id, amount, state) VALUES (1, 100, 'pending');
-INSERT INTO public.payment(payment_id, amount, state) VALUES (2, -200, 'cancelled');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (2, -200, 'canceled');
 INSERT INTO public.payment(payment_id, amount, state) VALUES (3, -300, 'pending');
 INSERT INTO public.payment(payment_id, amount, state) VALUES (4, 400, 'completed');
 INSERT INTO public.payment(payment_id, amount, state) VALUES (5, 500, 'completed');
 INSERT INTO public.payment(payment_id, amount, state) VALUES (6, -300, 'completed');
-INSERT INTO public.payment(payment_id, amount, state) VALUES (7, -100, 'cancelled');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (7, -100, 'canceled');
 INSERT INTO public.payment(payment_id, amount, state) VALUES (8, -500, 'completed');
 
 INSERT INTO public.vendor(vendor_id, name, address, phone_number)VALUES (1, 'vendor1', 'address1', '5140000001');
