@@ -1,49 +1,54 @@
 ﻿@model List<soen390_team01.Data.Entities.Payment>
 @using Newtonsoft.Json;
-@using soen390_team01.Services; 
-   
+@using soen390_team01.Services;
+
+@{ var type = ViewData["type"] as string; }
 
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <title>Graph</title>
 </head>
 
-<body>
+<div class="row d-flex justify-content-center">
+    <button class="btn btn-outline-primary" id="back-button-@ViewData["type"]" style=" font-size: 12px; margin: 1px; padding: 2px; width: 30%; display:none;" onclick="hideGraph(@JsonConvert.SerializeObject(type))">CLOSE GRAPH</button>
+</div>
+<div class="row">
+        <canvas id="myChart-@type" width="400" height="400"></canvas>
+        <script>
 
-    <canvas id="myChart" width="400" height="400"></canvas>
-    <script>        
-        var graphData =  @Html.Raw(JsonConvert.SerializeObject(@Model.CreateGraphData()));
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: graphData.Labels,
-                datasets: [{
-                    label: 'Net Income ($)',
-                    data: graphData.Values,
-                    backgroundColor:
-                        'rgba(255, 99, 132, 0.2)'
-
-                    ,
-                    borderColor:
-                        'rgba(255, 99, 132, 1)'
-
-                    ,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
+            var graphData =  @Html.Raw(JsonConvert.SerializeObject(@Model.CreateGraphData()));
+            var ctx = document.getElementById('myChart-' + @Html.Raw(@JsonConvert.SerializeObject(type))).getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: graphData.Labels,
+                    datasets: [{
+                        data: graphData.Values,
+                        backgroundColor: graphData.Values.map(v => v <= 0 ? 'rgba(255,99,132,0.2)' : 'rgba(0,255,0,0.3)'),
+                        borderColor: graphData.Values.map(v => v <= 0 ? 'rgba(255,99,132,1.0)' : 'rgba(0,255,0,1.0)'),
+                        borderWidth: 1
                     }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        fontColor: 'grey',
+                        fontSize: 18,
+                        text: 'Net Income ($)'
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
                 }
-            }
-        });
-    </script>
-
-</body>
+            });
+        </script>
+</div>
 
 
 
