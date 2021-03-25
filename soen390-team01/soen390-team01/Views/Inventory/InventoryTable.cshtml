@@ -1,15 +1,15 @@
 ﻿@using Newtonsoft.Json
 @model List<soen390_team01.Data.Entities.Inventory>
 
-<table class="table" aria-label="Inventory">
+<table class="table" id = "inventoryTableCsv" aria-label="Inventory">
     <tr>
-        <th scope="col"><u>Id</u></th>
-        <th scope="col"><u>ItemId</u></th>
-        <th scope="col"><u>Type</u></th>
-        <th scope="col"><u>Warehouse</u></th>
-        <th scope="col"><u>Quantity</u></th>
-        <th scope="col"><u>Added</u></th>
-        <th scope="col"><u>Updated</u></th>
+        <th scope="col">Id</th>
+        <th scope="col">ItemId</th>
+        <th scope="col">Type</th>
+        <th scope="col">Warehouse</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Added</th>
+        <th scope="col">Updated</th>
     </tr>
     @foreach (var item in Model)
     {

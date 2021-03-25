@@ -1,5 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using soen390_team01.Data.Queries
+@using soen390_team01.Services
 @model Filters
 
 <link rel="stylesheet" href="\css\Filter.css">
@@ -68,21 +69,37 @@
         else if (filter.GetType() == typeof(DateRangeFilter))
         {
             <div>From</div>
-            <input 
-                style="max-width: 200px;"
-                type="datetime-local"
-                value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
-            <br/>
+            <input style="max-width: 200px;"
+                   type="datetime-local"
+                   value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
+            <br />
             <div>To</div>
-            <input 
-                style="max-width: 200px;"
-                type="datetime-local"
-                value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
-            <br/><br/>
+            <input style="max-width: 200px;"
+                   type="datetime-local"
+                   value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
+            <br /><br />
         }
     }
     <br /><br />
     <input type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
+    <br /><br />
+    @if (Model.Tab == "inventory")
+    {
+        <a href="#" onclick="generateCsv('inventoryTableCsv');">Generate Inventory Report</a>
+    }
+    else if (Model.Tab == "bike")
+    {
+        <a href="#" onclick="generateCsv('bikeTableCsv');">Generate Bike Report</a>
+    }
+    else if (Model.Tab == "part")
+    {
+        <a href="#" onclick="generateCsv('partTableCsv');">Generate Part Report</a>
+    }
+    else if (Model.Tab == "material")
+    {
+        <a href="#" onclick="generateCsv('materialTableCsv');">Generate Material Report</a>
+    }
+
 </div>
