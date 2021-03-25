@@ -15,6 +15,7 @@ namespace soen390_team01.Data.Entities
         public DateTime Modified { get; set; }
         public long BikeId { get; set; }
         public long ProductionId { get; set; }
+        public int Quantity { get; set; }
 
         public virtual Bike Bike { get; set; }
     }

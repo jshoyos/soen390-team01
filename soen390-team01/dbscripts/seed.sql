@@ -467,6 +467,7 @@ CREATE TABLE public.production
     modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     bike_id bigint NOT NULL,
     production_id bigint NOT NULL DEFAULT nextval('production_production_id_seq'::regclass),
+    quantity integer NOT NULL,
     CONSTRAINT production_pkey PRIMARY KEY (production_id),
     CONSTRAINT product_bike_id_fkey FOREIGN KEY (bike_id)
         REFERENCES public.bike (item_id) MATCH SIMPLE
