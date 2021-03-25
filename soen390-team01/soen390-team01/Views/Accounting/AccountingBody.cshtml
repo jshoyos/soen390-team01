@@ -12,20 +12,20 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-4">
-                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filterModal" id="filter-button">FILTER</button>
-            </div>
-            <div class="col-8">
-                <button class="btn btn-outline-primary" id="generateG-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 100%;">GENERATE GRAPH</button>
+            <div class="col-12">
+                <button class="btn btn-outline-primary filterButton" data-toggle="modal" data-target="#filterModal" id="filter-button" >FILTER</button>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-8 d-flex justify-content-lg-end">
-            <button class="btn btn-outline-primary" id="back-button" style=" font-size: 12px; margin: 1px; padding: 2px; width: 30%; display:none;" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.SelectedTab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.SelectedTab))">CLOSE GRAPH</button>
+        <div class="graph col-lg-8 mx-lg-auto" id="graph-payment" style="display:none">
+            @{await Html.RenderPartialAsync("Graph", Model.Payments, new ViewDataDictionary(ViewData) { { "type", "payment" } });}
         </div>
-        <div class="graph col-lg-8 mx-lg-auto" id="graphID" style="display:none">
-            @{await Html.RenderPartialAsync("Graph", Model.Payments);}
+        <div class="graph col-lg-8 mx-lg-auto" id="graph-payable" style="display:none">
+            @{await Html.RenderPartialAsync("Graph", Model.Payables, new ViewDataDictionary(ViewData) { { "type", "payable" } });}
+        </div>
+        <div class="graph col-lg-8 mx-lg-auto" id="graph-receivable" style="display:none">
+            @{await Html.RenderPartialAsync("Graph", Model.Receivables, new ViewDataDictionary(ViewData) { { "type", "receivable" } });}
         </div>
         <!--Table with tabs-->
         <div class="col-lg-8 mx-lg-auto" id="LHS">
@@ -69,15 +69,21 @@
         <div class="col-lg-3 text-center justify-content-center" id="filter">
             <div id="payment-filter" class="filter-data" style="display:@(Model.SelectedTab == "payment" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.PaymentFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+                <div class="row justify-content-center elements">
+                    <button class="btn btn-primary" id="generateButton-payment" onclick="showGraph('payment');">GENERATE GRAPH</button>
+                </div>
             </div>
             <div id="receivable-filter" class="filter-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.ReceivableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+                <div class="row justify-content-center elements">
+                    <button class="btn btn-primary" id="generateButton-receivable" onclick="showGraph('receivable');">GENERATE GRAPH</button>
+                </div>
             </div>
             <div id="payable-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
-            </div>
-            <div class="row justify-content-center elements">
-                <button class="btn btn-primary" id="generateButton">GENERATE GRAPH</button>
+                <div class="row justify-content-center elements">
+                    <button class="btn btn-primary" id="generateButton-payable" onclick="showGraph('payable');">GENERATE GRAPH</button>
+                </div>
             </div>
         </div>
 
