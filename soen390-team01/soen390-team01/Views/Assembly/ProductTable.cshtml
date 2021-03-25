@@ -1,5 +1,5 @@
 ﻿@using soen390_team01.Data
-@model List<soen390_team01.Data.Entities.Order>
+@model List<soen390_team01.Data.Entities.Production>
 
 <div class="container">
     <div class="row pt-4 pb-4 h-100 text-center">
@@ -8,14 +8,13 @@
         <div class="col"><u>Added</u></div>
         <div class="col"><u>Updated</u></div>
     </div>
-    @foreach (var order in Model)
+    @foreach (var production in Model)
     {
         <div class="row pt-4 pb-4 h-100 text-center">
-            <div class="col">@order.OrderId</div>
-            <div class="col">@order.State</div>
-            <div class="col">@order.Customer.Name</div>
-            <div class="col">@order.Added.DateTimeLocalString()</div>
-            <div class="col">@order.Updated.DateTimeLocalString()</div>
+            <div class="col">@production.BikeId</div>
+            <div class="col">@production.State</div>
+            <div class="col">@production.Added.DateTimeLocalString()</div>
+            <div class="col">@production.Modified.DateTimeLocalString()</div>
         </div>
     }
 </div>
