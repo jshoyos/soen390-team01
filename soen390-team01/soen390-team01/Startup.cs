@@ -42,6 +42,8 @@ namespace soen390_team01
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
                     options.LoginPath = "/Authentication/index";
                 });
             services.AddDbContext<ErpDbContext>(options =>
