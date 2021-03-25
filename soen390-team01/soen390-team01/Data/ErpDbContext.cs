@@ -403,6 +403,8 @@ namespace soen390_team01.Data
                     .HasColumnName("modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
+
                 entity.Property(e => e.State)
                     .IsRequired()
                     .HasMaxLength(10)
