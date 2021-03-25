@@ -19,5 +19,7 @@ namespace soen390_team01.Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime Updated { get; set; }
         public virtual ICollection<BikePart> BikeParts { get; set; }
+        public virtual ICollection<Production> Productions { get; set; }
+
     }
 }
