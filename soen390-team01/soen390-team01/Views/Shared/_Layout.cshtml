@@ -28,6 +28,14 @@
             });
         };
 
+        function hideReceivablesModal() {
+            $("#edit_receivablesModal").removeClass("show");
+            $(".modal-backdrop").remove();
+            $("#edit_receivablesModal").fadeOut(200, () => {
+                $("#edit_receivablesModal").hide();
+            });
+        };
+
         function showFilter(type, mobile) {
             var filters = $(".filter-data");
             for (var i = 0; i < filters.length; i++) {
