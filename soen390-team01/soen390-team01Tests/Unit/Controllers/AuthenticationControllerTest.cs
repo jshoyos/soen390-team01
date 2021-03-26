@@ -98,7 +98,8 @@ namespace soen390_team01Tests.Unit.Controllers
 
             var result = controller.IndexAsync(model) as ViewResult;
 
-            Assert.IsTrue("User does not exist".Equals(result.TempData["errorMessage"]));
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Model);
         }
 
         [Test]
