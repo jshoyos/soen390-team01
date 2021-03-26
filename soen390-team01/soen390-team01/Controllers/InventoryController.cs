@@ -81,6 +81,7 @@ namespace soen390_team01.Controllers
         [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {
+
             if (inventory.Quantity >= 0)
             {
                 try
@@ -102,3 +103,4 @@ namespace soen390_team01.Controllers
         }
     }
 }
+
