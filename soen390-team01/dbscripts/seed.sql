@@ -450,6 +450,45 @@ CREATE TRIGGER user_timestamp_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE public.timestamp_update();
 
+CREATE SEQUENCE public.production_production_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.production_production_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE TABLE public.production
+(
+    state character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    bike_id bigint NOT NULL,
+    production_id bigint NOT NULL DEFAULT nextval('production_production_id_seq'::regclass),
+    quantity integer NOT NULL,
+    CONSTRAINT production_pkey PRIMARY KEY (production_id),
+    CONSTRAINT product_bike_id_fkey FOREIGN KEY (bike_id)
+        REFERENCES public.bike (item_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.production
+    OWNER to soen390team01devuser;
+
+
+CREATE TRIGGER production_update_timestamp
+    BEFORE UPDATE 
+    ON public.production
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
+
+
 INSERT INTO public."user"(
 	user_role, phone_number, last_name, first_name, email, iv)
 	VALUES ('Admin', 'RIMzfjzV+VcTL2/DXk/2QA==',

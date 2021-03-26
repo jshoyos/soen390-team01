@@ -5,19 +5,7 @@
 }
 
 @media only screen and (max-width: 1026px) {
-    #all-filter {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 1026px) {
-    #receivable-filter {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 1026px) {
-    #payable-filter {
+    .filter-data {
         display: none;
     }
 }
@@ -28,22 +16,8 @@
     }
 }
 
-@media only screen and (min-width: 1026px) {
-    #generateG-button {
-        display: none;
-    }
-}
-
-#payment-filter {
-    padding: 15px;
-}
-
-#receivable-filter {
-    padding: 15px;
-}
-
-#payable-filter {
-    padding: 15px;
+.filter-data {
+    padding: 10px;
 }
 
 #filter-button {
@@ -99,4 +73,10 @@
     margin: 2px;
     padding: 0 0 5px 0;
     border-radius: 5px;
+}
+
+.filterButton {
+    width: 60px !important;
+    font-size: 1.2em !important;
+    float: left;
 }
