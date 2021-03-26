@@ -67,7 +67,7 @@
                 csv.push(row.join(','));
             }
             var csv_string = csv.join('\n');
-            var filename = table_id + '_' + new Date().getFullYear() + '-' + new Date().getMonth() + '-' + new Date().getDate() + '.csv';
+            var filename = table_id + '_' + new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate() + '.csv';
             var link = document.createElement('a');
             link.style.display = 'none';
             link.setAttribute('target', '_blank');

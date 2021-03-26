@@ -85,41 +85,43 @@
     <br /><br />
     <input type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
     <br /><br />
+
     @if (Model.Tab == "inventory")
     {
-        <a href="#" onclick="generateCsv('inventoryTableCsv');">Generate Inventory Report</a>
+        @*<a href="#" onclick="generateCsv('inventoryTableCsv');">Generate Inventory Report</a>*@
+        <button class="btn btn-primary" onclick="generateCsv('inventoryTableCsv');">Generate Inventory Report</button>
     }
     else if (Model.Tab == "bike")
     {
-        <a href="#" onclick="generateCsv('bikeTableCsv');">Generate Bike Report</a>
+        <button class="btn btn-primary" onclick="generateCsv('bikeTableCsv');">Generate Bike Report</button>
     }
     else if (Model.Tab == "part")
     {
-        <a href="#" onclick="generateCsv('partTableCsv');">Generate Part Report</a>
+<button class="btn btn-primary" onclick="generateCsv('partTableCsv');">Generate Part Report</button>
     }
     else if (Model.Tab == "material")
     {
-        <a href="#" onclick="generateCsv('materialTableCsv');">Generate Material Report</a>
+        <button class="btn btn-primary" onclick="generateCsv('materialTableCsv');">Generate Material Report</button>
     }
     else if (Model.Tab == "order")
     {
-        <a href="#" onclick="generateCsv('orderTableCsv');">Generate Order Report</a>
+<button class="btn btn-primary" onclick="generateCsv('orderTableCsv');">Generate Order Report</button>
     }
     else if (Model.Tab == "procurement")
     {
-        <a href="#" onclick="generateCsv('procurementTableCsv');">Generate Procurement Report</a>
+<button class="btn btn-primary" onclick="generateCsv('procurementTableCsv');">Generate Procurement Report</button>
     }
     else if (Model.Tab == "payment")
     {
-        <a href="#" onclick="generateCsv('paymentTableCsv');">Generate Payments Report</a>
+        <button class="btn btn-primary" onclick="generateCsv('paymentTableCsv');">Generate Payments Report</button>
     }
     else if (Model.Tab == "receivable")
     {
-        <a href="#" onclick="generateCsv('receivableTableCsv');">Generate Receivable Report</a>
+        <button class="btn btn-primary" onclick="generateCsv('receivableTableCsv');">Generate Receivable Report</button>
     }
-    else if (Model.Tab == "payable")
+    else
     {
-        <a href="#" onclick="generateCsv('payableTableCsv');">Generate Payable Report</a>
+        <button class="btn btn-primary" onclick="generateCsv('payableTableCsv');">Generate Payable Report</button>
     }
 
 </div>

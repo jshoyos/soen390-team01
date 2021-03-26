@@ -2,16 +2,16 @@
 @using soen390_team01.Data
 @model soen390_team01.Data.Entities.Inventory
 
-<td>@Model.InventoryId</td>
-<td>@Model.ItemId</td>
-<td>@Model.Type</td>
-<td>@Model.Warehouse</td>
-<td>
+<td class="col">@Model.InventoryId</td>
+<td class="col">@Model.ItemId</td>
+<td class="col">@Model.Type</td>
+<td class="col">@Model.Warehouse</td>
+<td class="col">
     <div class="quantity">
         <button class="button-minus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), -1)">-</button>
         <input type="number" class="quantity-text" value="@Model.Quantity" min="0" style="max-width:55px"/>
         <button class="button-plus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), 1)">+</button>
     </div>
 </td>
-<td>@Model.Added.DateTimeLocalString()</td>
-<td>@Model.Updated.DateTimeLocalString()</td>
+<td class="col">@Model.Added.DateTimeLocalString()</td>
+<td class="col">@Model.Updated.DateTimeLocalString()</td>
