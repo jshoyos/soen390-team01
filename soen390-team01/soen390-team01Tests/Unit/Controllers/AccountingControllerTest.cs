@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
@@ -17,11 +18,13 @@ namespace soen390_team01TestsControllers
     class AccountingControllerTest
     {
         Mock<IAccountingService> _modelMock;
+        Mock<ILogger<AccountingController>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
             _modelMock = new Mock<IAccountingService>();
+            _loggerMock = new Mock<ILogger<AccountingController>>();
         }
 
         [Test]
@@ -46,7 +49,7 @@ namespace soen390_team01TestsControllers
 
             _modelMock.Setup(m => m.Payments).Returns(paymentList);
 
-            var controller = new AccountingController(_modelMock.Object);
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object);
 
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
@@ -77,7 +80,7 @@ namespace soen390_team01TestsControllers
             _modelMock.Setup(m => m.Payments).Returns(paymentList);
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>()));
 
-            var controller = new AccountingController(_modelMock.Object);
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object);
             var result = controller.FilterPaymentTable(new MobileFiltersInput { Filters = filters, Mobile = false}) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as IAccountingService).Payments.Count);
@@ -100,7 +103,7 @@ namespace soen390_team01TestsControllers
             });
 
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code"));
-            var controller = new AccountingController(_modelMock.Object)
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -115,7 +118,7 @@ namespace soen390_team01TestsControllers
             _modelMock.Setup(m => m.ResetReceivables());
             _modelMock.Setup(m => m.ResetPayables());
 
-            var controller = new AccountingController(_modelMock.Object);
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object);
 
             controller.Refresh(new RefreshTabInput { SelectedTab = "payment", Mobile = true });
             _modelMock.Verify(m => m.ResetPayments(), Times.Once());

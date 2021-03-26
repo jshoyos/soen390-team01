@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -21,11 +21,13 @@ namespace soen390_team01Tests.Controllers
     public class TransfersControllerTest
     {
         Mock<ITransferService> _modelMock;
+        Mock<ILogger<TransfersController>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
             _modelMock = new Mock<ITransferService>();
+            _loggerMock = new Mock<ILogger<TransfersController>>();
         }
 
         [Test]
@@ -60,7 +62,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(m => m.Orders).Returns(orderList);
             _modelMock.Setup(m => m.Procurements).Returns(procurementList);
 
-            var controller = new TransfersController(_modelMock.Object);
+            var controller = new TransfersController(_modelMock.Object, _loggerMock.Object);
 
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
@@ -80,7 +82,7 @@ namespace soen390_team01Tests.Controllers
             ctx.Setup(c => c.Customers).Returns(new List<Customer>().AsQueryable().BuildMockDbSet().Object);
 
             var transfersModel = CreateModel();
-            var controller = new TransfersController(transfersModel);
+            var controller = new TransfersController(transfersModel, _loggerMock.Object);
 
             var inputModel = new TransfersModel(ctx.Object)
             {
@@ -187,7 +189,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(m => m.Procurements).Returns(procurementList);
             _modelMock.Setup(i => i.GetProcurements());
 
-            var controller = new TransfersController(_modelMock.Object);
+            var controller = new TransfersController(_modelMock.Object, _loggerMock.Object);
             var result = controller.FilterTransferTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as ITransferService).Orders.Count);
@@ -235,7 +237,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(m => m.Procurements).Returns(procurementList);
             _modelMock.Setup(i => i.GetFilteredProcurementList(It.IsAny<Filters>()));
 
-            var controller = new TransfersController(_modelMock.Object);
+            var controller = new TransfersController(_modelMock.Object, _loggerMock.Object);
             var result = controller.FilterTransferTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as ITransferService).Orders.Count);
@@ -268,7 +270,7 @@ namespace soen390_team01Tests.Controllers
             });
 
             _modelMock.Setup(i => i.GetFilteredProcurementList(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code"));
-            var controller = new TransfersController(_modelMock.Object)
+            var controller = new TransfersController(_modelMock.Object, _loggerMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -286,7 +288,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(m => m.ResetProcurementFilters());
             _modelMock.Setup(m => m.ResetOrderFilters());
 
-            var controller = new TransfersController(_modelMock.Object);
+            var controller = new TransfersController(_modelMock.Object, _loggerMock.Object);
 
             controller.Refresh(new RefreshTabInput { SelectedTab = "procurement", Mobile = true });
             _modelMock.Verify(m => m.GetProcurements(), Times.Once());
