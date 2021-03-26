@@ -26,7 +26,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddProcurement(AssemblyModel model)
+        public IActionResult AddProduction(AssemblyModel model)
         {
             _model.BikeOrder = model.BikeOrder;
             var showModal = false;
@@ -46,7 +46,7 @@ namespace soen390_team01.Controllers
                 showModal = true;
             }
 
-            _model.SelectedTab = "procurement";
+            _model.SelectedTab = "production";
             _model.ShowModal = showModal;
 
             return View("Index", _model);

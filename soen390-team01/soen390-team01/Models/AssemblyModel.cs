@@ -22,6 +22,9 @@ namespace soen390_team01.Models
         public string SelectedTab { get; set; } = "production";
         public bool ShowModal { get; set; } = false;
 
+        private static readonly List<string> StatusValues = new() { "pending", "completed", "canceled" };
+        public AssemblyModel() { }
+
         public AssemblyModel(ErpDbContext context)
         {
             _context = context;
@@ -38,7 +41,7 @@ namespace soen390_team01.Models
         {
             var filters = new Filters("production");
 
-            filters.Add(new CheckboxFilter("production", "State", "state", _context.Productions.Select(production => production.State).Distinct().OrderBy(s => s).ToList()));
+            filters.Add(new CheckboxFilter("production", "State", "state", StatusValues));
             filters.Add(new DateRangeFilter("production", "Added", "added"));
             filters.Add(new DateRangeFilter("production", "Updated", "modified"));
             return filters;
@@ -63,7 +66,7 @@ namespace soen390_team01.Models
                 var production = new Production
                 {
                     BikeId = order.BikeId,
-                    //quantity = order.ItemQuantity,
+                    Quantity = order.ItemQuantity,
                     State = "pending"
                 };
                 _context.Productions.Add(production);
