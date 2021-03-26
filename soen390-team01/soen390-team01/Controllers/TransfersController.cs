@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
@@ -13,10 +14,12 @@ namespace soen390_team01.Controllers
     public class TransfersController : Controller
     {
         private readonly ITransferService _model;
+        private readonly ILogger<TransfersController> _log;
 
-        public TransfersController(ITransferService model)
+        public TransfersController(ITransferService model, ILogger<TransfersController> log)
         {
             _model = model;
+            _log = log;
         }
         [HttpGet]
         [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep + "," + Role.Admin)]
@@ -41,6 +44,7 @@ namespace soen390_team01.Controllers
                         case "part": _model.AddProcurements<Part>(_model.AddProcurement); break;
                         case "material": _model.AddProcurements<Material>(_model.AddProcurement); break;
                     }
+                    _log.LogInformation($"Adding Procurement {model.AddProcurement.ItemId}");
                 }
                 catch (DataAccessException e)
                 {

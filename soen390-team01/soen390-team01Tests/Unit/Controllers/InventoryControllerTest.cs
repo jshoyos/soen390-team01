@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
@@ -16,11 +17,13 @@ namespace soen390_team01Tests.Controllers
     public class InventoryControllerTest
     {
         Mock<IInventoryService> _modelMock;
+        Mock<ILogger<InventoryController>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
             _modelMock = new Mock<IInventoryService>();
+            _loggerMock = new Mock<ILogger<InventoryController>>();
         }
 
         [Test]
@@ -48,7 +51,7 @@ namespace soen390_team01Tests.Controllers
 
             _modelMock.Setup(m => m.AllList).Returns(allList);
 
-            var controller = new InventoryController(_modelMock.Object);
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object);
 
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
@@ -69,7 +72,7 @@ namespace soen390_team01Tests.Controllers
 
             _modelMock.Setup(m => m.Update(It.IsAny<Inventory>())).Returns(inventory);
 
-            var controller = new InventoryController(_modelMock.Object);
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object);
 
             var result = controller.ChangeQuantity(inventory) as PartialViewResult;
             Assert.IsNotNull(result);
@@ -88,7 +91,7 @@ namespace soen390_team01Tests.Controllers
                 Warehouse = "Warehouse 1"
             };
 
-            var controller = new InventoryController(_modelMock.Object);
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object);
 
             var result = controller.ChangeQuantity(inventory) as PartialViewResult;
             Assert.IsNotNull(result);
@@ -96,7 +99,7 @@ namespace soen390_team01Tests.Controllers
 
             _modelMock.Setup(i => i.Update(It.IsAny<Inventory>())).Throws(new UnexpectedDataAccessException("some_code"));
 
-            controller = new InventoryController(_modelMock.Object) {
+            controller = new InventoryController(_modelMock.Object, _loggerMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
 
@@ -121,7 +124,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(m => m.BikeList).Returns(bikeList);
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>()));
 
-            var controller = new InventoryController(_modelMock.Object);
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object);
             var result = controller.FilterProductTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as IInventoryService).BikeList.Count);
@@ -143,7 +146,7 @@ namespace soen390_team01Tests.Controllers
             });
 
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code") );
-            var controller = new InventoryController(_modelMock.Object) {
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
             Assert.IsNotNull(controller.FilterProductTable(new MobileFiltersInput { Filters = filters, Mobile = true }) as PartialViewResult);
@@ -157,7 +160,7 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Setup(m => m.ResetParts());
             _modelMock.Setup(m => m.ResetMaterials());
 
-            var controller = new InventoryController(_modelMock.Object);
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object);
 
             controller.Refresh(new RefreshTabInput { SelectedTab = "bike", Mobile = true});
             _modelMock.Verify(m => m.ResetBikes(), Times.Once());
