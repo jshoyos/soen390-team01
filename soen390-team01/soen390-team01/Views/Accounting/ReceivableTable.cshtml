@@ -9,6 +9,7 @@
     <div class="col"><u>Value</u></div>
     <div class="col"><u>Added</u></div>
     <div class="col"><u>Updated</u></div>
+    <button>test</button>
 </div>
 @foreach (var rec in Model)
 {
@@ -19,4 +20,6 @@
         <div class="col">@rec.Added.DateTimeLocalString()</div>
         <div class="col">@rec.Updated.DateTimeLocalString()</div>
     </div>
+
+    
 }
