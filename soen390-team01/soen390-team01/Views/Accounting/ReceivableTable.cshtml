@@ -2,13 +2,13 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Payment>
 
-<table class="container" id="receivableTableCsv">
+<table class="container" id="receivableTableCsv" aria-label="rt">
     <tr class="row pt-4 pb-4 h-100 text-center">
-        <th class="col">ID</th>
-        <th class="col">Status</th>
-        <th class="col">Value</th>
-        <th class="col">Added</th>
-        <th class="col">Updated</th>
+        <th class="col" scope="col">ID</th>
+        <th class="col" scope="col">Status</th>
+        <th class="col" scope="col">Value</th>
+        <th class="col" scope="col">Added</th>
+        <th class="col" scope="col">Updated</th>
     </tr>
     @foreach (var rec in Model)
     {

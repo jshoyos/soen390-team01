@@ -3,16 +3,16 @@
 @model List<soen390_team01.Data.Entities.Procurement>
 
 
-<table class="container" id="procurementTableCsv" >
+<table class="container" id="procurementTableCsv" area-label="pt">
         <tr class="row pt-4 pb-4 h-100 text-center">
-            <th class="col">ID</th>
-            <th class="col">State</th>
-            <th class="col">Vendor</th>
-            <th class="col">Item Id</th>
-            <th class="col">Quantity</th>
-            <th class="col">Price</th>
-            <th class="col">Added</th>
-            <th class="col">Updated</th>
+            <th class="col" scope="col">ID</th>
+            <th class="col" scope="col">State</th>
+            <th class="col" scope="col">Vendor</th>
+            <th class="col" scope="col">Item Id</th>
+            <th class="col" scope="col">Quantity</th>
+            <th class="col" scope="col">Price</th>
+            <th class="col" scope="col">Added</th>
+            <th class="col" scope="col">Updated</th>
         </tr>
         @foreach (var proc in Model)
         {   

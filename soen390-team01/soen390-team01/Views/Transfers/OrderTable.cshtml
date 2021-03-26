@@ -1,13 +1,13 @@
 ﻿@using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Order>
 
-<table class="container" id="orderTableCsv">
+<table class="container" id="orderTableCsv" area-label="ot">
     <tr class="row pt-4 pb-4 h-100 text-center">
-        <th class="col">ID</th>
-        <th class="col">State</th>
-        <th class="col">Customer</th>
-        <th class="col">Added</th>
-        <th class="col">Updated</th>
+        <th class="col" scope="col">ID</th>
+        <th class="col" scope="col">State</th>
+        <th class="col" scope="col">Customer</th>
+        <th class="col" scope="col">Added</th>
+        <th class="col" scope="col">Updated</th>
     </tr>
     @foreach (var order in Model)
     {
