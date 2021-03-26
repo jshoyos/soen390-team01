@@ -55,7 +55,8 @@ namespace soen390_team01.Controllers
                 }
                 catch (DataAccessException)
                 {
-                    TempData["errorMessage"] = "User does not exist";
+                    ModelState.AddModelError(string.Empty, "Invalid authentication");
+                    return View(model);
                 }
             }
 

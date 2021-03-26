@@ -15,7 +15,7 @@
             <form method="post" asp-controller="Authentication" asp-action="Index" asp-route-returnurl="">
                 <div class="row" style="padding: 10px;">
                     <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control" />
+                    <input asp-for="Email" class="form-control" type="email"/>
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="row"  style="padding: 10px;">
