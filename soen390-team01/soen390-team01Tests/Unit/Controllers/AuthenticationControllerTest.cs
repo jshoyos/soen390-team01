@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using soen390_team01.Controllers;
@@ -15,18 +16,20 @@ namespace soen390_team01Tests.Unit.Controllers
     {
         Mock<AuthenticationFirebaseService> _authenticationServiceMock;
         Mock<IUserManagementService> _userManagementServiceMock;
+        Mock<ILogger<AuthenticationController>> _loggerMock;
 
         [OneTimeSetUp]
         public void Setup()
         {
             _authenticationServiceMock = new Mock<AuthenticationFirebaseService>();
             _userManagementServiceMock = new Mock<IUserManagementService>();
+            _loggerMock = new Mock<ILogger<AuthenticationController>>();
         }
 
         [Test]
         public void IndexTest()
         {
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
         }
@@ -34,7 +37,7 @@ namespace soen390_team01Tests.Unit.Controllers
         [Test]
         public void PermissionDeniedTest()
         {
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             var result = controller.PermissionDenied() as ViewResult;
             Assert.IsNotNull(result);
         }
@@ -63,7 +66,7 @@ namespace soen390_team01Tests.Unit.Controllers
             _authenticationServiceMock.Setup(u => u.AuthenticateUser(It.Is<string>(s => !string.IsNullOrEmpty(s)), It.Is<string>(s => !string.IsNullOrEmpty(s)))).Returns(true);
             _authenticationServiceMock.Setup(c => c.SetAuthCookie(It.Is<string>(s => !string.IsNullOrEmpty(s)), It.Is<string>(s => !string.IsNullOrEmpty(s)), null));
 
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             var result =  controller.IndexAsync(model) as LocalRedirectResult;
 
             Assert.IsNotNull(result);
@@ -91,7 +94,7 @@ namespace soen390_team01Tests.Unit.Controllers
 
             };
 
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -112,7 +115,7 @@ namespace soen390_team01Tests.Unit.Controllers
 
             };
             _authenticationServiceMock.Setup(u => u.RequestPasswordChange(It.Is<string>(s => !string.IsNullOrEmpty(s)))).Returns(true);
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             var result = controller.ForgotPassword(model) as LocalRedirectResult;
 
             Assert.IsNotNull(result);
@@ -127,7 +130,7 @@ namespace soen390_team01Tests.Unit.Controllers
         [Test]
         public void ForgotPasswordViewTest()
         {
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             var result = controller.ForgotPassword() as ViewResult;
 
             Assert.IsNotNull(result);
@@ -137,7 +140,7 @@ namespace soen390_team01Tests.Unit.Controllers
         public void Logout()
         {
             _authenticationServiceMock.Setup(u => u.RemoveAuthCookie(new DefaultHttpContext()));
-            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new AuthenticationController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             controller.LogoutAsync();
         }
     }
