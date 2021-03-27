@@ -2,21 +2,22 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Payment>
 
-
-<div class="row pt-4 pb-4 h-100 text-center">
-    <div class="col"><u>ID</u></div>
-    <div class="col"><u>Status</u></div>
-    <div class="col"><u>Value</u></div>
-    <div class="col"><u>Added</u></div>
-    <div class="col"><u>Updated</u></div>
-</div>
-@foreach (var rec in Model)
-{
-    <div class="row pt-4 pb-4 h-100 text-center">
-        <div class="col">@rec.PaymentId</div>
-        <div class="col">@rec.State</div>
-        <div class="col">@rec.Amount</div>
-        <div class="col">@rec.Added.DateTimeLocalString()</div>
-        <div class="col">@rec.Updated.DateTimeLocalString()</div>
-    </div>
-}
+<table class="container" id="payableTableCsv" aria-label="pt">
+    <tr class="row pt-4 pb-4 h-100 text-center">
+        <th class="col" scope="col">ID</th>
+        <th class="col" scope="col">Status</th>
+        <th class="col" scope="col">Value</th>
+        <th class="col" scope="col">Added</th>
+        <th class="col" scope="col">Updated</th>
+    </tr>
+    @foreach (var rec in Model)
+    {
+        <tr class="row pt-4 pb-4 h-100 text-center">
+            <td class="col">@rec.PaymentId</td>
+            <td class="col">@rec.State</td>
+            <td class="col">@rec.Amount</td>
+            <td class="col">@rec.Added.DateTimeLocalString()</td>
+            <td class="col">@rec.Updated.DateTimeLocalString()</td>
+        </tr>
+    }
+</table>

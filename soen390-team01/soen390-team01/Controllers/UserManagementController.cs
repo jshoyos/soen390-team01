@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
@@ -12,13 +13,16 @@ namespace soen390_team01.Controllers
         #region fields
         private readonly AuthenticationFirebaseService _authService;
         private readonly IUserManagementService _model;
+        private readonly ILogger<UserManagementController> _log;
         #endregion
 
         public UserManagementController(AuthenticationFirebaseService authService,
-            IUserManagementService model)
+            IUserManagementService model,
+            ILogger<UserManagementController> log)
         {
             _authService = authService;
             _model = model;
+            _log = log;
         }
 
         #region Methods
@@ -45,6 +49,7 @@ namespace soen390_team01.Controllers
                 try
                 {
                     RegisterUser(model.AddUserModel);
+                    _log.LogInformation($"Adding user {model.AddUserModel.Email} with role: {model.AddUserModel.Role}");
                 }
                 catch (DataAccessException e)
                 {
@@ -79,6 +84,7 @@ namespace soen390_team01.Controllers
             if (ModelState.IsValid)
             {
                 var editedUser = _model.EditUser(user);
+                _log.LogInformation($"Modifying user {user.Email}");
                 return PartialView("_UserRowPartial", editedUser);
             }
 

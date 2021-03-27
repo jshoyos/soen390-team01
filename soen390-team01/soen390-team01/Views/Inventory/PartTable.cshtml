@@ -2,26 +2,26 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Part>
 
-<table class="table" aria-label="Parts">
-    <tr>
-        <th scope="col"><u>ItemId</u></th>
-        <th scope="col"><u>Name</u></th>
-        <th scope="col"><u>Price</u></th>
-        <th scope="col"><u>Grade</u></th>
-        <th scope="col"><u>Size</u></th>
-        <th scope="col"><u>Added</u></th>
-        <th scope="col"><u>Updated</u></th>
+<table class="container" id = "partTableCsv" aria-label="Parts">
+    <tr class="row pt-4 pb-4 h-100 text-center">
+        <th class="col" scope="col">ItemId</th>
+        <th class="col" scope="col">Name</th>
+        <th class="col" scope="col">Price</th>
+        <th class="col" scope="col">Grade</th>
+        <th class="col" scope="col">Size</th>
+        <th class="col" scope="col">Added</th>
+        <th class="col" scope="col">Updated</th>
     </tr>
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.ItemId</td>
-            <td>@item.Name</td>
-            <td>@item.Price</td>
-            <td>@item.Grade</td>
-            <td>@item.Size</td>
-            <td>@item.Added.DateTimeLocalString()</td>
-            <td>@item.Updated.DateTimeLocalString()</td>
+        <tr class="row pt-4 pb-4 h-100 text-center">
+            <td class="col">@item.ItemId</td>
+            <td class="col">@item.Name</td>
+            <td class="col">@item.Price</td>
+            <td class="col">@item.Grade</td>
+            <td class="col">@item.Size</td>
+            <td class="col">@item.Added.DateTimeLocalString()</td>
+            <td class="col">@item.Updated.DateTimeLocalString()</td>
         </tr>
     }
 </table>
