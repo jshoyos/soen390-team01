@@ -450,6 +450,45 @@ CREATE TRIGGER user_timestamp_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE public.timestamp_update();
 
+CREATE SEQUENCE public.production_production_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.production_production_id_seq
+    OWNER TO soen390team01devuser;
+
+CREATE TABLE public.production
+(
+    state character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    added timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    bike_id bigint NOT NULL,
+    production_id bigint NOT NULL DEFAULT nextval('production_production_id_seq'::regclass),
+    quantity integer NOT NULL,
+    CONSTRAINT production_pkey PRIMARY KEY (production_id),
+    CONSTRAINT product_bike_id_fkey FOREIGN KEY (bike_id)
+        REFERENCES public.bike (item_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.production
+    OWNER to soen390team01devuser;
+
+
+CREATE TRIGGER production_update_timestamp
+    BEFORE UPDATE 
+    ON public.production
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.timestamp_update();
+
+
 INSERT INTO public."user"(
 	user_role, phone_number, last_name, first_name, email, iv)
 	VALUES ('Admin', 'RIMzfjzV+VcTL2/DXk/2QA==',
@@ -457,3 +496,65 @@ INSERT INTO public."user"(
 	'aaFRyoeTmIB970WmVA5H9g==',
 	'23jT32dBjzfnrf39mHW0X0/QL0ZV5EZ+XucorndBCks=',
 	'T4qPYRHF2EQDIHJF1fAsRQ==');
+
+INSERT INTO public.bike(item_id, name, price, grade, size) VALUES (1,'bike1','500','Gold','M');
+INSERT INTO public.bike(item_id, name, price, grade, size) VALUES (2,'bike2','600','Aluminum','M');
+INSERT INTO public.bike(item_id, name, price, grade, size) VALUES (3,'bike3','500','Aluminum','L');
+INSERT INTO public.bike(item_id, name, price, grade, size) VALUES (4,'bike4','400','Gold','S');
+INSERT INTO public.bike(item_id, name, price, grade, size) VALUES (5,'bike5','200','Copper','L');
+
+INSERT INTO public.material(item_id,name, price, grade) VALUES (6,'Mat1', '100', 'Gold');
+INSERT INTO public.material(item_id,name, price, grade) VALUES (7,'Mat2', '50', 'Copper');
+INSERT INTO public.material(item_id,name, price, grade) VALUES (8,'Mat3', '40', 'Copper');
+INSERT INTO public.material(item_id,name, price, grade) VALUES (9,'Mat4', '30', 'Silver');
+
+INSERT INTO public.part(item_id, name, price, grade, size) VALUES (10,'part1', '20', 'Gold', 'L');
+INSERT INTO public.part(item_id, name, price, grade, size) VALUES (11,'part1', '18', 'Aluminum', 'M');
+INSERT INTO public.part(item_id, name, price, grade, size) VALUES (12,'part1', '16', 'Copper', 'S');
+
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('1', 'bike', '5', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('2', 'bike', '6', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('3', 'bike', '7', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('4', 'bike', '8', 'Warehouse2');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('5', 'bike', '9', 'Warehouse2');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('6', 'material', '5', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('7', 'material', '6', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('8', 'material', '7', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('9', 'material', '8', 'Warehouse2');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('10', 'part', '9', 'Warehouse2');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('11', 'part', '10', 'Warehouse1');
+INSERT INTO public.inventory(item_id, type, quantity, warehouse) VALUES ('12', 'part', '11', 'Warehouse2');
+
+INSERT INTO public.payment(payment_id, amount, state) VALUES (1, 100, 'pending');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (2, -200, 'canceled');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (3, -300, 'pending');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (4, 400, 'completed');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (5, 500, 'completed');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (6, -300, 'completed');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (7, -100, 'canceled');
+INSERT INTO public.payment(payment_id, amount, state) VALUES (8, -500, 'completed');
+
+INSERT INTO public.vendor(vendor_id, name, address, phone_number)VALUES (1, 'vendor1', 'address1', '5140000001');
+INSERT INTO public.vendor(vendor_id, name, address, phone_number)VALUES (2, 'vendor2', 'address2', '5140000002');
+INSERT INTO public.vendor(vendor_id, name, address, phone_number)VALUES (3, 'vendor3', 'address3', '5140000003');
+INSERT INTO public.vendor(vendor_id, name, address, phone_number)VALUES (4, 'vendor4', 'address4', '5140000004');
+INSERT INTO public.vendor(vendor_id, name, address, phone_number)VALUES (5, 'vendor5', 'address5', '5140000005');
+
+INSERT INTO public.customer(customer_id, name, address, phone_number) VALUES (1, 'customer1', 'address1', '514000001');
+INSERT INTO public.customer(customer_id, name, address, phone_number) VALUES (2, 'customer2', 'address2', '514000002');
+INSERT INTO public.customer(customer_id, name, address, phone_number) VALUES (3, 'customer3', 'address3', '514000003');
+INSERT INTO public.customer(customer_id, name, address, phone_number) VALUES (4, 'customer4', 'address4', '514000004');
+INSERT INTO public.customer(customer_id, name, address, phone_number) VALUES (5, 'customer5', 'address5', '514000005');
+
+INSERT INTO public."order"(customer_id, state, payment_id) VALUES (1, 'pending' , 1);
+INSERT INTO public."order"(customer_id, state, payment_id) VALUES (2, 'pending' , 3);
+INSERT INTO public."order"(customer_id, state, payment_id) VALUES (3, 'canceled' , 2);
+INSERT INTO public."order"(customer_id, state, payment_id) VALUES (4, 'completed' , 4);
+INSERT INTO public."order"(customer_id, state, payment_id) VALUES (5, 'completed' , 5);
+
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (1, 1, 1, 'pending', 'bike', 1);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (2, 3, 1, 'pending', 'bike', 2);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (6, 4, 1, 'completed', 'material', 3);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (7, 5, 1, 'completed', 'material', 4);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (8, 2, 1, 'canceled', 'material', 5);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (10, 3, 1, 'pending', 'part', 5);

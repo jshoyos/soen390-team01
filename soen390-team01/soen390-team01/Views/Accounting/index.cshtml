@@ -9,30 +9,23 @@
 <head>
     <link rel="stylesheet" href="\css\Accounting.css">
     <link rel="stylesheet" href="\css\site.css">
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
     <script>
-        $(document).ready(function () {
-                $('#generateG-button').on('click', function () {
-                $('#LHS').hide();
-                $('#graphID').show();
-                $('#filter').hide();
-                $('#filter-button').hide();
-                $('#generateG-button').hide();
-                $('#back-button').show();
-            });
 
-            $('#generateButton').on('click', function () {
-                $('#LHS').hide();
-                $('#graphID').show();
-                $('#filter').hide();
-                $('#filter-button').hide();
-                $('#generateG-button').hide();
-                $('#back-button').show();
+        function showGraph(type) {
+            $('#LHS').hide();
+            $('#graph-' + type).show();
+            $('#filter').hide();
+            $('#back-button-' + type).show();
+        };
 
-            });
-                       
-        });
-
+        function hideGraph(type) {
+            $('#LHS').show();
+            $('#graph-' + type).hide();
+            $('#filter').show();
+            $('#back-button-' + type).hide();
+        };
 
         function passingFilters(filters, displayedName, filterInput, mobile) {
             filters.List = adjustFilters(filters, displayedName, filterInput);
@@ -46,7 +39,7 @@
                     "mobile": mobile
                 }),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     $('.accounting-view').html(result);
                 }
             });
@@ -63,11 +56,36 @@
                     mobile: mobile
                 }),
                 dataType: 'html',
-                success: function (result) {
+                success: function(result) {
                     $('.accounting-view').html(result);
                 }
             });
         };
+
+        function generateCsv(table_id) {
+            var rows = document.querySelectorAll('table#' + table_id + ' tr');
+            var csv = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll('td, th');
+                for (var j = 0; j < cols.length; j++) {
+                    var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+                    data = data.replace(/"/g, '""');
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(','));
+            }
+            var csv_string = csv.join('\n');
+            var filename = table_id + '_' + new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate() + '.csv';
+            var link = document.createElement('a');
+            link.style.display = 'none';
+            link.setAttribute('target', '_blank');
+            link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
     </script>
 
 </head>

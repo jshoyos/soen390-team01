@@ -28,6 +28,7 @@ namespace soen390_team01.Data
         public virtual DbSet<PartMaterial> PartMaterials { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Procurement> Procurements { get; set; }
+        public virtual DbSet<Production> Productions { get; set; }
         public virtual DbSet<Vendor> Vendors { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -386,6 +387,36 @@ namespace soen390_team01.Data
                     .HasColumnName("modified");
             });
 
+            modelBuilder.Entity<Production>(entity =>
+            {
+                entity.ToTable("production");
+
+                entity.Property(e => e.ProductionId).HasColumnName("production_id");
+
+                entity.Property(e => e.Added)
+                    .HasColumnName("added")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.BikeId).HasColumnName("bike_id");
+
+                entity.Property(e => e.Modified)
+                    .HasColumnName("modified")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("state");
+
+                entity.HasOne(d => d.Bike)
+                    .WithMany(p => p.Productions)
+                    .HasForeignKey(d => d.BikeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("product_bike_id_fkey");
+            });
+
             modelBuilder.Entity<Vendor>(entity =>
             {
                 entity.ToTable("vendor");
@@ -466,6 +497,8 @@ namespace soen390_team01.Data
             modelBuilder.HasSequence("payment_payment_id_seq");
 
             modelBuilder.HasSequence("procurement_procurement_id_seq");
+
+            modelBuilder.HasSequence("production_production_id_seq");
 
             modelBuilder.HasSequence("vendor_vendor_id_seq");
         }

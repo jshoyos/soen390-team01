@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Data;
 using soen390_team01.Models;
 using soen390_team01.Services;
 using System;
+using System.IO;
 
 namespace soen390_team01
 {
@@ -42,6 +44,8 @@ namespace soen390_team01
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
                     options.LoginPath = "/Authentication/index";
                 });
             services.AddDbContext<ErpDbContext>(options =>
@@ -52,8 +56,11 @@ namespace soen390_team01
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            var currentDate = DateTime.Now.ToString("dd.MM,yyyy");
+            loggerFactory.AddFile($"Logs/Log.txt");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

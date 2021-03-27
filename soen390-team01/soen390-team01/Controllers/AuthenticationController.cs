@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
@@ -11,13 +12,16 @@ namespace soen390_team01.Controllers
         #region fields
         private readonly AuthenticationFirebaseService _authService;
         private readonly IUserManagementService _userManagementService;
+        private readonly ILogger<AuthenticationController> _log;
         #endregion
 
         public AuthenticationController(AuthenticationFirebaseService authService,
-            IUserManagementService userManagementService)
+            IUserManagementService userManagementService,
+            ILogger<AuthenticationController> log)
         {
             _authService = authService;
             _userManagementService = userManagementService;
+            _log = log;
         }
 
         #region Methods
@@ -45,17 +49,21 @@ namespace soen390_team01.Controllers
                     var email = model.Email;
                     var password = model.Password;
                     var user = AuthenticateUser(email, password);
+                    _log.LogInformation($"{email} trying to log in");
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "Invalid authentication");
+                        _log.LogWarning($"{email} failed authentication");
                         return View(model);
                     }
                     _authService.SetAuthCookie(email, user.Role, this.HttpContext);
+                    _log.LogInformation($"{email} authentication successful");
                     return LocalRedirect("/Home/Privacy");
                 }
                 catch (DataAccessException)
                 {
-                    TempData["errorMessage"] = "User does not exist";
+                    ModelState.AddModelError(string.Empty, "Invalid authentication");
+                    return View(model);
                 }
             }
 
@@ -65,6 +73,7 @@ namespace soen390_team01.Controllers
         public IActionResult LogoutAsync()
         {
             _authService.RemoveAuthCookie(this.HttpContext);
+            _log.LogInformation("User logged out");
             return LocalRedirect("/Authentication/Index");
         }
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
@@ -12,10 +13,12 @@ namespace soen390_team01.Controllers
     public class InventoryController : Controller
     {
         private readonly IInventoryService _model;
+        private readonly ILogger<InventoryController> _log;
 
-        public InventoryController(IInventoryService model)
+        public InventoryController(IInventoryService model, ILogger<InventoryController> log)
         {
             _model = model;
+            _log = log;
         }
 
         [HttpGet]
@@ -78,6 +81,7 @@ namespace soen390_team01.Controllers
         [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult ChangeQuantity([FromBody] Inventory inventory)
         {
+
             if (inventory.Quantity >= 0)
             {
                 try
@@ -93,8 +97,10 @@ namespace soen390_team01.Controllers
             {
                 inventory.Quantity = 0;
             }
-            
+            _log.LogInformation($"Updating inventory item {inventory.ItemId} with quantity {inventory.Quantity}");
+
             return PartialView("InventoryItem", inventory);
         }
     }
 }
+

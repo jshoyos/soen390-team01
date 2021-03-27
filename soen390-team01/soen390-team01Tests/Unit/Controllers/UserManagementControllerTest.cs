@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using soen390_team01.Models;
 using soen390_team01.Data.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace soen390_team01Tests.Unit.Controllers
 {
@@ -16,12 +17,14 @@ namespace soen390_team01Tests.Unit.Controllers
     {
         Mock<AuthenticationFirebaseService> _authenticationServiceMock;
         Mock<IUserManagementService> _userManagementServiceMock;
+        Mock<ILogger<UserManagementController>> _loggerMock;
 
         [OneTimeSetUp]
         public void Setup()
         {
             _authenticationServiceMock = new Mock<AuthenticationFirebaseService>();
             _userManagementServiceMock = new Mock<IUserManagementService>();
+            _loggerMock = new Mock<ILogger<UserManagementController>>();
         }
 
         [Test]
@@ -44,7 +47,7 @@ namespace soen390_team01Tests.Unit.Controllers
             _userManagementServiceMock.Setup(u => u.Reset());
             _userManagementServiceMock.Setup(u => u.Users).Returns(users);
 
-            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object);
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object);
             var result = controller.Index() as ViewResult;
 
             Assert.IsNotNull(result);
@@ -85,7 +88,7 @@ namespace soen390_team01Tests.Unit.Controllers
             _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l < -5))).Throws(new NotFoundException("user","id","-1"));
             _userManagementServiceMock.Setup(u => u.GetUserById(It.Is<long>(l => l < 0 && l > -5))).Returns<User>(null);
 
-            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -109,7 +112,7 @@ namespace soen390_team01Tests.Unit.Controllers
             var model = new Mock<UserManagementModel>();
             model.Object.AddUserModel = new AddUserModel();
 
-            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
 
@@ -126,7 +129,7 @@ namespace soen390_team01Tests.Unit.Controllers
 
             var model = new Mock<UserManagementModel>();
             model.Object.AddUserModel = new AddUserModel();
-            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object) {
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object) {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
 
@@ -149,7 +152,7 @@ namespace soen390_team01Tests.Unit.Controllers
                 UserId = 5
             });
 
-            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object)
+            var controller = new UserManagementController(_authenticationServiceMock.Object, _userManagementServiceMock.Object, _loggerMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
