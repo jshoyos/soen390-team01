@@ -103,10 +103,10 @@ namespace soen390_team01Tests.Controllers
 
             Assert.AreEqual("procurement", (resultBike.Model as TransfersModel).SelectedTab);
             Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-            Assert.AreEqual("procurement", (resultBike.Model as TransfersModel).SelectedTab);
-            Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
-            Assert.AreEqual("procurement", (resultBike.Model as TransfersModel).SelectedTab);
-            Assert.AreEqual(false, (resultBike.Model as TransfersModel).ShowModal);
+            Assert.AreEqual("procurement", (resultPart.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual(false, (resultPart.Model as TransfersModel).ShowModal);
+            Assert.AreEqual("procurement", (resultMaterial.Model as TransfersModel).SelectedTab);
+            Assert.AreEqual(false, (resultMaterial.Model as TransfersModel).ShowModal);
         }
 
         private static TransfersModel CreateModel()
@@ -119,12 +119,6 @@ namespace soen390_team01Tests.Controllers
             ctx.Setup(c => c.Payments).Returns(new List<Payment>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Orders).Returns(new List<Order>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Customers).Returns(new List<Customer>().AsQueryable().BuildMockDbSet().Object);
-
-            var transfersModel = new TransfersModel(ctx.Object)
-            {
-                Orders = orders,
-                Procurements = procurements
-            };
 
             for (var i = 1; i <= 5; i++)
             {
@@ -147,6 +141,12 @@ namespace soen390_team01Tests.Controllers
                 });
             }
 
+            var transfersModel = new TransfersModel(ctx.Object)
+            {
+                Orders = orders,
+                Procurements = procurements
+            };
+       
             return transfersModel;
         }
 
@@ -197,7 +197,7 @@ namespace soen390_team01Tests.Controllers
         }
 
 
-            [Test]
+        [Test]
         public void FilterTransferTableTest()
         {
             List<string> list = new List<string>
@@ -279,7 +279,6 @@ namespace soen390_team01Tests.Controllers
 
         }
 
-
         [Test]
         public void RefreshTest()
         {
@@ -297,8 +296,5 @@ namespace soen390_team01Tests.Controllers
             _modelMock.Verify(m => m.GetOrders(), Times.Once());
             _modelMock.Verify(m => m.ResetOrderFilters(), Times.Once());
         }
-
-
-
     }
 }
