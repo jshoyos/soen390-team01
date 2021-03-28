@@ -9,6 +9,7 @@
         <th class="col" scope="col">Value</th>
         <th class="col" scope="col">Added</th>
         <th class="col" scope="col">Updated</th>
+        <th class="col" scope="col">Edit</th>
     </tr>
     @foreach (var rec in Model)
     {
@@ -18,6 +19,7 @@
             <td class="col">@rec.Amount</td>
             <td class="col">@rec.Added.DateTimeLocalString()</td>
             <td class="col">@rec.Updated.DateTimeLocalString()</td>
+            <td class="col"><button class="btn btn-outline-primary mr-1" data-toggle="modal" data-target="#edit_receivablesModal" id="@rec.PaymentId" onclick="showStatus(@rec.PaymentId, @rec.State)">Edit</button></td>
         </tr>
     }
 </table>

@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <button class="btn btn-outline-primary filterButton" data-toggle="modal" data-target="#filterModal" id="filter-button" >FILTER</button>
+                <button class="btn btn-outline-primary filterButton" data-toggle="modal" data-target="#filterModal" id="filter-button">FILTER</button>
             </div>
         </div>
     </div>
@@ -109,6 +109,49 @@
                             @{await Html.RenderPartialAsync("Filter", Model.PayableFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade @(Model.ShowFilters  ? "show": "")" id="edit_receivablesModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true" style="display:@(Model.ShowFilters  ? "block": "none")">
+            @{ Model.ShowFilters = false;}
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="receivablesModalTitle">Edit payment</h5>
+                        <button type="button" class="close" data-dismiss="edit_receivablesModal" aria-label="Close" onclick="hideReceivablesModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="ml-2">
+                        <label id="currentStatus"></label>
+                    </div>
+                    <div class="dropdown ml-2">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                            Status
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Pending</a></li>
+                            <li><a href="#">Completed</a></li>
+                            <li><a href="#">Cancelled</a></li>
+                        </ul>
+                        @*<script>
+                        $(function () {
+
+                            $(".dropdown-menu li a").click(function () {
+
+                                $("#").text($(this).text());
+                                $(".dropdown-toggle:first-child").val($(this).text());
+                            });
+
+                        });
+                    </script>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary mr-1" data-save="edit_receivablesModal">Save Changes</button>
+                    </div>
+
                 </div>
             </div>
         </div>
