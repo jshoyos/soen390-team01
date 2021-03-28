@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <button class="btn btn-outline-primary filterButton" data-toggle="modal" data-target="#filterModal" id="filter-button" >FILTER</button>
+                <button class="btn btn-outline-primary filterButton" data-toggle="modal" data-target="#filterModal" id="filter-button">FILTER</button>
             </div>
         </div>
     </div>
@@ -123,7 +123,35 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    
+                    <div class="ml-2">
+                        <label id="currentStatus"></label>
+                    </div>
+                    <div class="dropdown ml-2">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                            Status
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Pending</a></li>
+                            <li><a href="#">Completed</a></li>
+                            <li><a href="#">Cancelled</a></li>
+                        </ul>
+                        @*<script>
+                        $(function () {
+
+                            $(".dropdown-menu li a").click(function () {
+
+                                $("#").text($(this).text());
+                                $(".dropdown-toggle:first-child").val($(this).text());
+                            });
+
+                        });
+                    </script>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary mr-1" data-save="edit_receivablesModal">Save Changes</button>
+                    </div>
+
                 </div>
             </div>
         </div>
