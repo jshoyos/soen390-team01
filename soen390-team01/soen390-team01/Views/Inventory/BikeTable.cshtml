@@ -2,26 +2,29 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Bike>
 
-<table class="container" id = "bikeTableCsv" aria-label="Bikes">
-    <tr class="row pt-4 pb-4 h-100 text-center">
-        <th class="col" scope="col">ItemId</th>
-        <th class="col" scope="col">Name</th>
-        <th class="col" scope="col">Price</th>
-        <th class="col" scope="col">Grade</th>
-        <th class="col" scope="col">Size</th>
-        <th class="col" scope="col">Added</th>
-        <th class="col" scope="col">Updated</th>
-    </tr>
-    @foreach (var item in Model)
-    {
+    <link rel="stylesheet" href="\css\Inventory.css">
+
+    <table class="container" id="bikeTableCsv" aria-label="Bikes">
         <tr class="row pt-4 pb-4 h-100 text-center">
-            <td class="col">@item.ItemId</td>
-            <td class="col">@item.Name</td>
-            <td class="col">@item.Price</td>
-            <td class="col">@item.Grade</td>
-            <td class="col">@item.Size</td>
-            <td class="col">@item.Added.DateTimeLocalString()</td>
-            <td class="col">@item.Updated.DateTimeLocalString()</td>
+            <th class="col idbutton" data-toggle="modal" data-target="#bikeParts" aria-hidden="true" scope="col">ItemId</th>
+            <th class="col" scope="col">Name</th>
+            <th class="col" scope="col">Price</th>
+            <th class="col" scope="col">Grade</th>
+            <th class="col" scope="col">Size</th>
+            <th class="col" scope="col">Added</th>
+            <th class="col" scope="col">Updated</th>
         </tr>
-    }
-</table>
+        @foreach (var item in Model)
+        {
+            <tr class="row pt-4 pb-4 h-100 text-center">
+                <td class="col idbutton" data-toggle="modal" data-target="#bikeParts" aria-hidden="true">@item.ItemId</td>
+                <td class="col">@item.Name</td>
+                <td class="col">@item.Price</td>
+                <td class="col">@item.Grade</td>
+                <td class="col">@item.Size</td>
+                <td class="col">@item.Added.DateTimeLocalString()</td>
+                <td class="col">@item.Updated.DateTimeLocalString()</td>
+            </tr>
+        }
+
+    </table>

@@ -175,4 +175,11 @@ input.filter-data {
     text-align: center;
 }
 
+.idbutton{
+    cursor: pointer;
+    color: blue;
+}
 
+.idbutton:hover{
+    color: lightblue;
+}

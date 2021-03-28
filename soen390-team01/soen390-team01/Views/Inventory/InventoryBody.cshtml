@@ -9,7 +9,7 @@
 
 <div class="container bike-components">
     <div class="row">
-        <div class="col-8">
+        <div class="col-lg-8 mx-auto">
             <div class="tab">
                 <button style="width:100%;" class="tablinks @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
             </div>
@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3" id="filter">
+        <div class="col-lg-3" id="filter">
             <div id="inventory-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
             </div>
@@ -78,19 +78,20 @@
                     <div id="inventory-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
                         @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                     </div>
-                    <div id="bike-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
+                    <div id="bike-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "bike" ? "block": "none")">
                         @{await Html.RenderPartialAsync("Filter", Model.BikeFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                     </div>
-                    <div id="part-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+                    <div id="part-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "part" ? "block": "none")">
                         @{await Html.RenderPartialAsync("Filter", Model.PartFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                     </div>
-                    <div id="material-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+                    <div id="material-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "material" ? "block": "none")">
                         @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
 
 </div>
