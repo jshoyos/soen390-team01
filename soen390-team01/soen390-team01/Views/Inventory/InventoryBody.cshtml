@@ -1,6 +1,11 @@
 ﻿@model soen390_team01.Services.IInventoryService
 
 
+<div class="container justify-content-center">
+    <div class="row" id="mobileButtons">
+        <button class="btn btn-outline-primary collapButton1" data-toggle="modal" data-target="#filterModal">Filter</button>
+    </div>
+</div>
 
 <div class="container bike-components">
     <div class="row">
@@ -44,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-3" id="filter">
             <div id="inventory-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters);}
             </div>
@@ -59,6 +64,33 @@
             </div>
         </div>
     </div>
-    
+    <!-- Modal for filter in mobile mode-->
+    <div class="modal fade @(Model.ShowFilters  ? "show": "")" id="filterModal" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true" style="display:@(Model.ShowFilters  ? "block": "none")">
+        @{ Model.ShowFilters = false;}
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="filterModal" aria-label="Close" onclick="hideFilterModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-filter">
+                    <div id="inventory-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
+                        @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                    </div>
+                    <div id="bike-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "receivable" ? "block": "none")">
+                        @{await Html.RenderPartialAsync("Filter", Model.BikeFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                    </div>
+                    <div id="part-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+                        @{await Html.RenderPartialAsync("Filter", Model.PartFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                    </div>
+                    <div id="material-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "payable" ? "block": "none")">
+                        @{await Html.RenderPartialAsync("Filter", Model.MaterialFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
