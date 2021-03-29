@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
@@ -11,10 +12,12 @@ namespace soen390_team01.Controllers
     public class AccountingController : Controller
     {
         private readonly IAccountingService _model;
+        private readonly ILogger<AccountingController> _log;
 
-        public AccountingController(IAccountingService model)
+        public AccountingController(IAccountingService model, ILogger<AccountingController> log)
         {
             _model = model;
+            _log = log;
         }
 
         [HttpGet]
