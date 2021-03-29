@@ -9,7 +9,7 @@
 <td class="col">
     <div class="quantity">
         <button class="button-minus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), -1)">-</button>
-        <input type="number" class="quantity-text" value="@Model.Quantity" min="0" style="max-width:55px"/>
+        <input type="number" class="quantity-text" value="@Model.Quantity" min="0" style="max-width:55px" />
         <button class="button-plus" onclick="changeQuantity(@JsonConvert.SerializeObject(@Model), 1)">+</button>
     </div>
 </td>
