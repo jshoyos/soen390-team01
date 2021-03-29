@@ -87,10 +87,17 @@
         };
 
         function showStatus(id, status) {
-            $("#currentId").text("ID: " + id);
+            $("#currentId").text(id);
             $("#currentStatus").text(status);
             
         };
+
+        function updateStatus() {
+            var id = $("#currentId").text();
+            var status = $("#currentStatus").html();
+            
+
+        }
 
         $(function () {
 
