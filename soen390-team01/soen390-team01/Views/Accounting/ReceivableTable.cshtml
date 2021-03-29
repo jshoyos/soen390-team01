@@ -2,6 +2,7 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Payment>
 
+
 <table class="container" id="receivableTableCsv" aria-label="rt">
     <tr class="row pt-4 pb-4 h-100 text-center">
         <th class="col" scope="col">ID</th>
@@ -13,13 +14,15 @@
     </tr>
     @foreach (var rec in Model)
     {
+        
         <tr class="row pt-4 pb-4 h-100 text-center">
             <td class="col">@rec.PaymentId</td>
             <td class="col">@rec.State</td>
             <td class="col">@rec.Amount</td>
             <td class="col">@rec.Added.DateTimeLocalString()</td>
             <td class="col">@rec.Updated.DateTimeLocalString()</td>
-            <td class="col"><button class="btn btn-outline-primary mr-1" data-toggle="modal" data-target="#edit_receivablesModal" id="@rec.PaymentId" onclick="showStatus(@rec.PaymentId, @rec.State)">Edit</button></td>
+            <td class="col"><button class="btn btn-outline-primary mr-1" data-toggle="modal" data-target="#edit_receivablesModal" id="@rec.PaymentId" onclick="showStatus(@rec.PaymentId, '@rec.State')">Edit</button></td>
         </tr>
+        
     }
 </table>

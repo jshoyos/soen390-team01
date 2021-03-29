@@ -86,11 +86,22 @@
             document.body.removeChild(link);
         };
 
-
-        function showStatus(id, state) {
-            $("#currentStatus").html("hello");
+        function showStatus(id, status) {
+            $("#currentId").text("ID: " + id);
+            $("#currentStatus").text(status);
+            
         };
 
+        $(function () {
+
+            $(".dropdown-menu li a").click(function () {
+
+                $("#currentStatus").text($(this).text());
+                $("currentStatus").val($(this).text());
+            });
+
+        });
+    
     </script>
 
 </head>

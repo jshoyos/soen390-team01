@@ -123,9 +123,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="ml-2">
-                        <label id="currentStatus"></label>
-                    </div>
+                    <div class="ml-2" id="currentId"></div>
+                    <div class="ml-2" id="currentStatus"></div>
                     <div class="dropdown ml-2">
                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                             Status
@@ -136,17 +135,7 @@
                             <li><a href="#">Completed</a></li>
                             <li><a href="#">Cancelled</a></li>
                         </ul>
-                        @*<script>
-                        $(function () {
-
-                            $(".dropdown-menu li a").click(function () {
-
-                                $("#").text($(this).text());
-                                $(".dropdown-toggle:first-child").val($(this).text());
-                            });
-
-                        });
-                    </script>*@
+                    
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary mr-1" data-save="edit_receivablesModal">Save Changes</button>
