@@ -15,7 +15,6 @@ namespace soen390_team01Tests.Unit.Services
     {
 
         private ErpDbContext _context;
-        private Mock<AssemblyInventoryValidator> _validatorMock;
         private Mock<Random> _randMock;
         private List<IProductionReportGenerator> _generators;
 
