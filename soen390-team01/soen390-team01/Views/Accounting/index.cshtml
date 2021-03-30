@@ -95,7 +95,7 @@
         function updateStatus() {
             var id = $("#currentId").text();
             var status = $("#currentStatus").html();
-
+            location.reload();
             $.ajax({
                 url: '@Url.Action("update", "Accounting")',
                 type: 'POST',
