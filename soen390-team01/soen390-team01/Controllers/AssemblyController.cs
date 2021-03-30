@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
@@ -38,6 +39,7 @@ namespace soen390_team01.Controllers
                 try
                 {
                     _model.AddNewBike(_model.BikeOrder);
+                    _log.LogInformation($"Adding Production {_model.BikeOrder.BikeId}");
                 }
                 catch (DataAccessException e)
                 {
@@ -51,6 +53,8 @@ namespace soen390_team01.Controllers
 
             _model.SelectedTab = "production";
             _model.ShowModal = showModal;
+
+          
 
             return View("Index", _model);
         }
@@ -93,6 +97,25 @@ namespace soen390_team01.Controllers
             _model.SelectedTab = refreshTabInput.SelectedTab.ToLower();
 
             return PartialView("AssemblyBody", _model);
+        }
+
+        [HttpPost]
+
+        public IActionResult ProcessProduction(Production production)
+        {
+            Inventory inventory = null;
+            try
+            {
+                inventory = _model.UpdateInventory(production);
+                _log.LogInformation($"Updating inventory with new bike {inventory.ItemId} with quantity {inventory.Quantity}");
+                production = _model.UpdateProductionState(production);
+                _log.LogInformation($"Updating production {production.ProductionId} with new state {production.State}");
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }        
+            return View("Index", _model);
         }
     }
 }

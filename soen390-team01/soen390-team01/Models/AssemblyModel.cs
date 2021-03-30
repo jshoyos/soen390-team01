@@ -18,11 +18,10 @@ namespace soen390_team01.Models
         public List<Production> Productions { get; set; }
         public Filters ProductionFilters { get; set; }
         public BikeOrder BikeOrder { get; set; }
-            
         public string SelectedTab { get; set; } = "production";
         public bool ShowModal { get; set; } = false;
-
         private static readonly List<string> StatusValues = new() { "pending", "completed", "canceled" };
+
         public AssemblyModel() { }
 
         public AssemblyModel(ErpDbContext context)
@@ -80,7 +79,62 @@ namespace soen390_team01.Models
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
-    
 
+        public Inventory UpdateInventory(Production production)
+        {
+            try
+            {
+                Inventory updatedInventory = null;
+                try
+                {
+                     updatedInventory = _context.Inventories.First(i => i.ItemId == production.BikeId);
+                }
+                catch(Exception e)
+                {
+
+                }
+
+                if (updatedInventory == null) //checks if bike exist in inventory
+                {
+                    Inventory inventory = new Inventory
+                    {
+                        ItemId = production.BikeId,
+                        Quantity = production.Quantity,
+                        Type = "bike",
+                        Warehouse = "Warehouse 1" //Default warehouse
+                    };
+                    _context.Inventories.Add(inventory);
+                }
+                else
+                {
+                    updatedInventory.Quantity += production.Quantity;
+                    _context.Inventories.Update(updatedInventory);
+                }
+
+                _context.SaveChanges();
+                return updatedInventory;
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+        }
+
+        public Production UpdateProductionState(Production production)
+        {
+            try
+            {
+                var updatedProduction = _context.Productions.First(i => i.ProductionId == production.ProductionId);
+                updatedProduction.State = "completed";
+                _context.Productions.Update(updatedProduction);
+                _context.SaveChanges();
+                return updatedProduction;
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+
+        }
     }
 }

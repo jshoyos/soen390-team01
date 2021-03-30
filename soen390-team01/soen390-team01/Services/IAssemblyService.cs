@@ -19,5 +19,7 @@ namespace soen390_team01.Services
         public Filters ResetProductionFilters();
         public List<Production> GetFilteredProductionList(Filters filters);
         public Production AddNewBike(BikeOrder order);
+        public Inventory UpdateInventory(Production production);
+        public Production UpdateProductionState(Production production);
     }
 }

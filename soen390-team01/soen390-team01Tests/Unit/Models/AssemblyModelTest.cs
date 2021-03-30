@@ -30,12 +30,29 @@ namespace soen390_team01Tests.Unit.Models
 
             for (var i = 1; i <= 5; i++)
             {
+                _context.Bikes.Add(new Bike
+                {
+                    ItemId = i,
+                    Grade = "copper " + i,
+                    Name = "Bike " + i,
+                    Size = "M",
+                    Price = i
+                });
                 _context.Productions.Add(new Production
                 {
                     BikeId = i,
                     Quantity = i,
                     State = "pending"
                 });
+                _context.Inventories.Add(new Inventory
+                {
+                    InventoryId = i,
+                    ItemId = i,
+                    Quantity = i,
+                    Type = "bike",
+                    Warehouse = "Warehouse " + i
+                }
+                );
 
                 _context.SaveChanges();
             }
@@ -109,5 +126,82 @@ namespace soen390_team01Tests.Unit.Models
             });
             Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object).AddNewBike(new BikeOrder()));
         }
+
+        [Test]
+        public void UpdateInventoryValidTest()
+        {
+            Production production = new Production { 
+                
+                BikeId = 1,
+                Quantity = 10,
+                ProductionId = 1,
+                State = "pending"
+            };
+
+            _model.UpdateInventory(production);
+            var updatedInventory = _context.Inventories.FirstOrDefault(inv => inv.ItemId == 1);
+            Assert.AreEqual(production.Quantity + 1, updatedInventory.Quantity); 
+            // production.Quantity + 1 because there was 1 existing item in inventory before the change
+        }
+
+        [Test]
+        public void UpdateInventoryNullTest()
+        {
+            Production production = new Production
+            {
+                BikeId = 6,
+                Quantity = 10,
+                ProductionId = 1,
+                State = "pending"
+            };
+
+            _model.UpdateInventory(production);
+            var updatedInventory = _context.Inventories.FirstOrDefault(inv => inv.ItemId == 6);
+            Assert.AreEqual(production.Quantity, updatedInventory.Quantity);
+        }
+
+        [Test]
+        public void UpdateInventoryInvalidTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            var nbInventoriesCall = 0;
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
+            {
+                nbInventoriesCall++;
+                
+                if (nbInventoriesCall == 1)
+                    throw new DbUpdateException("error", new PostgresException("", "", "", ""));
+            });
+
+            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object).UpdateInventory(new Production()));
+        }
+
+        [Test]
+        public void UpdateProductionStateValidTest()
+        {
+            var production = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
+            _model.UpdateProductionState(production);
+            var updatedProduction = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
+            Assert.AreEqual("completed", updatedProduction.State);
+        }
+
+        [Test]
+        public void UpdateProductionStateInvalidTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            var nbProductionCall = 0;
+            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
+            {
+                nbProductionCall++;
+                if (nbProductionCall == 1)
+                    throw new DbUpdateException("error", new PostgresException("", "", "", ""));
+            });
+
+            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object).UpdateProductionState(new Production()));
+        }
+
+
     }
 }

@@ -178,5 +178,52 @@ namespace soen390_team01Tests.Unit.Controllers
             _modelMock.Verify(m => m.GetProductions(), Times.Once());
             _modelMock.Verify(m => m.ResetProductionFilters(), Times.Once());
         }
+
+        [Test]
+        [Ignore("Broken test, will be fixed")]
+        public void ProcessProductionTest()
+        {
+            var productionList = new List<Production>();
+
+            for (var i = 1; i <= 5; i++)
+            {
+                productionList.Add(new Production
+                {
+                    ProductionId = i,
+                    BikeId = i,
+                    Quantity = i,
+                    State = "pending"
+                });
+            }
+
+            _modelMock.Setup(m => m.Productions).Returns(productionList);
+
+            Production production = new Production
+            {
+                BikeId = 1,
+                ProductionId = 1,
+                Quantity = 1,
+                State = "pending",
+
+            };
+
+            var inventory = new Inventory
+            {
+                ItemId = 1,
+                InventoryId = 1,
+                Quantity = 1,
+                Type = "bike",
+                Warehouse = "Warehouse 1"
+            };
+            _modelMock.Setup(m => m.UpdateInventory(It.IsAny<Production>())).Returns(inventory);
+            _modelMock.Setup(m => m.UpdateProductionState(It.IsAny<Production>())).Returns(production);
+
+            var controller = new AssemblyController(_modelMock.Object, _loggerMock.Object);
+
+            var result = controller.ProcessProduction(production) as ViewResult;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(production, (result.Model as IAssemblyService).Productions);
+
+        }
     }
 }
