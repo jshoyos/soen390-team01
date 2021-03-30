@@ -5,6 +5,6 @@ namespace soen390_team01.Models
     public class ProcessProductionInput
     {
         public Production Production { get; set; }
-        public string quality { get; set; }
+        public string Quality { get; set; }
     }
 }

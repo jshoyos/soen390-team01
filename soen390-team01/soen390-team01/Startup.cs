@@ -26,9 +26,11 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<CsvProductionReportGenerator>();
-            services.AddTransient<RestProductionReportGenerator>();
-            services.AddTransient<ProductionReportGeneratorResolver>();
+            services.AddTransient<ProductionClient>();
+            services.AddTransient<Random>();
+            services.AddTransient<AssemblyInventoryValidator>();
+            services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
+            services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
 
             services.AddSingleton<AuthenticationFirebaseService>();
             services.AddSingleton<AssemblyLineService>();

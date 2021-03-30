@@ -8,6 +8,8 @@ namespace soen390_team01.Services
 {
     public class CsvProductionReportGenerator : IProductionReportGenerator
     {
+        public string Name { get; } = "Csv";
+
         public void Generate(Production prod, string quality)
         {
             var sb = new StringBuilder();
@@ -39,6 +41,11 @@ namespace soen390_team01.Services
             {
                 Debug.WriteLine(e.ToString());
             }
+        }
+
+        public void Generate(Production production)
+        {
+            throw new NotImplementedException();
         }
     }
 }
