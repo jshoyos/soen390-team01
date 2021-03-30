@@ -66,9 +66,13 @@ namespace soen390_team01.Services
 
         public void FixStoppedProduction(Production prod)
         {
+            // Change state to in progress in the database
             prod.State = ProductionState.InProgress.ToString();
             _context.Productions.Update(prod);
             _context.SaveChanges();
+
+            // Make the production completed in the report
+            prod.State = ProductionState.Completed.ToString();
 
             GenerateProductionReport(prod, "good");
         }

@@ -227,6 +227,7 @@ namespace soen390_team01Tests.Unit.Services
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
             var service = new AssemblyLineService(_context, new AssemblyInventoryValidator(), _randMock.Object, _generators);
+            service.FixStoppedProduction(_context.Productions.First());
 
             // Since validation fails due to not having the required materials, the missing parts exception is thrown and the production is not processed
             Assert.Throws<MissingPartsException>(() => service.ProduceBike(bike, 1));
