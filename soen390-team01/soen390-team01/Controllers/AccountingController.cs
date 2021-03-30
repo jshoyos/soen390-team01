@@ -73,5 +73,16 @@ namespace soen390_team01.Controllers
 
             return PartialView("AccountingBody", _model);
         }
+
+        [HttpPost]
+        public IActionResult update([FromBody] ReceivableUpdateModel receivableUpdateModel )
+        {
+            var id = receivableUpdateModel.Id;
+            var status = receivableUpdateModel.Status;
+
+            _model.setReceivableState(id, status);
+
+            return PartialView("AccountingBody", _model);
+        }
     }
 }

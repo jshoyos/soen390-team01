@@ -89,13 +89,26 @@
         function showStatus(id, status) {
             $("#currentId").text(id);
             $("#currentStatus").text(status);
-            
+
         };
 
         function updateStatus() {
             var id = $("#currentId").text();
             var status = $("#currentStatus").html();
-            
+
+            $.ajax({
+                url: '@Url.Action("update", "Accounting")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    "Id": id,
+                    "Status": status
+                }),
+                dataType: 'html',
+                success: function(result) {
+                    $('.accounting-view').html(result);
+                }
+            });
 
         }
 
@@ -108,7 +121,7 @@
             });
 
         });
-    
+
     </script>
 
 </head>

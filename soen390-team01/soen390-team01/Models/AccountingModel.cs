@@ -111,5 +111,16 @@ namespace soen390_team01.Models
                 throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
             }
         }
+
+        public void setReceivableState(int id, string status)
+        {
+            for(var i = 0; i<Receivables.Count; i++)
+            {
+                if (id == Receivables[i].PaymentId)
+                {
+                    Receivables[i].State = status;
+                }
+            }
+        }
     }   
 }
