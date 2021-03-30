@@ -146,7 +146,6 @@ namespace soen390_team01Tests.Unit.Services
         public void ProduceBikeWithoutPartBuild()
         {
             var bike = _context.Bikes.First();
-            _validatorMock = new Mock<AssemblyInventoryValidator>();
             var csvGeneratorMock = new Mock<IProductionReportGenerator>();
             var webGeneratorMock = new Mock<IProductionReportGenerator>();
             _randMock = new Mock<Random>();
@@ -154,14 +153,13 @@ namespace soen390_team01Tests.Unit.Services
             csvGeneratorMock.Setup(g => g.Name).Returns("Csv");
             webGeneratorMock.Setup(g => g.Name).Returns("Web");
             csvGeneratorMock.Setup(g => g.Generate(It.IsAny<Production>(), It.IsAny<string>()));
-            _validatorMock.Setup(r => r.Validate(It.IsAny<Bike>(), It.IsAny<int>(), _context)).Returns(new List<MissingPart>()); // Results in production completion
             _randMock.Setup(r => r.Next(10)).Returns(1); // Results in production completion
             _randMock.Setup(r => r.Next(5)).Returns(1); // Results in good quality
             _randMock.Setup(r => r.Next(2)).Returns(1); // Results in using the csv generator
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new AssemblyLineService(_context, _validatorMock.Object, _randMock.Object, _generators);
+            var service = new AssemblyLineService(_context, new AssemblyInventoryValidator(), _randMock.Object, _generators);
 
             service.ProduceBike(bike, 15);//After this, there will be no built part left to build the first bike
 
@@ -172,6 +170,11 @@ namespace soen390_team01Tests.Unit.Services
             foreach (var bikePart in updatedBike.BikeParts)
             {
                 Assert.AreEqual(0, _context.Inventories.First(i => i.ItemId == bikePart.PartId && i.Type == "part").Quantity);
+                // Materials' inventory should not have changed
+                foreach (var partMaterial in bikePart.Part.PartMaterials)
+                {
+                    Assert.AreEqual(75, _context.Inventories.First(i => i.ItemId == partMaterial.MaterialId && i.Type == "material").Quantity);
+                }
             }
         }
 
@@ -229,8 +232,16 @@ namespace soen390_team01Tests.Unit.Services
             var service = new AssemblyLineService(_context, new AssemblyInventoryValidator(), _randMock.Object, _generators);
             service.FixStoppedProduction(_context.Productions.First());
 
-            // Since validation fails due to not having the required materials, the missing parts exception is thrown and the production is not processed
-            Assert.Throws<MissingPartsException>(() => service.ProduceBike(bike, 1));
+            try
+            {
+                service.ProduceBike(bike, 1);
+                Assert.Fail("ProduceBike should throw a MissingPartsException");
+            }
+            catch (MissingPartsException e)
+            {
+                Assert.AreEqual(3, e.MissingParts.Count);
+                Assert.AreEqual(25, e.MissingParts.ElementAt(0).MissingMaterials.ElementAt(0).Quantity);
+            }
         }
     }
 }
