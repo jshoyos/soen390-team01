@@ -14,7 +14,7 @@ namespace soen390_team01.Services
         {
             _client = new HttpClient
             {
-                BaseAddress = new Uri(Environment.GetEnvironmentVariable("HOST")! + "/ProcessProduction/")
+                BaseAddress = new Uri(Environment.GetEnvironmentVariable("HOST")! + "/Assembly/ProcessProduction/")
             };
         }
 
