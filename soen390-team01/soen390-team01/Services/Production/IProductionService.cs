@@ -2,7 +2,7 @@
 
 namespace soen390_team01.Services
 {
-    public interface IAssemblyLineService
+    public interface IProductionService
     {
 
         public int Interval { get; set; }

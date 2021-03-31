@@ -28,12 +28,12 @@ namespace soen390_team01
         {
             services.AddTransient<ProductionClient>();
             services.AddTransient<Random>();
-            services.AddTransient<AssemblyInventoryValidator>();
+            services.AddTransient<ProductionInventoryValidator>();
             services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
             services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
 
             services.AddSingleton<AuthenticationFirebaseService>();
-            services.AddSingleton<AssemblyLineService>();
+            services.AddSingleton<ProductionService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
             services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();

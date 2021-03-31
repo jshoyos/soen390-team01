@@ -18,17 +18,17 @@ namespace soen390_team01.Services
         Completed,
     }
 
-    public class AssemblyLineService : IAssemblyLineService
+    public class ProductionService : IProductionService
     {
         private readonly ErpDbContext _context;
-        private readonly AssemblyInventoryValidator _validator;
+        private readonly ProductionInventoryValidator _validator;
         private readonly IProductionReportGenerator _csvGenerator;
         private readonly IProductionReportGenerator _restGenerator;
         private readonly Random _rand;
 
         public int Interval { get; set; } = 10000; // Default value of 10 seconds
 
-        public AssemblyLineService(ErpDbContext context, AssemblyInventoryValidator validator, Random rand, IEnumerable<IProductionReportGenerator> generators)
+        public ProductionService(ErpDbContext context, ProductionInventoryValidator validator, Random rand, IEnumerable<IProductionReportGenerator> generators)
         {
             _context = context;
             _validator = validator;

@@ -6,7 +6,7 @@ using soen390_team01.Data.Exceptions;
 
 namespace soen390_team01.Services
 {
-    public class AssemblyInventoryValidator
+    public class ProductionInventoryValidator
     {
         public virtual List<MissingPart> Validate(Bike bike, int bikeQuantity, ErpDbContext context)
         {

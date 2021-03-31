@@ -11,7 +11,7 @@ using soen390_team01.Services;
 
 namespace soen390_team01Tests.Unit.Services
 {
-    class AssemblyLineServiceTest
+    class ProductionServiceTest
     {
 
         private ErpDbContext _context;
@@ -158,7 +158,7 @@ namespace soen390_team01Tests.Unit.Services
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new AssemblyLineService(_context, new AssemblyInventoryValidator(), _randMock.Object, _generators);
+            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
 
             service.ProduceBike(bike, 15);//After this, there will be no built part left to build the first bike
 
@@ -194,7 +194,7 @@ namespace soen390_team01Tests.Unit.Services
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new AssemblyLineService(_context, new AssemblyInventoryValidator(), _randMock.Object, _generators);
+            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
 
             service.ProduceBike(bike, 1);
 
@@ -228,7 +228,7 @@ namespace soen390_team01Tests.Unit.Services
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new AssemblyLineService(_context, new AssemblyInventoryValidator(), _randMock.Object, _generators);
+            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
             service.FixStoppedProduction(_context.Productions.First());
 
             try
