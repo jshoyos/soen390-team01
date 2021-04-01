@@ -26,7 +26,14 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ProductionClient>();
+            services.AddTransient<Random>();
+            services.AddTransient<ProductionInventoryValidator>();
+            services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
+            services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
+
             services.AddSingleton<AuthenticationFirebaseService>();
+            services.AddSingleton<ProductionService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
             services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
@@ -45,8 +52,6 @@ namespace soen390_team01
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
                     options.LoginPath = "/Authentication/index";
                 });
             services.AddDbContext<ErpDbContext>(options =>
@@ -86,6 +91,11 @@ namespace soen390_team01
                     name: "default",
                     pattern: "{controller=Authentication}/{action=Index}/{id?}");
             });
+
+            if (!Directory.Exists("productions"))
+            {
+                Directory.CreateDirectory("productions");
+            }
         }
     }
 }
