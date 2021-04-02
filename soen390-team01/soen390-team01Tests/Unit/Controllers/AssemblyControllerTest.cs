@@ -18,14 +18,17 @@ using System.Linq;
 
 namespace soen390_team01Tests.Unit.Controllers
 {
+  
     class AssemblyControllerTest
     {
+        Mock<IProductionService> _serviceMock;
         Mock<IAssemblyService> _modelMock;
         Mock<ILogger<AssemblyController>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
+            _serviceMock = new Mock<IProductionService>();
             _modelMock = new Mock<IAssemblyService>();
             _loggerMock = new Mock<ILogger<AssemblyController>>();
         }
@@ -55,17 +58,18 @@ namespace soen390_team01Tests.Unit.Controllers
             Assert.AreEqual(5, (result.Model as IAssemblyService).Productions.Count);
 
         }
-
+        
         [Test]
         public void AddProductionTest()
         {
             var ctx = new Mock<ErpDbContext>();
             ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
 
             var assemblyModel = CreateModel();
             var controller = new AssemblyController(assemblyModel, _loggerMock.Object);
 
-            var inputModel = new AssemblyModel(ctx.Object)
+            var inputModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
             {
                 BikeOrder = new BikeOrder
                 {
@@ -74,16 +78,16 @@ namespace soen390_team01Tests.Unit.Controllers
                 }
             };
 
-            var resultProduction = controller.AddProduction(inputModel) as ViewResult;
-           
-            Assert.AreEqual("production", (resultProduction.Model as AssemblyModel).SelectedTab);
-            Assert.AreEqual(false, (resultProduction.Model as AssemblyModel).ShowModal); 
+            
+            var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
+            Assert.IsNotNull(resultProduction);
+            Assert.AreEqual("Index", resultProduction.ActionName);
+            Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
-        private static AssemblyModel CreateModel()
+        private AssemblyModel CreateModel()
         {
             var productions = new List<Production>();
-            var ctx = new Mock<ErpDbContext>();
-            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            var bikes = new List<Bike>();
 
             for (var i = 1; i <= 5; i++)
             {
@@ -94,9 +98,22 @@ namespace soen390_team01Tests.Unit.Controllers
                     Quantity = i,
                     State = "pending"
                 });
+                bikes.Add(new Bike
+                {
+                    ItemId = i,
+                    Grade = "copper",
+                    Name = "Bike" + i,
+                    Size = "M",
+                    Price = i + 10
+
+                });
             }
 
-            var assemblyModel = new AssemblyModel(ctx.Object)
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Productions).Returns(productions.AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Bikes).Returns(bikes.AsQueryable().BuildMockDbSet().Object);
+
+            var assemblyModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
             {
                 Productions = productions
             };
@@ -179,51 +196,5 @@ namespace soen390_team01Tests.Unit.Controllers
             _modelMock.Verify(m => m.ResetProductionFilters(), Times.Once());
         }
 
-        [Test]
-        [Ignore("Broken test, will be fixed")]
-        public void ProcessProductionTest()
-        {
-            var productionList = new List<Production>();
-
-            for (var i = 1; i <= 5; i++)
-            {
-                productionList.Add(new Production
-                {
-                    ProductionId = i,
-                    BikeId = i,
-                    Quantity = i,
-                    State = "pending"
-                });
-            }
-
-            _modelMock.Setup(m => m.Productions).Returns(productionList);
-
-            Production production = new Production
-            {
-                BikeId = 1,
-                ProductionId = 1,
-                Quantity = 1,
-                State = "pending",
-
-            };
-
-            var inventory = new Inventory
-            {
-                ItemId = 1,
-                InventoryId = 1,
-                Quantity = 1,
-                Type = "bike",
-                Warehouse = "Warehouse 1"
-            };
-            _modelMock.Setup(m => m.UpdateInventory(It.IsAny<Production>())).Returns(inventory);
-            _modelMock.Setup(m => m.UpdateProductionState(It.IsAny<Production>())).Returns(production);
-
-            var controller = new AssemblyController(_modelMock.Object, _loggerMock.Object);
-
-            var result = controller.ProcessProduction(production) as ViewResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(production, (result.Model as IAssemblyService).Productions);
-
-        }
     }
 }

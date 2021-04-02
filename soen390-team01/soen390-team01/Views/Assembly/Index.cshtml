@@ -43,7 +43,6 @@
                     $('.assembly-view').html(result);
                 }
             });
-
         };
 
     </script>
@@ -51,4 +50,9 @@
 
 <div class="assembly-view">
     @{await Html.RenderPartialAsync("AssemblyBody", Model);}
+    @if (TempData["missingParts"] != null)
+    {
+        await Html.RenderPartialAsync("_ErrorMessage", TempData["missingParts"]);
+        TempData["missingParts"] = null;
+    }
 </div>

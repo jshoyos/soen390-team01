@@ -5,17 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using soen390_team01.Data;
 using soen390_team01.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace soen390_team01.Services
 {
     public enum ProductionState
     {
-        [Display(Name = "stopped")]
-        Stopped,
-        [Display(Name = "in_progress")]
-        InProgress,
-        [Display(Name = "completed")]
-        Completed,
+        stopped,
+        inProgress,
+        completed,
     }
 
     public class ProductionService : IProductionService
@@ -23,7 +21,7 @@ namespace soen390_team01.Services
         private readonly ErpDbContext _context;
         private readonly ProductionInventoryValidator _validator;
         private readonly IProductionReportGenerator _csvGenerator;
-        private readonly IProductionReportGenerator _restGenerator;
+        private readonly IProductionReportGenerator _webGenerator;
         private readonly Random _rand;
 
         public int Interval { get; set; } = 10000; // Default value of 10 seconds
@@ -34,7 +32,7 @@ namespace soen390_team01.Services
             _validator = validator;
             _rand = rand;
             _csvGenerator = generators.FirstOrDefault(g => g.Name == "Csv");
-            _restGenerator = generators.FirstOrDefault(g => g.Name == "Web");
+            _webGenerator = generators.FirstOrDefault(g => g.Name == "Web");
         }
 
         public void ProduceBike(Bike bike, int quantity)
@@ -54,27 +52,28 @@ namespace soen390_team01.Services
             {
                 BikeId = bike.ItemId,
                 Quantity = quantity,
-                State = ProductionState.InProgress.ToString()
+                State = ProductionState.inProgress.ToString()
             };
 
             _context.Productions.Add(production);
 
             _context.SaveChanges();
+            production = _context.Productions.AsNoTracking().First(p => p.ProductionId == production.ProductionId);
 
-            GenerateProductionReport(production, RandomizeProduction(production));
+            _= GenerateProductionReport(production, RandomizeProduction(production));
         }
 
         public void FixStoppedProduction(Production prod)
         {
             // Change state to in progress in the database
-            prod.State = ProductionState.InProgress.ToString();
+            prod.State = ProductionState.inProgress.ToString();
             _context.Productions.Update(prod);
             _context.SaveChanges();
 
             // Make the production completed in the report
-            prod.State = ProductionState.Completed.ToString();
+            prod.State = ProductionState.completed.ToString();
 
-            GenerateProductionReport(prod, "good");
+            _= GenerateProductionReport(prod, "good");
         }
 
         private void BuildMissingParts(IEnumerable<MissingPart> missingParts)
@@ -103,24 +102,24 @@ namespace soen390_team01.Services
             // 9/10 productions will be completed. The rest will be stopped
             if (_rand.Next(10) > 0)
             {
-                state = ProductionState.Completed;
+                state = ProductionState.completed;
                 // 1/5 productions will have bad quality
                 quality = _rand.Next(5) == 0 ? "bad" : "good";
             }
             else
             {
-                state = ProductionState.Stopped;
+                state = ProductionState.stopped;
             }
 
-            prod.State = state.ToString();
+            prod.State = state.ToString(); 
 
             return quality;
         }
 
-        private void GenerateProductionReport(Production prod, string quality)
+        private async Task GenerateProductionReport(Production prod, string quality)
         {
             // Waiting the duration of the interval before generating the report
-            _ = Task.Delay(Interval);
+            await Task.Delay(Interval);
 
             // Randomizing which report type is produced
             if (_rand.Next(2) == 1)
@@ -129,7 +128,7 @@ namespace soen390_team01.Services
             }
             else
             {
-                _restGenerator.Generate(prod, quality);
+                _webGenerator.Generate(prod, quality);
             }
         }
     }

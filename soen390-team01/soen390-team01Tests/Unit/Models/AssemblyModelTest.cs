@@ -8,6 +8,7 @@ using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
+using soen390_team01.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,9 @@ namespace soen390_team01Tests.Unit.Models
     {
         private ErpDbContext _context;
         private AssemblyModel _model;
+        private ProductionService _service;
+        private Mock<Random> _randMock;
+        private List<IProductionReportGenerator> _generators;
 
         [OneTimeSetUp]
         public void Init()
@@ -42,7 +46,7 @@ namespace soen390_team01Tests.Unit.Models
                 {
                     BikeId = i,
                     Quantity = i,
-                    State = "pending"
+                    State = "inProgress"
                 });
                 _context.Inventories.Add(new Inventory
                 {
@@ -56,8 +60,21 @@ namespace soen390_team01Tests.Unit.Models
 
                 _context.SaveChanges();
             }
+            var csvGeneratorMock = new Mock<IProductionReportGenerator>();
+            var webGeneratorMock = new Mock<IProductionReportGenerator>();
+            _randMock = new Mock<Random>();
 
-            _model = new AssemblyModel(_context);
+            csvGeneratorMock.Setup(g => g.Name).Returns("Csv");
+            webGeneratorMock.Setup(g => g.Name).Returns("Web");
+            webGeneratorMock.Setup(g => g.Generate(It.IsAny<Production>(), It.IsAny<string>()));
+            _randMock.Setup(r => r.Next(10)).Returns(1); // Results in production completion
+            _randMock.Setup(r => r.Next(5)).Returns(0); // Results in bad quality
+            _randMock.Setup(r => r.Next(2)).Returns(0); // Results in using the web generator
+
+            _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
+
+            _service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
+            _model = new AssemblyModel(_context,_service);
         }
 
         [OneTimeTearDown]
@@ -67,6 +84,14 @@ namespace soen390_team01Tests.Unit.Models
             {
                 _context.Productions.Remove(entity);
             }
+            foreach (var entity in _context.Inventories)
+            {
+                _context.Inventories.Remove(entity);
+            }
+            foreach (var entity in _context.Bikes)
+            {
+                _context.Bikes.Remove(entity);
+            }
             _context.SaveChanges();
         }
 
@@ -75,17 +100,17 @@ namespace soen390_team01Tests.Unit.Models
         {
             List<string> list = new List<string>
             {
-                "pending",
-                "completed",
-                "canceled"
+                "stopped",
+                "inProgress",
+                "completed"
             };
-
+         
             var ctx = new Mock<ErpDbContext>();
             ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
 
             var filters = new Filters("production");
             filters.Add(new CheckboxFilter("production", "State", "state", list) { Values = { "filtered_state" } });
-            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object).GetFilteredProductionList(filters));
+            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object,_service).GetFilteredProductionList(filters));
 
         }
 
@@ -124,7 +149,7 @@ namespace soen390_team01Tests.Unit.Models
                 if (nbProductionCall == 1)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
-            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object).AddNewBike(new BikeOrder()));
+            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object,_service).AddNewBike(new BikeOrder()));
         }
 
         [Test]
@@ -135,7 +160,7 @@ namespace soen390_team01Tests.Unit.Models
                 BikeId = 1,
                 Quantity = 10,
                 ProductionId = 1,
-                State = "pending"
+                State = "inProgress"
             };
 
             _model.UpdateInventory(production);
@@ -152,7 +177,7 @@ namespace soen390_team01Tests.Unit.Models
                 BikeId = 6,
                 Quantity = 10,
                 ProductionId = 1,
-                State = "pending"
+                State = "inProgress"
             };
 
             _model.UpdateInventory(production);
@@ -171,20 +196,20 @@ namespace soen390_team01Tests.Unit.Models
             {
                 nbInventoriesCall++;
                 
-                if (nbInventoriesCall == 1)
+                if (nbInventoriesCall == 2)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
 
-            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object).UpdateInventory(new Production()));
+            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object, _service).UpdateInventory(new Production()));
         }
 
         [Test]
         public void UpdateProductionStateValidTest()
         {
             var production = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
-            _model.UpdateProductionState(production);
+            _model.UpdateProduction(production);
             var updatedProduction = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
-            Assert.AreEqual("completed", updatedProduction.State);
+            Assert.AreEqual("inProgress", updatedProduction.State);
         }
 
         [Test]
@@ -199,7 +224,7 @@ namespace soen390_team01Tests.Unit.Models
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
 
-            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object).UpdateProductionState(new Production()));
+            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object, _service).UpdateProduction(new Production()));
         }
 
 

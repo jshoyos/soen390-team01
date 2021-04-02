@@ -14,18 +14,20 @@ namespace soen390_team01.Models
     public class AssemblyModel : FilteredModel, IAssemblyService
     {
         private readonly ErpDbContext _context;
+        private readonly IProductionService _productionService;
 
         public List<Production> Productions { get; set; }
         public Filters ProductionFilters { get; set; }
         public BikeOrder BikeOrder { get; set; }
         public string SelectedTab { get; set; } = "production";
         public bool ShowModal { get; set; } = false;
-        private static readonly List<string> StatusValues = new() { "pending", "completed", "canceled" };
 
+        private static readonly List<string> StatusValues = new() { "stopped", "inProgress", "completed" };
         public AssemblyModel() { }
 
-        public AssemblyModel(ErpDbContext context)
+        public AssemblyModel(ErpDbContext context, IProductionService productionService)
         {
+            _productionService = productionService;
             _context = context;
             Productions = GetProductions();
             ProductionFilters = ResetProductionFilters();
@@ -58,21 +60,14 @@ namespace soen390_team01.Models
             }
         }
 
-        public Production AddNewBike(BikeOrder order)
+        public void AddNewBike(BikeOrder order)
         {
             try
             {
-                var production = new Production
-                {
-                    BikeId = order.BikeId,
-                    Quantity = order.ItemQuantity,
-                    State = "pending"
-                };
-                _context.Productions.Add(production);
-                _context.SaveChanges();
+                Bike bike = _context.Bikes.First(b => b.ItemId == order.BikeId);
+                _productionService.ProduceBike(bike,order.ItemQuantity);
 
                 Productions = GetProductions();
-                return production;
             }
             catch (DbUpdateException e)
             {
@@ -120,12 +115,12 @@ namespace soen390_team01.Models
             }
         }
 
-        public Production UpdateProductionState(Production production)
+        public Production UpdateProduction(Production production)
         {
             try
             {
                 var updatedProduction = _context.Productions.First(i => i.ProductionId == production.ProductionId);
-                updatedProduction.State = "completed";
+                updatedProduction.State = production.State;
                 _context.Productions.Update(updatedProduction);
                 _context.SaveChanges();
                 return updatedProduction;
@@ -136,5 +131,7 @@ namespace soen390_team01.Models
             }
 
         }
+
+
     }
 }

@@ -10,6 +10,7 @@ using soen390_team01.Services;
 namespace soen390_team01.Controllers
 {
     [Authorize]
+
     public class AssemblyController : Controller
     {
         private readonly IAssemblyService _model;
@@ -32,14 +33,17 @@ namespace soen390_team01.Controllers
         [HttpPost]
         public IActionResult AddProduction(AssemblyModel model)
         {
-            _model.BikeOrder = model.BikeOrder;
             var showModal = false;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _model.AddNewBike(_model.BikeOrder);
-                    _log.LogInformation($"Adding Production {_model.BikeOrder.BikeId}");
+                    _model.AddNewBike(model.BikeOrder);
+                    _log.LogInformation($"Adding Bike {model.BikeOrder.BikeId} to production.");
+                }
+                catch (MissingPartsException e)
+                {
+                    TempData["missingParts"] = e.MissingParts;
                 }
                 catch (DataAccessException e)
                 {
@@ -54,9 +58,7 @@ namespace soen390_team01.Controllers
             _model.SelectedTab = "production";
             _model.ShowModal = showModal;
 
-          
-
-            return View("Index", _model);
+            return RedirectToAction("Index", _model);
         }
 
         [HttpPost]
@@ -70,7 +72,7 @@ namespace soen390_team01.Controllers
                     _model.ShowFilters = true;
                 }
                 
-                _model.Productions = true ? _model.GetFilteredProductionList(mobileFiltersInput.Filters) : _model.GetProductions();
+                _model.Productions = mobileFiltersInput.Filters.AnyActive() ? _model.GetFilteredProductionList(mobileFiltersInput.Filters) : _model.GetProductions();
                 _model.ProductionFilters = mobileFiltersInput.Filters;
                      
             }
@@ -99,23 +101,6 @@ namespace soen390_team01.Controllers
             return PartialView("AssemblyBody", _model);
         }
 
-        [HttpPost]
-
-        public IActionResult ProcessProduction(Production production)
-        {
-            Inventory inventory = null;
-            try
-            {
-                inventory = _model.UpdateInventory(production);
-                _log.LogInformation($"Updating inventory with new bike {inventory.ItemId} with quantity {inventory.Quantity}");
-                production = _model.UpdateProductionState(production);
-                _log.LogInformation($"Updating production {production.ProductionId} with new state {production.State}");
-            }
-            catch (DataAccessException e)
-            {
-                TempData["errorMessage"] = e.ToString();
-            }        
-            return View("Index", _model);
-        }
+       
     }
 }
