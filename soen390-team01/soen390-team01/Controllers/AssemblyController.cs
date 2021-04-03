@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
@@ -43,7 +44,7 @@ namespace soen390_team01.Controllers
                 }
                 catch (MissingPartsException e)
                 {
-                    TempData["missingParts"] = e.MissingParts;
+                    TempData["missingParts"] = JsonConvert.SerializeObject(e.MissingParts);
                 }
                 catch (DataAccessException e)
                 {

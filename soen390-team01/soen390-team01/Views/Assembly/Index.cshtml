@@ -54,7 +54,7 @@
     @{await Html.RenderPartialAsync("AssemblyBody", Model);}
     @if (TempData["missingParts"] != null)
     {
-        await Html.RenderPartialAsync("MissingParts", JsonConvert.SerializeObject( TempData["missingParts"]));
+        await Html.RenderPartialAsync("MissingParts", JsonConvert.DeserializeObject<List<MissingPart>>(TempData["missingParts"] as string));
         TempData["missingParts"] = null;
     }
 </div>
