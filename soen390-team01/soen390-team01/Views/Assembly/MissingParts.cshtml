@@ -9,18 +9,19 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Error</h4>
+                <h4 class="modal-title">Missing Components</h4>
             </div>
             <div class="modal-body">
                 <ul>
                     @foreach (var missingPart in Model)
                     {
                         <li>
-                            Part ID: @missingPart.Part.ItemId (@missingPart.Quantity)
+                            Missing Part ID: @missingPart.Part.ItemId ( @missingPart.Quantity )
+                            
                             <ul>
                                 @foreach (var missingMaterial in missingPart.MissingMaterials)
                                 {
-                                    <li>  Material ID: @missingMaterial.Material.ItemId (@missingMaterial.Quantity)</li>
+                                    <li>  Missing Material ID: @missingMaterial.Material.ItemId ( @missingMaterial.Quantity )</li>
                                 }
                             </ul>
                         </li>

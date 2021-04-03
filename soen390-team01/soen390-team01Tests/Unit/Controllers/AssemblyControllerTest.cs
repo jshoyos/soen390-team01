@@ -18,7 +18,6 @@ using System.Linq;
 
 namespace soen390_team01Tests.Unit.Controllers
 {
-  
     class AssemblyControllerTest
     {
         Mock<IProductionService> _serviceMock;
@@ -45,7 +44,7 @@ namespace soen390_team01Tests.Unit.Controllers
                     ProductionId = i,
                     BikeId = i,
                     Quantity = i,
-                    State = "pending"
+                    State = "inProgress"
                 });
             }
 
@@ -58,15 +57,18 @@ namespace soen390_team01Tests.Unit.Controllers
             Assert.AreEqual(5, (result.Model as IAssemblyService).Productions.Count);
 
         }
-        
+
         [Test]
         public void AddProductionTest()
         {
             var ctx = new Mock<ErpDbContext>();
             ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.BikeParts).Returns(new List<BikePart>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
 
-            var assemblyModel = CreateModel();
+
+            var assemblyModel = CreateModel(5);
             var controller = new AssemblyController(assemblyModel, _loggerMock.Object);
 
             var inputModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
@@ -78,31 +80,78 @@ namespace soen390_team01Tests.Unit.Controllers
                 }
             };
 
-            
             var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
             Assert.IsNotNull(resultProduction);
             Assert.AreEqual("Index", resultProduction.ActionName);
             Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
-        private AssemblyModel CreateModel()
+        [Test]
+        public void AddProductionInsufficientTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.BikeParts).Returns(new List<BikePart>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+
+
+            var assemblyModel = CreateModel(0);
+            var controller = new AssemblyController(assemblyModel, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            var inputModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
+            {
+                BikeOrder = new BikeOrder
+                {
+                    BikeId = 1,
+                    ItemQuantity = 1
+                }
+            };
+
+            var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
+            Assert.IsNotNull(resultProduction);
+            Assert.AreEqual("Index", resultProduction.ActionName);
+            Assert.AreEqual(6, resultProduction.RouteValues.Count);
+        }
+        private AssemblyModel CreateModel(int partQuantity)
         {
             var productions = new List<Production>();
             var bikes = new List<Bike>();
+            var bikeParts = new List<BikePart>();
+            var parts = new List<Part>();
 
-            for (var i = 1; i <= 5; i++)
+            for (var i = 1; i <= 4; i++)
             {
                 productions.Add(new Production
                 {
                     ProductionId = i,
                     BikeId = i,
                     Quantity = i,
-                    State = "pending"
+                    State = "inProgress"
+                });
+                bikeParts.Add(new BikePart
+                {
+                    BikeId = 1,
+                    PartId = i + 4,
+                    PartQuantity = 1 + partQuantity
+
                 });
                 bikes.Add(new Bike
                 {
                     ItemId = i,
                     Grade = "copper",
                     Name = "Bike" + i,
+                    Size = "M",
+                    Price = i + 10,
+                    BikeParts = bikeParts
+                });
+                parts.Add(new Part
+                {
+                    ItemId = i+5,
+                    Grade = "copper",
+                    Name = "Part" + (i + 4),
                     Size = "M",
                     Price = i + 10
 
@@ -111,7 +160,10 @@ namespace soen390_team01Tests.Unit.Controllers
 
             var ctx = new Mock<ErpDbContext>();
             ctx.Setup(c => c.Productions).Returns(productions.AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(parts.AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.BikeParts).Returns(bikeParts.AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Bikes).Returns(bikes.AsQueryable().BuildMockDbSet().Object);
+
 
             var assemblyModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
             {
@@ -126,9 +178,9 @@ namespace soen390_team01Tests.Unit.Controllers
         {
             List<string> list = new List<string>
             {
-                "pending",
-                "completed",
-                "canceled"
+                "inProgress",
+                "stopped",
+                "completed"
             };
 
             var productionList = new List<Production>();
@@ -140,7 +192,7 @@ namespace soen390_team01Tests.Unit.Controllers
                 ProductionId = 1,
                 BikeId = 1,
                 Quantity = 1,
-                State = "pending"
+                State = "inProgress"
             });
 
             _modelMock.Setup(m => m.Productions).Returns(productionList);
@@ -157,9 +209,9 @@ namespace soen390_team01Tests.Unit.Controllers
         {
             List<string> list = new List<string>
             {
-                "pending",
-                "completed",
-                "canceled"
+                 "inProgress",
+                "stopped",
+                "completed"
             };
             var productionList = new List<Production>();
             var filters = new Filters("production");
@@ -167,11 +219,11 @@ namespace soen390_team01Tests.Unit.Controllers
 
             productionList.Add(new Production
             {
-               BikeId = 1,
-               ProductionId = 1,
-               Quantity = 1,
-               State = "pending",
-               
+                BikeId = 1,
+                ProductionId = 1,
+                Quantity = 1,
+                State = "inProgress",
+
             });
 
             _modelMock.Setup(i => i.GetFilteredProductionList(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code"));

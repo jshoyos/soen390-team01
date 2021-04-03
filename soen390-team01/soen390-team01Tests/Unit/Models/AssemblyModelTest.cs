@@ -32,34 +32,97 @@ namespace soen390_team01Tests.Unit.Models
             builder.UseInMemoryDatabase("test_db");
             _context = new ErpDbContext(builder.Options);
 
-            for (var i = 1; i <= 5; i++)
+            for (var i = 1; i <= 9; i++)
             {
-                _context.Bikes.Add(new Bike
+                var type = (9 % i) switch
+                {
+                    0 => "bike",
+                    1 => "part",
+                    _ => "material",
+                };
+                switch (type)
+                {
+                    case "bike":
+                        _context.Bikes.Add(new Bike
+                        {
+                            ItemId = i,
+                            Grade = "copper " + i,
+                            Name = "Bike " + i,
+                            Size = "M",
+                            Price = i,               
+                        });
+                        break;
+                    case "part":
+                        _context.Parts.Add(new Part
+                        {
+                            ItemId = i,
+                            Grade = "copper " + i,
+                            Name = "Part " + i,
+                            Size = "L",
+                            Price = i
+                        });
+                        break;
+                    default:
+                        _context.Materials.Add(new Material
+                        {
+                            ItemId = i,
+                            Grade = "copper " + i,
+                            Name = "Material " + i,
+                            Price = i
+                        });
+                        break;
+                }
+
+                _context.Inventories.Add(new Inventory
                 {
                     ItemId = i,
-                    Grade = "copper " + i,
-                    Name = "Bike " + i,
-                    Size = "M",
-                    Price = i
-                });
+                    Quantity = 75,
+                    Type = type,
+                    Warehouse = "Warehouse " + i
+                }
+                );
+            }
+
+            _context.SaveChanges();
+
+            var goodBike = _context.Bikes.First();
+
+            for (var i = 0; i < 3; i++)
+            {
+                var bikePart = new BikePart
+                {
+                    BikeId = goodBike.ItemId,
+                    PartId = _context.Parts.ToList().ElementAt(i).ItemId,
+                    PartQuantity = 5
+                };
+                _context.BikeParts.Add(bikePart);
+                _context.SaveChanges();
+
+                for (var j = 0; j < 3; j++)
+                {
+                    var partMaterial = new PartMaterial
+                    {
+                        PartId = bikePart.PartId,
+                        MaterialId = _context.Materials.ToList().ElementAt(j).ItemId,
+                        MaterialQuantity = 5
+                    };
+                    _context.PartMaterials.Add(partMaterial);
+                }
+                _context.SaveChanges();
+            }
+            for (var i = 1; i <= 5; i++)
+            {
                 _context.Productions.Add(new Production
                 {
                     BikeId = i,
                     Quantity = i,
                     State = "inProgress"
                 });
-                _context.Inventories.Add(new Inventory
-                {
-                    InventoryId = i,
-                    ItemId = i,
-                    Quantity = i,
-                    Type = "bike",
-                    Warehouse = "Warehouse " + i
-                }
-                );
 
                 _context.SaveChanges();
             }
+           
+
             var csvGeneratorMock = new Mock<IProductionReportGenerator>();
             var webGeneratorMock = new Mock<IProductionReportGenerator>();
             _randMock = new Mock<Random>();
@@ -74,7 +137,7 @@ namespace soen390_team01Tests.Unit.Models
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
             _service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
-            _model = new AssemblyModel(_context,_service);
+            _model = new AssemblyModel(_context, _service);
         }
 
         [OneTimeTearDown]
@@ -84,6 +147,14 @@ namespace soen390_team01Tests.Unit.Models
             {
                 _context.Productions.Remove(entity);
             }
+            foreach (var entity in _context.BikeParts)
+            {
+                _context.BikeParts.Remove(entity);
+            }
+            foreach (var entity in _context.PartMaterials)
+            {
+                _context.PartMaterials.Remove(entity);
+            }
             foreach (var entity in _context.Inventories)
             {
                 _context.Inventories.Remove(entity);
@@ -92,7 +163,16 @@ namespace soen390_team01Tests.Unit.Models
             {
                 _context.Bikes.Remove(entity);
             }
+            foreach (var entity in _context.Parts)
+            {
+                _context.Parts.Remove(entity);
+            }
+            foreach (var entity in _context.Materials)
+            {
+                _context.Materials.Remove(entity);
+            }
             _context.SaveChanges();
+            _context.Database.EnsureDeleted();
         }
 
         [Test]
@@ -104,13 +184,13 @@ namespace soen390_team01Tests.Unit.Models
                 "inProgress",
                 "completed"
             };
-         
+
             var ctx = new Mock<ErpDbContext>();
             ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
 
             var filters = new Filters("production");
             filters.Add(new CheckboxFilter("production", "State", "state", list) { Values = { "filtered_state" } });
-            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object,_service).GetFilteredProductionList(filters));
+            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object, _service).GetFilteredProductionList(filters));
 
         }
 
@@ -125,17 +205,14 @@ namespace soen390_team01Tests.Unit.Models
         }
 
         [Test]
-        public void AddNewBikeTest()
+        public void AddNewBikeInsufficientTest()
         {
-            var initialProductionCount = _model.Productions.Count;
             var bikeOrder = new BikeOrder
             {
                 BikeId = 1,
                 ItemQuantity = 1,
             };
-
-            _model.AddNewBike(bikeOrder);
-            Assert.AreEqual(initialProductionCount + 1, _model.Productions.Count);
+            Assert.Throws<InsufficientBikePartsException>(() => _model.AddNewBike(bikeOrder));
         }
 
         [Test]
@@ -149,14 +226,15 @@ namespace soen390_team01Tests.Unit.Models
                 if (nbProductionCall == 1)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
-            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object,_service).AddNewBike(new BikeOrder()));
+            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object, _service).AddNewBike(new BikeOrder()));
         }
 
         [Test]
         public void UpdateInventoryValidTest()
         {
-            Production production = new Production { 
-                
+            Production production = new Production
+            {
+
                 BikeId = 1,
                 Quantity = 10,
                 ProductionId = 1,
@@ -165,8 +243,7 @@ namespace soen390_team01Tests.Unit.Models
 
             _model.UpdateInventory(production);
             var updatedInventory = _context.Inventories.FirstOrDefault(inv => inv.ItemId == 1);
-            Assert.AreEqual(production.Quantity + 1, updatedInventory.Quantity); 
-            // production.Quantity + 1 because there was 1 existing item in inventory before the change
+            Assert.AreEqual(production.Quantity + 75, updatedInventory.Quantity);
         }
 
         [Test]
@@ -174,14 +251,14 @@ namespace soen390_team01Tests.Unit.Models
         {
             Production production = new Production
             {
-                BikeId = 6,
+                BikeId = 10,
                 Quantity = 10,
                 ProductionId = 1,
                 State = "inProgress"
             };
 
             _model.UpdateInventory(production);
-            var updatedInventory = _context.Inventories.FirstOrDefault(inv => inv.ItemId == 6);
+            var updatedInventory = _context.Inventories.FirstOrDefault(inv => inv.ItemId == production.BikeId);
             Assert.AreEqual(production.Quantity, updatedInventory.Quantity);
         }
 
@@ -195,7 +272,7 @@ namespace soen390_team01Tests.Unit.Models
             ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
             {
                 nbInventoriesCall++;
-                
+
                 if (nbInventoriesCall == 2)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });

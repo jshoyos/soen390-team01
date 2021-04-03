@@ -84,8 +84,14 @@ namespace soen390_team01.Models
                                    .ThenInclude(pm => pm.PartMaterials)
                                    .ThenInclude(m => m.Material)
                                    .First(b => b.ItemId == order.BikeId);
+
+                var count = 0;
+                foreach (BikePart part in bike.BikeParts)
+                {
+                    count += part.PartQuantity;
+                }
                 
-                if (bike.BikeParts.Count < 5)
+                if (count < 5)
                 {
                     throw new InsufficientBikePartsException();
                 }
