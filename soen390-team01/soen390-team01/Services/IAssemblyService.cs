@@ -15,11 +15,38 @@ namespace soen390_team01.Services
         public BikeOrder BikeOrder { get; set; }
         public string SelectedTab { get; set; }
         public bool ShowModal { get; set; }
+        /// <summary>
+        /// Get production list
+        /// </summary>
+        /// <returns></returns>
         public List<Production> GetProductions();
+        /// <summary>
+        /// Resets production filters
+        /// </summary>
+        /// <returns></returns>
         public Filters ResetProductionFilters();
+        /// <summary>
+        /// Gets filters production list
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
         public List<Production> GetFilteredProductionList(Filters filters);
+        /// <summary>
+        /// Updates the inventory with new bike orders
+        /// </summary>
+        /// <param name="order"></param>
         public void AddNewBike(BikeOrder order);
+        /// <summary>
+        /// Updates the inventory with new bike order
+        /// </summary>
+        /// <param name="production"></param>
+        /// <returns></returns>
         public Inventory UpdateInventory(Production production);
+        /// <summary>
+        /// Updates the production table
+        /// </summary>
+        /// <param name="production"></param>
+        /// <returns></returns>
         public Production UpdateProduction(Production production);
     }
 }

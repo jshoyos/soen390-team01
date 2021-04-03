@@ -32,12 +32,19 @@ namespace soen390_team01.Models
             Productions = GetProductions();
             ProductionFilters = ResetProductionFilters();
         }
+        /// <summary>
+        /// Gets the production list
+        /// </summary>
+        /// <returns></returns>
         public List<Production> GetProductions()
         {
             List<Production> list = _context.Productions.ToList();
             return list;
         }
-
+        /// <summary>
+        /// Resets the production Filter
+        /// </summary>
+        /// <returns></returns>
         public Filters ResetProductionFilters()
         {
             var filters = new Filters("production");
@@ -47,7 +54,11 @@ namespace soen390_team01.Models
             filters.Add(new DateRangeFilter("production", "Updated", "modified"));
             return filters;
         }
-
+        /// <summary>
+        /// Gets the filtered production list
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
         public List<Production> GetFilteredProductionList(Filters filters)
         {
             try
@@ -59,12 +70,20 @@ namespace soen390_team01.Models
                 throw new UnexpectedDataAccessException("Could not find: " + filters.Table);
             }
         }
-
+        /// <summary>
+        /// Assembles new bike and performs checks
+        /// </summary>
+        /// <param name="order"></param>
         public void AddNewBike(BikeOrder order)
         {
             try
             {
-                Bike bike = _context.Bikes.First(b => b.ItemId == order.BikeId);
+                var bike = _context.Bikes
+                                   .Include(b => b.BikeParts)
+                                   .ThenInclude(p => p.Part)
+                                   .ThenInclude(pm => pm.PartMaterials)
+                                   .ThenInclude(m => m.Material)
+                                   .First(b => b.ItemId == order.BikeId);
                 _productionService.ProduceBike(bike,order.ItemQuantity);
 
                 Productions = GetProductions();
@@ -74,7 +93,11 @@ namespace soen390_team01.Models
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
-
+        /// <summary>
+        /// Updates the inventory with new bike order
+        /// </summary>
+        /// <param name="production"></param>
+        /// <returns></returns>
         public Inventory UpdateInventory(Production production)
         {
             try
@@ -84,7 +107,7 @@ namespace soen390_team01.Models
                 {
                      updatedInventory = _context.Inventories.First(i => i.ItemId == production.BikeId);
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
 
                 }
@@ -114,7 +137,11 @@ namespace soen390_team01.Models
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
-
+        /// <summary>
+        /// Updates the production table
+        /// </summary>
+        /// <param name="production"></param>
+        /// <returns></returns>
         public Production UpdateProduction(Production production)
         {
             try
@@ -131,7 +158,5 @@ namespace soen390_team01.Models
             }
 
         }
-
-
     }
 }

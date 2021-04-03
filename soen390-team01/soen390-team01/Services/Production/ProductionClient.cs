@@ -29,9 +29,9 @@ namespace soen390_team01.Services
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             try 
             {
-                var result =  _client.PostAsync("", data).Result;
+               _client.PostAsync("", data);
             }
-            catch(Exception e)
+            catch(Exception)
             {
 
             }

@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Newtonsoft.Json
+@using soen390_team01.Services
 @model soen390_team01.Services.IAssemblyService
 
 @{
@@ -52,7 +54,7 @@
     @{await Html.RenderPartialAsync("AssemblyBody", Model);}
     @if (TempData["missingParts"] != null)
     {
-        await Html.RenderPartialAsync("_ErrorMessage", TempData["missingParts"]);
+        await Html.RenderPartialAsync("MissingParts", JsonConvert.SerializeObject( TempData["missingParts"]));
         TempData["missingParts"] = null;
     }
 </div>
