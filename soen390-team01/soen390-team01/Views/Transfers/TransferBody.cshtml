@@ -69,12 +69,15 @@
         <div class="col-lg-3 text-center justify-content-center" id="filter">
             <div id="procurement-filter" class="filter-data" style="display:@(Model.SelectedTab == "procurement" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.ProcurementFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+                <br/>
+                <button class="btn btn-primary" id="procbutton" data-toggle="modal" data-target="#procModal">Add Procurement</button>
             </div>
             <div id="order-filter" class="filter-data" style="display:@(Model.SelectedTab == "order" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.OrderFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
             </div>
         </div>
     </div>
+  
 
     <!-- Modal for procurement tab-->
     <div class="modal fade" id="procModal" tabindex="-1" role="dialog" aria-labelledby="procModalTitle" aria-hidden="true">

@@ -1,0 +1,98 @@
+﻿@model soen390_team01.Services.IAssemblyService
+@using Newtonsoft.Json
+
+<body>
+    <!--Buttons that only appear in mobile version-->
+    <div class="container justify-content-center">
+        <div class="row" id="mobileButtons">
+            <button class="btn btn-outline-primary collapButton1" data-toggle="modal" data-target="#filterModal">Filter</button>
+            <button class="btn btn-outline-primary collapButton2" style="display:@(Model.SelectedTab == "production" ? "" : "none");" id="bikebutton" data-toggle="modal" data-target="#bikeModal">New Bike</button>
+        </div>
+    </div>
+    <!--/Buttons that only appear in mobile version-->
+    <!--/Modal for filter in mobile mode-->
+    <div class="modal fade @(Model.ShowFilters  ? "show": "")" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true" style="display:@(Model.ShowFilters  ? "block": "none")">
+        @{ Model.ShowFilters = false;}
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalTitle">FILTER</h5>
+                    <button type="button" class="close" data-dismiss="filterModal" aria-label="Close" onclick="hideFilterModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-filter">
+                    <div id="production-mobile-filter" class="filter-data" style="display:@(Model.SelectedTab == "production" ? "block": "none")">
+                        @{await Html.RenderPartialAsync("Filter", Model.ProductionFilters, new ViewDataDictionary(ViewData) { { "mobile", true } });}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal for filter in mobile mode-->
+
+    <div class="row">
+        <!--Table with tabs-->
+        <div class="col-lg-8 mx-lg-auto" id="LHS">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li style="width: 50%;text-align:center;">
+                    <a class="nav-link @(Model.SelectedTab == "production" ? "active" : "")" id="productTab" data-toggle="pill" href="#productTabContent" role="tab" aria-controls="productTabContent" aria-selected="@(Model.SelectedTab == "production" ? "true": "false")" onclick="showFilter('production',true);">
+                        Production
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show @(Model.SelectedTab == "production"? "active": "")" id="productTabContent" role="tabpanel" aria-labelledby="productTab">
+                    <div class="container">
+                        @{await Html.RenderPartialAsync("ProductTable", Model.Productions);}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/Table with tabs-->
+        <!--Filter area-->
+        <div class="col-lg-3 text-center justify-content-center" id="filter">
+            <div id="production-filter" class="filter-data" style="display:@(Model.SelectedTab == "production" ? "block": "none")">
+                @{await Html.RenderPartialAsync("Filter", Model.ProductionFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
+                <br />
+                <button class="btn btn-primary" id="bikebutton" data-toggle="modal" data-target="#bikeModal">New Bike</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for new bike-->
+    <div class="modal fade" id="bikeModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bikeModalTitle">New Bike</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-newBike">
+                    <form method="post" asp-controller="Assembly" asp-action="AddProduction">
+                        <div class="col-4 text-right">
+                            <label asp-for="BikeOrder.BikeId">Item ID</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="BikeOrder.BikeId" class="form-control" />
+                            <span asp-validation-for="BikeOrder.BikeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-4 text-right">
+                            <label asp-for="BikeOrder.ItemQuantity">Item Quantity</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="BikeOrder.ItemQuantity" class="form-control" />
+                            <span asp-validation-for="BikeOrder.ItemQuantity" class="text-danger"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"> Check</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Modal for proucrement tab-->
+</body>

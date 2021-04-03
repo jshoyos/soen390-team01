@@ -1,0 +1,36 @@
+﻿@media only screen and (max-width: 1026px) {
+    #filter {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 1026px) {
+    #mobileButtons {
+        display: none;
+    }
+}
+.collapButton1{
+    width: 25%;
+    margin: 1px;
+}
+.collapButton2 {
+    width: 65%;
+    margin: 1px;
+}
+#filter {
+    border: 1px solid #5680A9;
+    padding: 15px;
+    border-radius: 5px;
+}
+.elements {
+    margin: 10px 5px 5px 5px;
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
+}
+#LHS {
+    border: 1px solid #5680A9;
+    margin: 2px;
+    padding: 0 0 5px 0;
+    border-radius: 5px;
+}

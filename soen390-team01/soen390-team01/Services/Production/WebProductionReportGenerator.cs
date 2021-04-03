@@ -21,7 +21,12 @@ namespace soen390_team01.Services
         {
             var input = new ProcessProductionInput
             {
-                Production = prod,
+                Production = new Production
+                {
+                    BikeId = prod.BikeId,
+                    ProductionId = prod.ProductionId,
+                    State = prod.State
+                },
                 Quality = quality
             };
             

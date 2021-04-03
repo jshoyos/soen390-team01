@@ -33,16 +33,17 @@ namespace soen390_team01
             services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
 
             services.AddSingleton<AuthenticationFirebaseService>();
-            services.AddSingleton<ProductionService>();
+            services.AddSingleton<IProductionService,ProductionService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
             services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<ITransferService, TransfersModel>();
+            services.AddSingleton<IAssemblyService, AssemblyModel>();
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
                 ));
             services.AddDataProtection();
-            services.AddControllersWithViews()
+            services.AddControllers()
                 .AddRazorRuntimeCompilation();
             services.AddRazorPages(options =>
             {
