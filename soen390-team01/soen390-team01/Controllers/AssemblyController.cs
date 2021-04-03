@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -44,7 +46,20 @@ namespace soen390_team01.Controllers
                 }
                 catch (MissingPartsException e)
                 {
-                    TempData["missingParts"] = JsonConvert.SerializeObject(e.MissingParts);
+                    TempData["missingParts"] = JsonConvert.SerializeObject(e.MissingParts.Select(mp => new MissingPart(
+                            new Part {
+                                ItemId = mp.Part.ItemId
+                            }, 
+                            mp.Quantity, 
+                            mp.MissingMaterials.Select(mm => new MissingMaterial(
+                                    new Material
+                                    {
+                                        ItemId = mm.Material.ItemId,
+                                    },
+                                    mm.Quantity
+                                )).ToList()
+                            ))
+                    );
                 }
                 catch (DataAccessException e)
                 {

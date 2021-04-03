@@ -139,11 +139,11 @@ namespace soen390_team01.Services
         public Part Part { get; }
         public List<MissingMaterial> MissingMaterials { get; }
 
-        public MissingPart(Part part, int quantity)
+        public MissingPart(Part part, int quantity, List<MissingMaterial> missingMaterials = null)
         {
             Quantity = quantity;
             Part = part;
-            MissingMaterials = new List<MissingMaterial>();
+            MissingMaterials = missingMaterials ?? new List<MissingMaterial>();
         }
     }
 
