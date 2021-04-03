@@ -297,11 +297,10 @@ namespace soen390_team01Tests.Unit.Models
             ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
             {
                 nbProductionCall++;
-                if (nbProductionCall == 1)
+                if (nbProductionCall == 2)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
-
-            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object, _service).UpdateProduction(new Production()));
+            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object, _service).UpdateProduction(new Production()));
         }
 
 

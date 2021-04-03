@@ -59,33 +59,6 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
-        public void AddProductionTest()
-        {
-            var ctx = new Mock<ErpDbContext>();
-            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
-            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
-            ctx.Setup(c => c.BikeParts).Returns(new List<BikePart>().AsQueryable().BuildMockDbSet().Object);
-            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
-
-
-            var assemblyModel = CreateModel(5);
-            var controller = new AssemblyController(assemblyModel, _loggerMock.Object);
-
-            var inputModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
-            {
-                BikeOrder = new BikeOrder
-                {
-                    BikeId = 1,
-                    ItemQuantity = 1
-                }
-            };
-
-            var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
-            Assert.IsNotNull(resultProduction);
-            Assert.AreEqual("Index", resultProduction.ActionName);
-            Assert.AreEqual(6, resultProduction.RouteValues.Count);
-        }
-        [Test]
         public void AddProductionInsufficientTest()
         {
             var ctx = new Mock<ErpDbContext>();

@@ -84,14 +84,8 @@ namespace soen390_team01.Models
                                    .ThenInclude(pm => pm.PartMaterials)
                                    .ThenInclude(m => m.Material)
                                    .First(b => b.ItemId == order.BikeId);
-
-                var count = 0;
-                foreach (BikePart part in bike.BikeParts)
-                {
-                    count += part.PartQuantity;
-                }
-                
-                if (count < 5)
+             
+                if (bike.BikeParts.Count < 5)
                 {
                     throw new InsufficientBikePartsException();
                 }
@@ -116,14 +110,14 @@ namespace soen390_team01.Models
         {
             try
             {
-                Inventory updatedInventory = null;
+                Inventory updatedInventory;
                 try
                 {
                     updatedInventory = _context.Inventories.First(i => i.ItemId == production.BikeId);
                 }
                 catch (Exception)
                 {
-
+                    updatedInventory = null;
                 }
 
                 if (updatedInventory == null) //checks if bike exist in inventory

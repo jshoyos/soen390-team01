@@ -26,16 +26,8 @@ namespace soen390_team01.Services
         public virtual void SendProduction(ProcessProductionInput input)
         {
             var json = JsonConvert.SerializeObject(input);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-            try 
-            {
-               _client.PostAsync("", data);
-            }
-            catch(Exception)
-            {
-
-            }
-            
+            var data = new StringContent(json, Encoding.UTF8, "application/json");    
+            _client.PostAsync("", data);
         }
     }
 }
