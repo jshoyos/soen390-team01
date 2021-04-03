@@ -11,6 +11,8 @@ using soen390_team01.Models;
 using soen390_team01.Services;
 using System;
 using System.IO;
+using System.Reactive.Linq;
+using soen390_team01.Controllers;
 
 namespace soen390_team01
 {
@@ -39,9 +41,10 @@ namespace soen390_team01
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<ITransferService, TransfersModel>();
             services.AddSingleton<IAssemblyService, AssemblyModel>();
+            services.AddSingleton(s => new CsvProductionProcessor("productions", new ProductionController(s.GetService<IAssemblyService>(), s.GetService<ILogger<ProductionController>>())));
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
-                ));
+            ));
             services.AddDataProtection();
             services.AddControllers()
                 .AddRazorRuntimeCompilation();
@@ -64,8 +67,7 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            var currentDate = DateTime.Now.ToString("dd.MM,yyyy");
-            loggerFactory.AddFile($"Logs/Log.txt");
+            loggerFactory.AddFile("Logs/Log.txt");
 
             if (env.IsDevelopment())
             {
@@ -96,6 +98,9 @@ namespace soen390_team01
             {
                 Directory.CreateDirectory("productions");
             }
+
+            var timer = Observable.Interval(TimeSpan.FromSeconds(5));
+            timer.Subscribe(tick => { app.ApplicationServices.GetService<CsvProductionProcessor>()!.Process(); });
         }
     }
 }

@@ -22,11 +22,11 @@ namespace soen390_team01.Controllers
         [Route("api/Production/Process")]
         public void Process([FromBody] ProcessProductionInput input)
         {
-            Inventory inventory = null;
             try
             {
-                inventory = _model.UpdateInventory(input.Production);
-                _log.LogInformation($"Updating inventory with new bike {inventory.ItemId} with quantity {inventory.Quantity}");
+                // TODO: add triggers for bad quality and stopped state here
+                var inventory = _model.UpdateInventory(input.Production);
+                _log.LogInformation($"Updating inventory for bike {inventory.ItemId} with quantity {inventory.Quantity}");
                 input.Production = _model.UpdateProduction(input.Production);
                 _log.LogInformation($"Updating production {input.Production.ProductionId} with new state {input.Production.State}");
             }

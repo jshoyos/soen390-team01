@@ -118,18 +118,32 @@ namespace soen390_team01.Services
 
         private async Task GenerateProductionReport(Production prod, string quality)
         {
+            var scaledInterval = Interval;
+
+            if (prod.Quantity >= 50)
+            {
+                if (prod.Quantity >= 500)
+                {
+                    scaledInterval *= 3;
+                }
+                else
+                {
+                    scaledInterval *= 2;
+                }
+            }
+
             // Waiting the duration of the interval before generating the report
-            await Task.Delay(Interval);
+            await Task.Delay(scaledInterval);
 
             // Randomizing which report type is produced
-            if (_rand.Next(2) == 1)
-            {
+            //if (_rand.Next(2) == 1)
+            //{
                 _csvGenerator.Generate(prod, quality);
-            }
-            else
-            {
-                _webGenerator.Generate(prod, quality);
-            }
+            //}
+            //else
+            //{
+            //    _webGenerator.Generate(prod, quality);
+            //}
         }
     }
 

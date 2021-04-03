@@ -15,6 +15,14 @@ namespace soen390_team01.Services
             var sb = new StringBuilder();
             const string DELIMITER = ",";
 
+            sb.Append("ProductionId" + DELIMITER);
+            sb.Append("BikeId" + DELIMITER);
+            sb.Append("State" + DELIMITER);
+            sb.Append("Quantity" + DELIMITER);
+            sb.Append("Added" + DELIMITER);
+            sb.Append("Modified" + DELIMITER);
+            sb.Append("Quality");
+            sb.AppendLine();
             sb.Append(prod.ProductionId + DELIMITER);
             sb.Append(prod.BikeId + DELIMITER);
             sb.Append(prod.State + DELIMITER);
