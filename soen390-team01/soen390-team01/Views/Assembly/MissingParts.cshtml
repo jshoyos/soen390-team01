@@ -16,7 +16,7 @@
                     @foreach (var missingPart in Model)
                     {
                     <li>
-                        Missing Part  ( @missingPart.Quantity ): - ID: @missingPart.Part.ItemId
+                        Missing Part  ( @missingPart.Quantity ) - ID: @missingPart.Part.ItemId
 
                         <ul>
                             @foreach (var missingMaterial in missingPart.MissingMaterials)
