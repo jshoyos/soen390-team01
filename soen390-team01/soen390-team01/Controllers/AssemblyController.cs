@@ -61,6 +61,10 @@ namespace soen390_team01.Controllers
                             ))
                     );
                 }
+                catch (InsufficientBikePartsException e)
+                {
+                    TempData["errorMessage"] = e.Message.ToString();
+                }
                 catch (DataAccessException e)
                 {
                     TempData["errorMessage"] = e.ToString();

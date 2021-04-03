@@ -84,8 +84,16 @@ namespace soen390_team01.Models
                                    .ThenInclude(pm => pm.PartMaterials)
                                    .ThenInclude(m => m.Material)
                                    .First(b => b.ItemId == order.BikeId);
-                _productionService.ProduceBike(bike,order.ItemQuantity);
-
+                
+                if (bike.BikeParts.Count < 5)
+                {
+                    throw new InsufficientBikePartsException();
+                }
+                else
+                {
+                    _productionService.ProduceBike(bike, order.ItemQuantity);
+                    
+                }
                 Productions = GetProductions();
             }
             catch (DbUpdateException e)
@@ -105,9 +113,9 @@ namespace soen390_team01.Models
                 Inventory updatedInventory = null;
                 try
                 {
-                     updatedInventory = _context.Inventories.First(i => i.ItemId == production.BikeId);
+                    updatedInventory = _context.Inventories.First(i => i.ItemId == production.BikeId);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
 
                 }
