@@ -136,14 +136,14 @@ namespace soen390_team01.Services
             await Task.Delay(scaledInterval);
 
             // Randomizing which report type is produced
-            //if (_rand.Next(2) == 1)
-            //{
+            if (_rand.Next(2) == 1)
+            {
                 _csvGenerator.Generate(prod, quality);
-            //}
-            //else
-            //{
-            //    _webGenerator.Generate(prod, quality);
-            //}
+            }
+            else
+            {
+                _webGenerator.Generate(prod, quality);
+            }
         }
     }
 
