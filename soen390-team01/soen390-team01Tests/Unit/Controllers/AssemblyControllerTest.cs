@@ -59,6 +59,33 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
+        public void AddProductionTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.BikeParts).Returns(new List<BikePart>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+
+
+            var assemblyModel = CreateModel(false);
+            var controller = new AssemblyController(assemblyModel, _loggerMock.Object);
+
+            var inputModel = new AssemblyModel(ctx.Object, _serviceMock.Object)
+            {
+                BikeOrder = new BikeOrder
+                {
+                    BikeId = 1,
+                    ItemQuantity = 1
+                }
+            };
+
+            var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
+            Assert.IsNotNull(resultProduction);
+            Assert.AreEqual("Index", resultProduction.ActionName);
+            Assert.AreEqual(6, resultProduction.RouteValues.Count);
+        }
+        [Test]
         public void AddProductionInsufficientTest()
         {
             var ctx = new Mock<ErpDbContext>();
@@ -68,7 +95,7 @@ namespace soen390_team01Tests.Unit.Controllers
             ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
 
 
-            var assemblyModel = CreateModel(0);
+            var assemblyModel = CreateModel(true);
             var controller = new AssemblyController(assemblyModel, _loggerMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
@@ -88,14 +115,14 @@ namespace soen390_team01Tests.Unit.Controllers
             Assert.AreEqual("Index", resultProduction.ActionName);
             Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
-        private AssemblyModel CreateModel(int partQuantity)
+        private AssemblyModel CreateModel(bool lessBikeParts)
         {
             var productions = new List<Production>();
             var bikes = new List<Bike>();
             var bikeParts = new List<BikePart>();
             var parts = new List<Part>();
 
-            for (var i = 1; i <= 4; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 productions.Add(new Production
                 {
@@ -103,13 +130,6 @@ namespace soen390_team01Tests.Unit.Controllers
                     BikeId = i,
                     Quantity = i,
                     State = "inProgress"
-                });
-                bikeParts.Add(new BikePart
-                {
-                    BikeId = 1,
-                    PartId = i + 4,
-                    PartQuantity = 1 + partQuantity
-
                 });
                 bikes.Add(new Bike
                 {
@@ -128,6 +148,16 @@ namespace soen390_team01Tests.Unit.Controllers
                     Size = "M",
                     Price = i + 10
 
+                });
+                if (lessBikeParts && i == 4)
+                {
+                    continue;
+                }
+                bikeParts.Add(new BikePart
+                {
+                    BikeId = 1,
+                    PartId = i + 4,
+                    PartQuantity = 1
                 });
             }
 
