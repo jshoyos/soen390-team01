@@ -31,6 +31,7 @@ namespace soen390_team01
             services.AddTransient<ProductionClient>();
             services.AddTransient<Random>();
             services.AddTransient<ProductionInventoryValidator>();
+            services.AddTransient<IProductionProcessor, ProductionController>();
             services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
             services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
 

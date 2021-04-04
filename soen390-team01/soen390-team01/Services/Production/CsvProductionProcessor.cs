@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using CsvHelper;
-using soen390_team01.Controllers;
 using soen390_team01.Data.Entities;
 using soen390_team01.Models;
 
@@ -11,9 +10,9 @@ namespace soen390_team01.Services
     public class CsvProductionProcessor
     {
         private readonly string _directory;
-        private readonly ProductionController _productionController;
+        private readonly IProductionProcessor _productionController;
 
-        public CsvProductionProcessor(string directory, ProductionController productionController)
+        public CsvProductionProcessor(string directory, IProductionProcessor productionController)
         {
             _directory = directory;
             _productionController = productionController;
@@ -30,23 +29,25 @@ namespace soen390_team01.Services
                 return;
             }
 
-            using var streamReader = File.OpenText(files[0]);
-            using var reader = new CsvReader(streamReader, CultureInfo.CurrentCulture);
-            reader.Read();
-            var record = reader.GetRecord<CsvInput>();
-            _productionController.Process(new ProcessProductionInput
+            using (var streamReader = File.OpenText(files[0]))
             {
-                Production = new Production
+                using var reader = new CsvReader(streamReader, CultureInfo.CurrentCulture);
+                reader.Read();
+                var record = reader.GetRecord<CsvInput>();
+                _productionController.Process(new ProcessProductionInput
                 {
-                    ProductionId = record.ProductionId,
-                    BikeId = record.BikeId,
-                    State = record.State,
-                    Quantity = record.Quantity,
-                    Added = record.Added,
-                    Modified = record.Modified
-                },
-                Quality = record.Quality
-            });
+                    Production = new Production
+                    {
+                        ProductionId = record.ProductionId,
+                        BikeId = record.BikeId,
+                        State = record.State,
+                        Quantity = record.Quantity,
+                        Added = record.Added,
+                        Modified = record.Modified
+                    },
+                    Quality = record.Quality
+                });
+            }
 
             File.Delete(files[0]);
         }

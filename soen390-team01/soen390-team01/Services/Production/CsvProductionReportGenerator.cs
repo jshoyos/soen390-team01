@@ -3,12 +3,20 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace soen390_team01.Services
 {
     public class CsvProductionReportGenerator : IProductionReportGenerator
     {
+        private ILogger<CsvProductionReportGenerator> _log;
+
         public string Name { get; } = "Csv";
+
+        public CsvProductionReportGenerator(ILogger<CsvProductionReportGenerator> log)
+        {
+            _log = log;
+        }
 
         public void Generate(Production prod, string quality)
         {
@@ -47,13 +55,8 @@ namespace soen390_team01.Services
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.ToString());
+                _log.LogError("Csv Production report generation failed: " + e);
             }
-        }
-
-        public void Generate(Production production)
-        {
-            throw new NotImplementedException();
         }
     }
 }

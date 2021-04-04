@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
 
 namespace soen390_team01.Controllers
 {
-    public class ProductionController:  Controller
+    public class ProductionController: Controller, IProductionProcessor
     {
         private readonly IAssemblyService _model;
         private readonly ILogger<ProductionController> _log;
