@@ -78,13 +78,13 @@ namespace soen390_team01.Controllers
             _model.SelectedTab = "production";
             _model.ShowModal = showModal;
 
-            return RedirectToAction("Index", _model);
+            return RedirectToAction("Index");
         }
 
         public IActionResult FixProduction(long productionId)
         {
             _model.FixProduction(productionId);
-            return RedirectToAction("Index", _model);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

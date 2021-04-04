@@ -5,39 +5,45 @@
     var anyStopped = Model.Any(p => p.State == "stopped");
 }
 
-<div class="container">
-    <div class="row pt-4 pb-4 h-100 text-center">
-        @{
-            if (anyStopped)
-            {
-                <div class="col-1">
-                </div>
-            }
-        }
-        <div class="col"><u>ID</u></div>
-        <div class="col"><u>Status</u></div>
-        <div class="col"><u>Quantity</u></div>
-        <div class="col"><u>Added</u></div>
-        <div class="col"><u>Updated</u></div>
-    </div>
-    @foreach (var production in Model)
-    {
-        <div class="row pt-4 pb-4 h-100 text-center">
-            @if (anyStopped)
-            {
-                <div class="col-1" style="text-align: center;">
-                    @if (production.State == "stopped")
+<div class="tableFixHead">
+    <table class="container" id="productionTableCsv" aria-label="pt">
+        <thead>
+            <tr class="row pt-4 pb-4 h-100 text-center">
+                @{
+                    if (anyStopped)
                     {
-                        <button class="btn btn-outline-secondary" onclick="location.href='@Url.Action("FixProduction", "Assembly", new { productionId = production.ProductionId })'">Fix</button>
+                        <th class="col-1" scope="col">
+                        </th>
                     }
-                </div>
-
+                }
+                <th class="col" scope="col">ID</th>
+                <th class="col" scope="col">Status</th>
+                <th class="col" scope="col">Quantity</th>
+                <th class="col" scope="col">Added</th>
+                <th class="col" scope="col">Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var production in Model)
+            {
+                <tr class="row pt-4 pb-4 h-100 text-center">
+                    @if (anyStopped)
+                    {
+                        <td class="col-1">
+                            @if (production.State == "stopped")
+                            {
+                                <button class="btn btn-outline-secondary" onclick="location.href='@Url.Action("FixProduction", "Assembly", new { productionId = production.ProductionId })'">Fix</button>
+                            }
+                        </td>
+                    }
+                    <td class="col">@production.BikeId</td>
+                    <td class="col">@production.State</td>
+                    <td class="col">@production.Quantity</td>
+                    <td class="col">@production.Added.DateTimeLocalString()</td>
+                    <td class="col">@production.Modified.DateTimeLocalString()</td>
+                </tr>
             }
-            <div class="col">@production.BikeId</div>
-            <div class="col">@production.State</div>
-            <div class="col">@production.Quantity</div>
-            <div class="col">@production.Added.DateTimeLocalString()</div>
-            <div class="col">@production.Modified.DateTimeLocalString()</div>
-        </div>
-    }
+        </tbody>
+    </table>
 </div>
+

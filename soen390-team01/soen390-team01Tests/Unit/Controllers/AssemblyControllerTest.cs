@@ -251,5 +251,16 @@ namespace soen390_team01Tests.Unit.Controllers
             _modelMock.Verify(m => m.ResetProductionFilters(), Times.Once());
         }
 
+        [Test]
+        public void FixProductionTest()
+        {
+            _modelMock.Setup(m => m.FixProduction(It.IsAny<long>()));
+
+            var controller = new AssemblyController(_modelMock.Object, _loggerMock.Object);
+
+            controller.FixProduction(1);
+            _modelMock.Verify(m => m.FixProduction(1), Times.Once());
+
+        }
     }
 }

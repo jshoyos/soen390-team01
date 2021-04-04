@@ -33,7 +33,7 @@
 
     <div class="row">
         <!--Table with tabs-->
-        <div class="col-lg-8 mx-lg-auto" id="LHS">
+        <div class="col-lg-8 mx-auto" id="LHS">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 50%;text-align:center;">
                     <a class="nav-link @(Model.SelectedTab == "production" ? "active" : "")" id="productTab" data-toggle="pill" href="#productTabContent" role="tab" aria-controls="productTabContent" aria-selected="@(Model.SelectedTab == "production" ? "true": "false")" onclick="showFilter('production',true);">
@@ -49,9 +49,8 @@
                 </div>
             </div>
         </div>
-        <!--/Table with tabs-->
         <!--Filter area-->
-        <div class="col-lg-3 text-center justify-content-center" id="filter">
+        <div class="col-lg-3 mx-auto text-center justify-content-center" id="filter">
             <div id="production-filter" class="filter-data" style="display:@(Model.SelectedTab == "production" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.ProductionFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
                 <br />
@@ -94,5 +93,4 @@
             </div>
         </div>
     </div>
-    <!-- /Modal for proucrement tab-->
 </body>
