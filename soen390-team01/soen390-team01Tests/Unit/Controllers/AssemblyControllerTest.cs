@@ -250,7 +250,7 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
-        public void FixProductionTest()
+        public void FixProductionValidTest()
         {
             _modelMock.Setup(m => m.FixProduction(It.IsAny<long>()));
 
@@ -258,7 +258,20 @@ namespace soen390_team01Tests.Unit.Controllers
 
             controller.FixProduction(1);
             _modelMock.Verify(m => m.FixProduction(1), Times.Once());
+        }
 
+        [Test]
+        public void FixProductionInvalidTest()
+        {
+            _modelMock.Setup(m => m.FixProduction(It.IsAny<long>())).Throws(new NotFoundException("", "", ""));
+
+            var controller = new AssemblyController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            Assert.IsNotNull(controller.FixProduction(1));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
         }
     }
 }

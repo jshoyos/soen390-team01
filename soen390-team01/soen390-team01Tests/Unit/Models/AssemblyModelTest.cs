@@ -219,14 +219,9 @@ namespace soen390_team01Tests.Unit.Models
         public void AddNewBikeInvalidTest()
         {
             var ctx = new Mock<ErpDbContext>();
-            var nbProductionCall = 0;
-            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
-            {
-                nbProductionCall++;
-                if (nbProductionCall == 1)
-                    throw new DbUpdateException("error", new PostgresException("", "", "", ""));
-            });
-            Assert.Throws<DbUpdateException>(() => new AssemblyModel(ctx.Object, _service).AddNewBike(new BikeOrder()));
+            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Bikes).Throws(new DbUpdateException("error", new PostgresException("", "", "", "")));
+            Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object, _service).AddNewBike(new BikeOrder()));
         }
 
         [Test]
@@ -303,6 +298,18 @@ namespace soen390_team01Tests.Unit.Models
             Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object, _service).UpdateProduction(new Production()));
         }
 
+        [Test]
+        public void FixProductionTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            var model = new AssemblyModel(_context, _service);
+            // Valid production id
+            model.FixProduction(1);
+            var updatedProduction = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
+            Assert.AreEqual("completed", updatedProduction.State);
 
+            // Invalid production id
+            Assert.Throws<NotFoundException>(() => model.FixProduction(2547215));
+        }
     }
 }

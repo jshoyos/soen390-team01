@@ -89,11 +89,8 @@ namespace soen390_team01.Models
                 {
                     throw new InsufficientBikePartsException();
                 }
-                else
-                {
-                    _productionService.ProduceBike(bike, order.ItemQuantity);
-                    
-                }
+
+                _productionService.ProduceBike(bike, order.ItemQuantity);
                 Productions = GetProductions();
             }
             catch (DbUpdateException e)
@@ -169,13 +166,16 @@ namespace soen390_team01.Models
 
         public void FixProduction(long productionId)
         {
-            var prod = _context.Productions.First(p => p.ProductionId == productionId);
-            if (prod == null)
+            try
             {
-                return;
+                var prod = _context.Productions.First(p => p.ProductionId == productionId);
+                prod.State = ProductionState.completed.ToString();
+                _context.SaveChanges();
             }
-            prod.State = ProductionState.completed.ToString();
-            _context.SaveChanges();
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("Production", "ProductionId", productionId.ToString());
+            }
         }
     }
 }

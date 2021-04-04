@@ -83,7 +83,14 @@ namespace soen390_team01.Controllers
 
         public IActionResult FixProduction(long productionId)
         {
-            _model.FixProduction(productionId);
+            try
+            {
+                _model.FixProduction(productionId);
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
             return RedirectToAction("Index");
         }
 

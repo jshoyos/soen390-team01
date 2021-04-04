@@ -152,13 +152,13 @@ namespace soen390_team01Tests.Unit.Services
             csvGeneratorMock.Setup(g => g.Name).Returns("Csv");
             webGeneratorMock.Setup(g => g.Name).Returns("Web");
             csvGeneratorMock.Setup(g => g.Generate(It.IsAny<Production>(), It.IsAny<string>()));
-            _randMock.Setup(r => r.Next(10)).Returns(1); // Results in production completion
+            _randMock.Setup(r => r.Next(10)).Returns(0); // Results in production stopped
             _randMock.Setup(r => r.Next(5)).Returns(1); // Results in good quality
             _randMock.Setup(r => r.Next(2)).Returns(1); // Results in using the csv generator
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
+            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators) { Interval = 0 };
 
             service.ProduceBike(bike, 15);//After this, there will be no built part left to build the first bike
 
@@ -175,6 +175,8 @@ namespace soen390_team01Tests.Unit.Services
                     Assert.AreEqual(75, _context.Inventories.First(i => i.ItemId == partMaterial.MaterialId && i.Type == "material").Quantity);
                 }
             }
+
+            csvGeneratorMock.Verify(m => m.Generate(It.IsAny<Production>(), "none"), Times.Once);
         }
 
         [Test, Order(2)]
@@ -194,7 +196,7 @@ namespace soen390_team01Tests.Unit.Services
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
+            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators) { Interval = 0 };
 
             service.ProduceBike(bike, 1);
 
@@ -212,6 +214,8 @@ namespace soen390_team01Tests.Unit.Services
                     Assert.AreEqual(0, _context.Inventories.First(i => i.ItemId == partMaterial.MaterialId && i.Type == "material").Quantity);
                 }
             }
+
+            webGeneratorMock.Verify(m => m.Generate(It.IsAny<Production>(), "bad"), Times.Once);
         }
 
         [Test, Order(3)]
@@ -228,7 +232,7 @@ namespace soen390_team01Tests.Unit.Services
 
             _generators = new List<IProductionReportGenerator> { csvGeneratorMock.Object, webGeneratorMock.Object };
 
-            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators);
+            var service = new ProductionService(_context, new ProductionInventoryValidator(), _randMock.Object, _generators) { Interval = 1 };
             service.FixStoppedProduction(_context.Productions.First());
 
             try
