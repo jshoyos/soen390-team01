@@ -54,7 +54,7 @@
             <div id="production-filter" class="filter-data" style="display:@(Model.SelectedTab == "production" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.ProductionFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
                 <br />
-                <button class="btn btn-primary" id="bikebutton" data-toggle="modal" data-target="#bikeModal">New Bike</button>
+                <button class="btn btn-primary" id="bikebutton" data-toggle="modal" data-target="#bikeModal">New Production</button>
             </div>
         </div>
     </div>
@@ -63,30 +63,28 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="bikeModalTitle">New Bike</h5>
+                    <h5 class="modal-title" id="bikeModalTitle">New Production</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" id="modal-newBike">
                     <form method="post" asp-controller="Assembly" asp-action="AddProduction">
-                        <div class="col-4 text-right">
-                            <label asp-for="BikeOrder.BikeId">Item ID</label>
-                        </div>
-                        <div class="col-6">
-                            <input asp-for="BikeOrder.BikeId" class="form-control" />
-                            <span asp-validation-for="BikeOrder.BikeId" class="text-danger"></span>
-                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-3 text-left">
+                                <label asp-for="BikeOrder.BikeId">Bike ID</label>
+                                <input asp-for="BikeOrder.BikeId" class="form-control" />
+                                <span asp-validation-for="BikeOrder.BikeId" class="text-danger"></span>
+                            </div>
 
-                        <div class="col-4 text-right">
-                            <label asp-for="BikeOrder.ItemQuantity">Item Quantity</label>
-                        </div>
-                        <div class="col-6">
-                            <input asp-for="BikeOrder.ItemQuantity" class="form-control" />
-                            <span asp-validation-for="BikeOrder.ItemQuantity" class="text-danger"></span>
+                            <div class="col-3 text-left">
+                                <label asp-for="BikeOrder.ItemQuantity">Quantity</label>
+                                <input asp-for="BikeOrder.ItemQuantity" class="form-control" />
+                                <span asp-validation-for="BikeOrder.ItemQuantity" class="text-danger"></span>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"> Check</button>
+                            <button type="submit" class="btn btn-primary">Build</button>
                         </div>
                     </form>
                 </div>
