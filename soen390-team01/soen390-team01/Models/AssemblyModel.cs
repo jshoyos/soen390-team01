@@ -166,5 +166,16 @@ namespace soen390_team01.Models
             }
 
         }
+
+        public void FixProduction(long productionId)
+        {
+            var prod = _context.Productions.First(p => p.ProductionId == productionId);
+            if (prod == null)
+            {
+                return;
+            }
+            prod.State = ProductionState.completed.ToString();
+            _context.SaveChanges();
+        }
     }
 }

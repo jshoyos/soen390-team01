@@ -37,6 +37,11 @@ namespace soen390_team01.Services
         /// <param name="order"></param>
         public void AddNewBike(BikeOrder order);
         /// <summary>
+        /// Fixes a production's state
+        /// </summary>
+        /// <param name="productionId"></param>
+        public void FixProduction(long productionId);
+        /// <summary>
         /// Updates the inventory with new bike order
         /// </summary>
         /// <param name="production"></param>

@@ -100,7 +100,7 @@ namespace soen390_team01.Services
             var quality = "none";
 
             // 9/10 productions will be completed. The rest will be stopped
-            if (_rand.Next(10) > 0)
+            if (_rand.Next(1) > 0)
             {
                 state = ProductionState.completed;
                 // 1/5 productions will have bad quality

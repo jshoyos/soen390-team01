@@ -81,6 +81,12 @@ namespace soen390_team01.Controllers
             return RedirectToAction("Index", _model);
         }
 
+        public IActionResult FixProduction(long productionId)
+        {
+            _model.FixProduction(productionId);
+            return RedirectToAction("Index", _model);
+        }
+
         [HttpPost]
         [FiltersAction]
         public IActionResult FilterAssemblyTable([FromBody] MobileFiltersInput mobileFiltersInput)
