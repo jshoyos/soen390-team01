@@ -83,7 +83,6 @@ namespace soen390_team01Tests.Unit.Controllers
             var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
             Assert.IsNotNull(resultProduction);
             Assert.AreEqual("Index", resultProduction.ActionName);
-            Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
         [Test]
         public void AddProductionInsufficientTest()
@@ -113,7 +112,6 @@ namespace soen390_team01Tests.Unit.Controllers
             var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
             Assert.IsNotNull(resultProduction);
             Assert.AreEqual("Index", resultProduction.ActionName);
-            Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
         private AssemblyModel CreateModel(bool lessBikeParts)
         {
