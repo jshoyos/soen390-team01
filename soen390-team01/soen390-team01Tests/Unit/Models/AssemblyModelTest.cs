@@ -279,6 +279,7 @@ namespace soen390_team01Tests.Unit.Models
         public void UpdateProductionStateValidTest()
         {
             var production = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
+            production.State = "inProgress";
             _model.UpdateProduction(production);
             var updatedProduction = _context.Productions.FirstOrDefault(p => p.ProductionId == 1);
             Assert.AreEqual("inProgress", updatedProduction.State);
