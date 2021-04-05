@@ -26,7 +26,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpGet]
-        [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep + "," + Role.Admin)]
+        [ModulePermission(Roles = Role.InventoryManager + "," + Role.SalesRep + "," + Role.Admin)]
         public IActionResult Index()
         {
             _model.ShowFilters = false;
@@ -34,6 +34,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
+        [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult AddProduction(AssemblyModel model)
         {
             var showModal = false;
@@ -81,6 +82,7 @@ namespace soen390_team01.Controllers
             return RedirectToAction("Index");
         }
 
+        [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult FixProduction(long productionId)
         {
             try
@@ -118,6 +120,7 @@ namespace soen390_team01.Controllers
 
             return PartialView("AssemblyBody", _model);
         }
+
         [HttpPost]
         public IActionResult Refresh([FromBody] RefreshTabInput refreshTabInput)
         {

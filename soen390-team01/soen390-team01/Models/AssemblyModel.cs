@@ -79,12 +79,12 @@ namespace soen390_team01.Models
             try
             {
                 var bike = _context.Bikes
-                                   .Include(b => b.BikeParts)
-                                   .ThenInclude(p => p.Part)
-                                   .ThenInclude(pm => pm.PartMaterials)
-                                   .ThenInclude(m => m.Material)
-                                   .First(b => b.ItemId == order.BikeId);
-             
+                    .Include(b => b.BikeParts)
+                    .ThenInclude(p => p.Part)
+                    .ThenInclude(pm => pm.PartMaterials)
+                    .ThenInclude(m => m.Material)
+                    .First(b => b.ItemId == order.BikeId);
+
                 if (bike.BikeParts.Count < 5)
                 {
                     throw new InsufficientBikePartsException();
@@ -96,6 +96,10 @@ namespace soen390_team01.Models
             catch (DbUpdateException e)
             {
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("Bike", "BikeId", order.BikeId.ToString());
             }
         }
         /// <summary>

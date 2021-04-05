@@ -216,12 +216,21 @@ namespace soen390_team01Tests.Unit.Models
         }
 
         [Test]
-        public void AddNewBikeInvalidTest()
+        public void AddNewBikeDbExceptionTest()
         {
             var ctx = new Mock<ErpDbContext>();
             ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
             ctx.Setup(c => c.Bikes).Throws(new DbUpdateException("error", new PostgresException("", "", "", "")));
             Assert.Throws<UnexpectedDataAccessException>(() => new AssemblyModel(ctx.Object, _service).AddNewBike(new BikeOrder()));
+        }
+
+        [Test]
+        public void AddNewBikeInvalidIdTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Productions).Returns(new List<Production>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Bikes).Throws(new InvalidOperationException());
+            Assert.Throws<NotFoundException>(() => new AssemblyModel(ctx.Object, _service).AddNewBike(new BikeOrder()));
         }
 
         [Test]

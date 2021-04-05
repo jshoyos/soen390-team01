@@ -73,13 +73,13 @@
                         <div class="row justify-content-center">
                             <div class="col-3 text-left">
                                 <label asp-for="BikeOrder.BikeId">Bike ID</label>
-                                <input asp-for="BikeOrder.BikeId" class="form-control" />
+                                <input type="number" min="1" asp-for="BikeOrder.BikeId" class="form-control" />
                                 <span asp-validation-for="BikeOrder.BikeId" class="text-danger"></span>
                             </div>
 
                             <div class="col-3 text-left">
                                 <label asp-for="BikeOrder.ItemQuantity">Quantity</label>
-                                <input asp-for="BikeOrder.ItemQuantity" class="form-control" />
+                                <input type="number" min="1" asp-for="BikeOrder.ItemQuantity" class="form-control" />
                                 <span asp-validation-for="BikeOrder.ItemQuantity" class="text-danger"></span>
                             </div>
                         </div>
