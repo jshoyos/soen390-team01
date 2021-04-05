@@ -26,6 +26,35 @@ namespace soen390_team01Tests.Unit.Controllers
         }
 
         [Test]
+        public void ProcessProductionValidTest()
+        {
+            ProcessProductionInput input = new ProcessProductionInput
+            {
+                Production = new Production
+                {
+                    BikeId = 1,
+                    ProductionId = 1,
+                    Quantity = 1,
+                    State = "completed",
+
+                },
+                Quality = "good"
+            };
+
+            _modelMock.Setup(m => m.UpdateInventory(It.IsAny<Production>())).Returns(new Inventory());
+            _modelMock.Setup(m => m.UpdateProduction(It.IsAny<Production>())).Returns(input.Production);
+
+            var controller = new ProductionController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+            controller.Process(input);
+            Assert.Null(controller.TempData["errorMessage"]);
+            _modelMock.Verify(m => m.UpdateInventory(input.Production), Times.Once);
+            _modelMock.Verify(m => m.UpdateProduction(input.Production), Times.Once);
+        }
+
+        [Test]
         public void ProcessProductionInvalidTest()
         {
             ProcessProductionInput input = new ProcessProductionInput

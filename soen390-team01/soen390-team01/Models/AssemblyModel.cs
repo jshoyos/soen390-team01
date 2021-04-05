@@ -79,26 +79,27 @@ namespace soen390_team01.Models
             try
             {
                 var bike = _context.Bikes
-                                   .Include(b => b.BikeParts)
-                                   .ThenInclude(p => p.Part)
-                                   .ThenInclude(pm => pm.PartMaterials)
-                                   .ThenInclude(m => m.Material)
-                                   .First(b => b.ItemId == order.BikeId);
-             
+                    .Include(b => b.BikeParts)
+                    .ThenInclude(p => p.Part)
+                    .ThenInclude(pm => pm.PartMaterials)
+                    .ThenInclude(m => m.Material)
+                    .First(b => b.ItemId == order.BikeId);
+
                 if (bike.BikeParts.Count < 5)
                 {
                     throw new InsufficientBikePartsException();
                 }
-                else
-                {
-                    _productionService.ProduceBike(bike, order.ItemQuantity);
-                    
-                }
+
+                _productionService.ProduceBike(bike, order.ItemQuantity);
                 Productions = GetProductions();
             }
             catch (DbUpdateException e)
             {
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("Bike", "BikeId", order.BikeId.ToString());
             }
         }
         /// <summary>
@@ -165,6 +166,20 @@ namespace soen390_team01.Models
                 throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
 
+        }
+
+        public void FixProduction(long productionId)
+        {
+            try
+            {
+                var prod = _context.Productions.First(p => p.ProductionId == productionId);
+                prod.State = ProductionState.completed.ToString();
+                _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("Production", "ProductionId", productionId.ToString());
+            }
         }
     }
 }

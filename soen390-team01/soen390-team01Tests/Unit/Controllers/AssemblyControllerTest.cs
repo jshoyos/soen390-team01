@@ -83,7 +83,6 @@ namespace soen390_team01Tests.Unit.Controllers
             var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
             Assert.IsNotNull(resultProduction);
             Assert.AreEqual("Index", resultProduction.ActionName);
-            Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
         [Test]
         public void AddProductionInsufficientTest()
@@ -113,7 +112,6 @@ namespace soen390_team01Tests.Unit.Controllers
             var resultProduction = controller.AddProduction(inputModel) as RedirectToActionResult;
             Assert.IsNotNull(resultProduction);
             Assert.AreEqual("Index", resultProduction.ActionName);
-            Assert.AreEqual(6, resultProduction.RouteValues.Count);
         }
         private AssemblyModel CreateModel(bool lessBikeParts)
         {
@@ -251,5 +249,29 @@ namespace soen390_team01Tests.Unit.Controllers
             _modelMock.Verify(m => m.ResetProductionFilters(), Times.Once());
         }
 
+        [Test]
+        public void FixProductionValidTest()
+        {
+            _modelMock.Setup(m => m.FixProduction(It.IsAny<long>()));
+
+            var controller = new AssemblyController(_modelMock.Object, _loggerMock.Object);
+
+            controller.FixProduction(1);
+            _modelMock.Verify(m => m.FixProduction(1), Times.Once());
+        }
+
+        [Test]
+        public void FixProductionInvalidTest()
+        {
+            _modelMock.Setup(m => m.FixProduction(It.IsAny<long>())).Throws(new NotFoundException("", "", ""));
+
+            var controller = new AssemblyController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            };
+
+            Assert.IsNotNull(controller.FixProduction(1));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
+        }
     }
 }

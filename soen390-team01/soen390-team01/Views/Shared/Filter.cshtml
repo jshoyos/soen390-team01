@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="\css\Filter.css">
 
 <div id="@Model.Table-filter-body">
-    <h1 class="display-4">Filter</h1>
+    <h2>Filter</h2>
     @foreach (var filter in Model.List)
     {
         <p><strong>@filter.DisplayColumn</strong></p>
@@ -82,50 +82,9 @@
             <br /><br />
         }
     }
-    <br /><br />
+    <br/>
     <input type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
     <br /><br />
 
-    @if (Model.Tab == "inventory")
-    {
-        @*<a href="#" onclick="generateCsv('inventoryTableCsv');">Generate Inventory Report</a>*@
-        <button class="btn btn-primary" onclick="generateCsv('inventoryTableCsv');">Generate Inventory Report</button>
-    }
-    else if (Model.Tab == "bike")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('bikeTableCsv');">Generate Bike Report</button>
-    }
-    else if (Model.Tab == "part")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('partTableCsv');">Generate Part Report</button>
-    }
-    else if (Model.Tab == "material")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('materialTableCsv');">Generate Material Report</button>
-    }
-    else if (Model.Tab == "order")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('orderTableCsv');">Generate Order Report</button>
-    }
-    else if (Model.Tab == "procurement")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('procurementTableCsv');">Generate Procurement Report</button>
-    }
-    else if (Model.Tab == "payment")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('paymentTableCsv');">Generate Payments Report</button>
-    }
-    else if (Model.Tab == "receivable")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('receivableTableCsv');">Generate Receivable Report</button>
-    }
-    else if (Model.Tab == "production")
-    {
-        <button class="btn btn-primary" onclick="generateCsv('productionTableCsv');">Generate Production Report</button>
-    }
-    else
-    {
-        <button class="btn btn-primary" onclick="generateCsv('payableTableCsv');">Generate Payable Report</button>
-    }
-
+    <button class="btn btn-primary" onclick="generateCsv('@(Model.Tab + "TableCsv")');">Generate @(System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Model.Tab)) Report</button>
 </div>

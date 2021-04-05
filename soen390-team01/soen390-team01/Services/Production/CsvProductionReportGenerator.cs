@@ -3,18 +3,34 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace soen390_team01.Services
 {
     public class CsvProductionReportGenerator : IProductionReportGenerator
     {
+        private readonly ILogger<CsvProductionReportGenerator> _log;
+
         public string Name { get; } = "Csv";
+
+        public CsvProductionReportGenerator(ILogger<CsvProductionReportGenerator> log)
+        {
+            _log = log;
+        }
 
         public void Generate(Production prod, string quality)
         {
             var sb = new StringBuilder();
             const string DELIMITER = ",";
 
+            sb.Append("ProductionId" + DELIMITER);
+            sb.Append("BikeId" + DELIMITER);
+            sb.Append("State" + DELIMITER);
+            sb.Append("Quantity" + DELIMITER);
+            sb.Append("Added" + DELIMITER);
+            sb.Append("Modified" + DELIMITER);
+            sb.Append("Quality");
+            sb.AppendLine();
             sb.Append(prod.ProductionId + DELIMITER);
             sb.Append(prod.BikeId + DELIMITER);
             sb.Append(prod.State + DELIMITER);
@@ -39,13 +55,8 @@ namespace soen390_team01.Services
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.ToString());
+                _log.LogError("Csv Production report generation failed: " + e);
             }
-        }
-
-        public void Generate(Production production)
-        {
-            throw new NotImplementedException();
         }
     }
 }

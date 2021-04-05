@@ -15,16 +15,16 @@
                 <ul>
                     @foreach (var missingPart in Model)
                     {
-                        <li>
-                            Missing Part ID: @missingPart.Part.ItemId ( @missingPart.Quantity )
-                            
-                            <ul>
-                                @foreach (var missingMaterial in missingPart.MissingMaterials)
-                                {
-                                    <li>  Missing Material ID: @missingMaterial.Material.ItemId ( @missingMaterial.Quantity )</li>
-                                }
-                            </ul>
-                        </li>
+                    <li>
+                        Missing Part  ( @missingPart.Quantity ) - ID: @missingPart.Part.ItemId
+
+                        <ul>
+                            @foreach (var missingMaterial in missingPart.MissingMaterials)
+                            {
+                                <li>  Missing Material ( @missingMaterial.Quantity ) - ID: @missingMaterial.Material.ItemId </li>
+                            }
+                        </ul>
+                    </li>
                     }
                 </ul>
 

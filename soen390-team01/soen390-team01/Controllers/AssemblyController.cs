@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,7 +12,6 @@ using soen390_team01.Services;
 namespace soen390_team01.Controllers
 {
     [Authorize]
-
     public class AssemblyController : Controller
     {
         private readonly IAssemblyService _model;
@@ -26,7 +24,7 @@ namespace soen390_team01.Controllers
         }
 
         [HttpGet]
-        [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep + "," + Role.Admin)]
+        [ModulePermission(Roles = Role.InventoryManager)]
         public IActionResult Index()
         {
             _model.ShowFilters = false;
@@ -78,7 +76,20 @@ namespace soen390_team01.Controllers
             _model.SelectedTab = "production";
             _model.ShowModal = showModal;
 
-            return RedirectToAction("Index", _model);
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult FixProduction(long productionId)
+        {
+            try
+            {
+                _model.FixProduction(productionId);
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -105,6 +116,7 @@ namespace soen390_team01.Controllers
 
             return PartialView("AssemblyBody", _model);
         }
+
         [HttpPost]
         public IActionResult Refresh([FromBody] RefreshTabInput refreshTabInput)
         {

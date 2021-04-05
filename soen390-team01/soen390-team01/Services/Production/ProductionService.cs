@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using soen390_team01.Data;
@@ -118,8 +117,22 @@ namespace soen390_team01.Services
 
         private async Task GenerateProductionReport(Production prod, string quality)
         {
+            var scaledInterval = Interval;
+
+            if (prod.Quantity >= 50)
+            {
+                if (prod.Quantity >= 500)
+                {
+                    scaledInterval *= 3;
+                }
+                else
+                {
+                    scaledInterval *= 2;
+                }
+            }
+
             // Waiting the duration of the interval before generating the report
-            await Task.Delay(Interval);
+            await Task.Delay(scaledInterval);
 
             // Randomizing which report type is produced
             if (_rand.Next(2) == 1)
