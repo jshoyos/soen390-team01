@@ -44,6 +44,11 @@ namespace soen390_team01.Models
             MaterialFilters = ResetMaterialFilters();
         }
 
+        public void Search(string BikeId)
+        {
+            
+            
+        }
         /// <summary>
         /// Resets BikeList and its filters
         /// </summary>

@@ -11,6 +11,8 @@ using soen390_team01.Models;
 using soen390_team01.Services;
 using System;
 using System.IO;
+using System.Reactive.Linq;
+using soen390_team01.Controllers;
 
 namespace soen390_team01
 {
@@ -26,16 +28,26 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ProductionClient>();
+            services.AddTransient<Random>();
+            services.AddTransient<ProductionInventoryValidator>();
+            services.AddTransient<IProductionProcessor, ProductionController>();
+            services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
+            services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
+
             services.AddSingleton<AuthenticationFirebaseService>();
+            services.AddSingleton<IProductionService,ProductionService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
             services.AddSingleton<IAccountingService, AccountingModel>();
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<ITransferService, TransfersModel>();
+            services.AddSingleton<IAssemblyService, AssemblyModel>();
+            services.AddSingleton(s => new CsvProductionProcessor("productions", new ProductionController(s.GetService<IAssemblyService>(), s.GetService<ILogger<ProductionController>>())));
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
-                ));
+            ));
             services.AddDataProtection();
-            services.AddControllersWithViews()
+            services.AddControllers()
                 .AddRazorRuntimeCompilation();
             services.AddRazorPages(options =>
             {
@@ -44,8 +56,6 @@ namespace soen390_team01
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
                     options.LoginPath = "/Authentication/index";
                 });
             services.AddDbContext<ErpDbContext>(options =>
@@ -58,8 +68,7 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            var currentDate = DateTime.Now.ToString("dd.MM,yyyy");
-            loggerFactory.AddFile($"Logs/Log.txt");
+            loggerFactory.AddFile("Logs/Log.txt");
 
             if (env.IsDevelopment())
             {
@@ -85,6 +94,14 @@ namespace soen390_team01
                     name: "default",
                     pattern: "{controller=Authentication}/{action=Index}/{id?}");
             });
+
+            if (!Directory.Exists("productions"))
+            {
+                Directory.CreateDirectory("productions");
+            }
+
+            var timer = Observable.Interval(TimeSpan.FromSeconds(5));
+            timer.Subscribe(tick => { app.ApplicationServices.GetService<CsvProductionProcessor>()!.Process(); });
         }
     }
 }

@@ -16,15 +16,17 @@
         </tr>
         @foreach (var item in Model)
         {
-            <tr class="row pt-4 pb-4 h-100 text-center">
-                <td class="col idbutton" data-toggle="modal" data-target="#bikeParts" aria-hidden="true">@item.ItemId</td>
-                <td class="col">@item.Name</td>
-                <td class="col">@item.Price</td>
-                <td class="col">@item.Grade</td>
-                <td class="col">@item.Size</td>
-                <td class="col">@item.Added.DateTimeLocalString()</td>
-                <td class="col">@item.Updated.DateTimeLocalString()</td>
-            </tr>
+    <tr class="row pt-4 pb-4 h-100 text-center">
+        <td class="col idbutton" data-toggle="modal" data-target="#bikeParts" aria-hidden="true">@item.ItemId</td>
+        <td class="col">@item.Name</td>
+        <td class="col">@item.Price</td>
+        <td class="col">@item.Grade</td>
+        <td class="col">@item.Size</td>
+        <td class="col">@item.Added.DateTimeLocalString()</td>
+        <td class="col">@item.Updated.DateTimeLocalString()</td>
+        @*<td class="col">@item.BikeParts.ToList()</td>*@
+        @{await Html.RenderPartialAsync("BikePartList", item.BikeParts.ToList());}
+    </tr>
         }
 
     </table>

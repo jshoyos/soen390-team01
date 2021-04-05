@@ -10,7 +10,6 @@ namespace soen390_team01.Data.Entities
         public long BikeId { get; set; }
         public long PartId { get; set; }
         public int PartQuantity { get; set; }
-        public long BikePartId { get; set; }
 
         public virtual Bike Bike { get; set; }
         public virtual Part Part { get; set; }

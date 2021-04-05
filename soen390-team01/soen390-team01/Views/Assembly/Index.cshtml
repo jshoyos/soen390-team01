@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Newtonsoft.Json
+@using soen390_team01.Services
+@model soen390_team01.Services.IAssemblyService
+
+@{
+    ViewData["Title"] = "Assembly";
+}
+<head>
+    <title>Assembly</title>
+
+    <link rel="stylesheet" href="\css\Assembly.css">
+    <meta name="viewport" content="width=device-width" />
+    <script>
+        function passingFilters(filters, displayedName, filterInput, mobile) {
+            filters.List = adjustFilters(filters, displayedName, filterInput);
+
+            $.ajax({
+                url: '@Url.Action("FilterAssemblyTable", "Assembly")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    "filters": filters,
+                    "mobile": mobile
+                }),
+                dataType: 'html',
+                success: function (result) {
+                    $('.assembly-view').html(result);
+                }
+            });
+
+        };
+        function refreshFilter(type, mobile) {
+
+            $.ajax({
+                url: '@Url.Action("Refresh", "Assembly")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    selectedTab: type,
+                    mobile: mobile
+                }),
+                dataType: 'html',
+                success: function (result) {
+                    $('.assembly-view').html(result);
+                }
+            });
+        };
+
+    </script>
+</head>
+
+<div class="assembly-view">
+    @{await Html.RenderPartialAsync("AssemblyBody", Model);}
+    @if (TempData["missingParts"] != null)
+    {
+        await Html.RenderPartialAsync("MissingParts", JsonConvert.DeserializeObject<List<MissingPart>>(TempData["missingParts"] as string));
+        TempData["missingParts"] = null;
+    }
+</div>
