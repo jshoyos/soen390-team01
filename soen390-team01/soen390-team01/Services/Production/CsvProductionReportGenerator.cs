@@ -9,7 +9,7 @@ namespace soen390_team01.Services
 {
     public class CsvProductionReportGenerator : IProductionReportGenerator
     {
-        private ILogger<CsvProductionReportGenerator> _log;
+        private readonly ILogger<CsvProductionReportGenerator> _log;
 
         public string Name { get; } = "Csv";
 
