@@ -3,7 +3,7 @@
 @model List<soen390_team01.Data.Entities.Part>
 
 <!--Desktop view-->
-<table class="container userDesktop" id = "partTableCsv" aria-label="Parts">
+<table class="table table-bordered table-hover userDesktop" id = "partTableCsv" aria-label="Parts">
     <tr>
         <th scope="col">ItemId</th>
         <th scope="col">Name</th>
@@ -35,5 +35,14 @@
         <th scope="col">Name</th>
         <th scope="col">Price</th>
     </tr>
+    @foreach (var item in Model)
+    {
+<tr>
+    <th class="btn btn-outline-info w-100" scope="col">Expand</th>
+    <td scope="col">@item.ItemId</td>
+    <td scope="col">@item.Name</td>
+    <td scope="col">@item.Price</td>
+</tr>   
+    }
 </table>
 

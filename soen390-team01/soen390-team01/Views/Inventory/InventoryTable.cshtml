@@ -1,19 +1,19 @@
 ﻿@using Newtonsoft.Json
 @model List<soen390_team01.Data.Entities.Inventory>
 
-<table class="container userDesktop" id = "inventoryTableCsv" aria-label="Inventory">
-    <tr class="row pt-4 pb-4 h-100 text-center">
-        <th class="col" scope="col">Id</th>
-        <th class="col" scope="col">ItemId</th>
-        <th class="col" scope="col">Type</th>
-        <th class="col" scope="col">Warehouse</th>
-        <th class="col" scope="col">Quantity</th>
-        <th class="col" scope="col">Added</th>
-        <th class="col" scope="col">Updated</th>
+<table class="table table-bordered table-hover userDesktop" id = "inventoryTableCsv" aria-label="Inventory">
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">ItemId</th>
+        <th scope="col">Type</th>
+        <th scope="col">Warehouse</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Added</th>
+        <th scope="col">Updated</th>
     </tr>
     @foreach (var item in Model)
     {
-        <tr class="@("itemRow" + item.InventoryId) row pt-4 pb-4 h-100 text-center">
+        <tr class="@("itemRow" + item.InventoryId)">
             @{await Html.RenderPartialAsync("InventoryItem", item);}
         </tr>
     }
