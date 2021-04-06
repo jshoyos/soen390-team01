@@ -101,6 +101,37 @@ namespace soen390_team01.Controllers
 
             return PartialView("InventoryItem", inventory);
         }
+
+        [HttpPost]
+
+        public IActionResult AddPart([FromBody] BikePart addPart)
+        {
+            try
+            {
+                _model.AddPart(addPart);
+            }
+
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+
+            return PartialView("InventoryBody", _model);
+        }
+        public IActionResult RemovePart([FromBody] BikePart removePart)
+        {
+            try
+            {
+                _model.RemovePart(removePart);
+            }
+
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+
+            return PartialView("InventoryBody", _model);
+        }
     }
 }
 

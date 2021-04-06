@@ -1,6 +1,6 @@
 ﻿@using Newtonsoft.Json
 @using soen390_team01.Data
-@model soen390_team01.Data.Entities.BikePart
+@model HashSet<soen390_team01.Data.Entities.BikePart>
 
 <link rel="stylesheet" href="\css\Inventory.css">
 
@@ -19,8 +19,9 @@
                         <tr class="row pt-4 pb-2 h-100 text-center">
                             <th class="col">ID</th>
                             <th class="col">Name</th>
+                            <th class="col">Quantity</th>
                         </tr>
-                        @foreach (var item in Model)
+                        @foreach (var item  in Model)
                         {
                             <tr class="row pt-4 pb-4 h-100 text-center">
                                 <td class="col">@item.PartId</td>

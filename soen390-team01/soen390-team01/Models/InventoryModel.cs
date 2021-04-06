@@ -132,6 +132,43 @@ namespace soen390_team01.Models
             }
         }
 
+        public void AddPart(BikePart addPart)
+        {
+            if (_context.Parts.First(p => p.ItemId == addPart.PartId) != null)
+            {
+                //var b = _context.Bikes.First(b => b.ItemId == addPart.BikeId);
+                _context.BikeParts.Add(addPart);
+                _context.SaveChanges();
+            }
+        }
+
+        public void RemovePart(BikePart removePart)
+        {
+            if (_context.Parts.First(p => p.ItemId == removePart.PartId) != null && _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId) != null)
+            {
+                _context.BikeParts.Remove(removePart);
+                _context.SaveChanges();
+            }
+        }
+        public void AddMaterial(PartMaterial addMat)
+        {
+            if (_context.Materials.First(p => p.ItemId == addMat.MaterialId) != null)
+            {
+                //var b = _context.Bikes.First(b => b.ItemId == addPart.BikeId);
+                _context.PartMaterials.Add(addMat);
+                _context.SaveChanges();
+            }
+        }
+
+        public void RemoveMaterial(PartMaterial removeMat)
+        {
+            if (_context.Materials.First(p => p.ItemId == removeMat.MaterialId) != null && _context.PartMaterials.First(p => p.PartId == removeMat.MaterialId && p.PartId == removeMat.PartId) != null)
+            {
+                _context.PartMaterials.Remove(removeMat);
+                _context.SaveChanges();
+            }
+        }
+
         private Filters ResetInventoryFilters()
         {
             var filters = new Filters("inventory");

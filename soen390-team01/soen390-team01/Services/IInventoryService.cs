@@ -47,5 +47,11 @@ namespace soen390_team01.Services
         /// </summary>
         /// <param name="inventory">inventory item to update</param>
         public Inventory Update(Inventory inventory);
+        public void AddPart(BikePart addPart);
+        public void RemovePart(BikePart removePart);
+        public void AddMaterial(PartMaterial addMat);
+        public void RemoveMaterial(PartMaterial removeMat);
+
+
     }
 }

@@ -24,8 +24,7 @@
         <td class="col">@item.Size</td>
         <td class="col">@item.Added.DateTimeLocalString()</td>
         <td class="col">@item.Updated.DateTimeLocalString()</td>
-        @*<td class="col">@item.BikeParts.ToList()</td>*@
-        @{await Html.RenderPartialAsync("BikePartList", item.BikeParts.ToList());}
+        @{await Html.RenderPartialAsync("BikePartList", item.BikeParts);}
     </tr>
         }
 
