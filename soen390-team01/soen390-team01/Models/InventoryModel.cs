@@ -240,7 +240,8 @@ namespace soen390_team01.Models
 
         private List<Part> GetAllParts()
         {
-            return _context.Parts.Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList();
+            return _context.Parts.Include(part => part.PartMaterials).OrderBy(part => part.ItemId).Select(
+                part => {part.PartMaterials = part.PartMaterials.Select(pm => { pm.Part = null; return pm; }).ToList(); return part; }).ToList();
         }
 
         private List<Material> GetAllMaterials()
