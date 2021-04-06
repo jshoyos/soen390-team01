@@ -11,7 +11,7 @@ using soen390_team01.Data.Queries;
 using soen390_team01.Services;
 
 namespace soen390_team01.Models
-{ 
+{
     public class InventoryModel : Inventory, IInventoryService
     {
 
@@ -44,11 +44,6 @@ namespace soen390_team01.Models
             MaterialFilters = ResetMaterialFilters();
         }
 
-        public void Search(string BikeId)
-        {
-            
-            
-        }
         /// <summary>
         /// Resets BikeList and its filters
         /// </summary>
@@ -144,12 +139,14 @@ namespace soen390_team01.Models
 
         public Bike RemoveBikePart(BikePart removePart)
         {
-            if (_context.Parts.First(p => p.ItemId == removePart.PartId) != null && _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId) != null)
+            var actualBikePart = _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId);
+
+            if (_context.Parts.First(p => p.ItemId == removePart.PartId) != null && actualBikePart != null)
             {
-                _context.BikeParts.Remove(removePart);
+                _context.BikeParts.Remove(actualBikePart);
                 _context.SaveChanges();
             }
-            return _context.Bikes.First(b => b.ItemId == removePart.BikeId);
+            return _context.Bikes.Include(b => b.BikeParts).First(b => b.ItemId == removePart.BikeId);
         }
         public void AddMaterial(PartMaterial addMat)
         {
@@ -235,13 +232,36 @@ namespace soen390_team01.Models
 
         private List<Bike> GetAllBikes()
         {
-            return _context.Bikes.Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList();
+            return _context.Bikes.Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList()
+                .ConvertAll(
+                    bike =>
+                    {
+                        bike.BikeParts = bike.BikeParts.ToList().ConvertAll(
+                            bp =>
+                            {
+                                bp.Bike = null; return bp;
+                            }).ToList(); return bike;
+                    });
         }
 
         private List<Part> GetAllParts()
         {
-            return _context.Parts.Include(part => part.PartMaterials).OrderBy(part => part.ItemId).Select(
-                part => {part.PartMaterials = part.PartMaterials.Select(pm => { pm.Part = null; return pm; }).ToList(); return part; }).ToList();
+            return _context.Parts.Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList()
+                .ConvertAll(
+                    part =>
+                    {
+                        part.PartMaterials = part.PartMaterials.ToList().ConvertAll(
+                            pm =>
+                            {
+                                pm.Part = null; return pm;
+                            }).ToList();
+                        part.BikeParts = part.BikeParts.ToList().ConvertAll(
+                            bp =>
+                            {
+                                bp.Part = null; return bp;
+                            }).ToList(); 
+                        return part;
+                    });
         }
 
         private List<Material> GetAllMaterials()

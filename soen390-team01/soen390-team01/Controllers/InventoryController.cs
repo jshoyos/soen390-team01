@@ -103,7 +103,6 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-
         public IActionResult AddBikePart(BikePart addPart)
         {
             Bike bike = null;
@@ -123,7 +122,9 @@ namespace soen390_team01.Controllers
             }
             return PartialView("BikePartList", bike);
         }
-        public IActionResult RemoveBikePart(BikePart removePart)
+
+        [HttpPost]
+        public IActionResult RemoveBikePart([FromBody] BikePart removePart)
         {
             Bike bike = null;
             try

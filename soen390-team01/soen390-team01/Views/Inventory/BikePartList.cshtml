@@ -1,5 +1,4 @@
 ﻿@using Newtonsoft.Json
-@using soen390_team01.Data
 @model soen390_team01.Data.Entities.Bike
 
 
@@ -19,11 +18,14 @@
                             <th class="col">ID</th>
                             <th class="col">Name</th>
                             <th class="col">Quantity</th>
+                            <th class="col"></th>
                         </tr>
                         @foreach (var item  in Model.BikeParts)
                         {
                             <tr class="row pt-4 pb-4 h-100 text-center">
                                 <td class="col">@item.PartId</td>
+                                <td class="col">@item.Part.Name</td>
+                                <td class="col">@item.PartQuantity</td>
                                 <td><button type="button" class="btn btn-outline-primary" onclick="removeBikePart(@JsonConvert.SerializeObject(item))">Remove</button></td>
                             </tr>
                         }

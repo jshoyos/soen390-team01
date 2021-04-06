@@ -90,7 +90,6 @@
         function addBikePart(bikeId) {
             var formData = $("#form-BikePart-" + bikeId).serialize();
             formData += "&BikeId=" + bikeId;
-            console.log(formData);
             $.ajax({
                 url: '@Url.Action("AddBikePart", "Inventory")',
                 type: 'POST',
@@ -114,6 +113,7 @@
                 data: JSON.stringify(bikePart),
                 dataType: 'html',
                 success: function (result) {
+                    console.log(result)
                     $("#modal-BikePart-" + bikePart.BikeId).html(result);
                 },
                 fail: function (result) {
@@ -139,7 +139,6 @@
                 tablinks[i].className = tablinks[i].className.replace("active", "");
             }
             // Show the current tab, and add an "active" class to the button that opened the tab
-            console.log(document.getElementById(tableName))
             document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
 
