@@ -86,6 +86,41 @@
             link.click();
             document.body.removeChild(link);
         }
+
+        function addBikePart(bikeId) {
+            var formData = $("#form-BikePart-" + bikeId).serialize();
+            formData += "&BikeId=" + bikeId;
+            console.log(formData);
+            $.ajax({
+                url: '@Url.Action("AddBikePart", "Inventory")',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: formData,
+                dataType: 'html',
+                success: function (result) {
+                    $("#modal-BikePart-" + bikeId).html(result);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                }
+            });
+        };
+
+        function removeBikePart(bikePart) {
+            $.ajax({
+                url: '@Url.Action("RemoveBikePart", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(bikePart),
+                dataType: 'html',
+                success: function (result) {
+                    $("#modal-BikePart-" + bikePart.BikeId).html(result);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                }
+            });
+        };
     </script>
     <script>
         function openTab(evt, tableName) {

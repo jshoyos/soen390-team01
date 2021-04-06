@@ -1,10 +1,9 @@
 ﻿@using Newtonsoft.Json
 @using soen390_team01.Data
-@model HashSet<soen390_team01.Data.Entities.BikePart>
+@model soen390_team01.Data.Entities.Bike
 
-<link rel="stylesheet" href="\css\Inventory.css">
 
-<div class="modal fade" id="bikeParts" role="dialog" aria-hidden="true">
+<div class="modal fade" id="@("bikeParts-"+Model.ItemId)" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,19 +20,22 @@
                             <th class="col">Name</th>
                             <th class="col">Quantity</th>
                         </tr>
-                        @foreach (var item  in Model)
+                        @foreach (var item  in Model.BikeParts)
                         {
                             <tr class="row pt-4 pb-4 h-100 text-center">
                                 <td class="col">@item.PartId</td>
+                                <td><button type="button" class="btn btn-outline-primary" onclick="removeBikePart(@JsonConvert.SerializeObject(item))">Remove</button></td>
                             </tr>
                         }
                     </table>
                 </div> 
 
                 <div class="row justify-content-center mt-4">
-                    <input type="text" name="partID" placeholder="Part ID" />
-                    <button type="button" class="btn btn-primary ml-1 mr-1">Add</button>
-                    <button type="button" class="btn btn-outline-primary">Remove</button>
+                    <form id="@("form-BikePart-" + Model.ItemId)">
+                        <input type="text" name="PartId" placeholder="Part ID" />
+                        <input type="number" min="1" name="PartQuantity" placeholder="Quantity" />
+                        <button type="button" class="btn btn-primary ml-1 mr-1" onclick="addBikePart(@JsonConvert.SerializeObject(@Model.ItemId))">Add</button>
+                    </form>
                 </div>
             </div>
         </div>

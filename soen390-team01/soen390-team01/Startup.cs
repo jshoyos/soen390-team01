@@ -13,6 +13,7 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using soen390_team01.Controllers;
+using Newtonsoft.Json;
 
 namespace soen390_team01
 {
@@ -49,6 +50,7 @@ namespace soen390_team01
             services.AddDataProtection();
             services.AddControllers()
                 .AddRazorRuntimeCompilation();
+            services.AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizePage("/Home/Privacy");

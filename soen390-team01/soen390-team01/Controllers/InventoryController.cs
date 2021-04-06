@@ -104,11 +104,12 @@ namespace soen390_team01.Controllers
 
         [HttpPost]
 
-        public IActionResult AddPart([FromBody] BikePart addPart)
+        public IActionResult AddBikePart(BikePart addPart)
         {
+            Bike bike = null;
             try
             {
-                _model.AddPart(addPart);
+               bike = _model.AddBikePart(addPart);
             }
 
             catch (DataAccessException e)
@@ -116,13 +117,18 @@ namespace soen390_team01.Controllers
                 TempData["errorMessage"] = e.ToString();
             }
 
-            return PartialView("InventoryBody", _model);
+            if(bike == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return PartialView("BikePartList", bike);
         }
-        public IActionResult RemovePart([FromBody] BikePart removePart)
+        public IActionResult RemoveBikePart(BikePart removePart)
         {
+            Bike bike = null;
             try
             {
-                _model.RemovePart(removePart);
+                bike = _model.RemoveBikePart(removePart);
             }
 
             catch (DataAccessException e)
@@ -130,7 +136,11 @@ namespace soen390_team01.Controllers
                 TempData["errorMessage"] = e.ToString();
             }
 
-            return PartialView("InventoryBody", _model);
+            if (bike == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return PartialView("BikePartList", bike);
         }
     }
 }

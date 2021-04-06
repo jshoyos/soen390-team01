@@ -132,23 +132,24 @@ namespace soen390_team01.Models
             }
         }
 
-        public void AddPart(BikePart addPart)
+        public Bike AddBikePart(BikePart addPart)
         {
             if (_context.Parts.First(p => p.ItemId == addPart.PartId) != null)
             {
-                //var b = _context.Bikes.First(b => b.ItemId == addPart.BikeId);
                 _context.BikeParts.Add(addPart);
                 _context.SaveChanges();
             }
+            return _context.Bikes.First(b => b.ItemId == addPart.BikeId);
         }
 
-        public void RemovePart(BikePart removePart)
+        public Bike RemoveBikePart(BikePart removePart)
         {
             if (_context.Parts.First(p => p.ItemId == removePart.PartId) != null && _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId) != null)
             {
                 _context.BikeParts.Remove(removePart);
                 _context.SaveChanges();
             }
+            return _context.Bikes.First(b => b.ItemId == removePart.BikeId);
         }
         public void AddMaterial(PartMaterial addMat)
         {
@@ -234,12 +235,12 @@ namespace soen390_team01.Models
 
         private List<Bike> GetAllBikes()
         {
-            return _context.Bikes.OrderBy(bike => bike.ItemId).ToList();
+            return _context.Bikes.Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList();
         }
 
         private List<Part> GetAllParts()
         {
-            return _context.Parts.OrderBy(part => part.ItemId).ToList();
+            return _context.Parts.Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList();
         }
 
         private List<Material> GetAllMaterials()
