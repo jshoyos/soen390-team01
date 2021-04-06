@@ -11,32 +11,25 @@ namespace soen390_team01.Services
         public string Roles { get; set; }
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            bool isAuthorized = false;
             var roles = Roles.Split(',').ToList();
-            foreach (var role in roles)
+            if (roles.Any(role => context.HttpContext.User.IsInRole(role)))
             {
-                if (context.HttpContext.User.IsInRole(role))
-                {
-                    isAuthorized = true;
-                    break;
-                }
+                return;
             }
-            if (!isAuthorized)
+
+            string actionName = (string)context.RouteData.Values["action"];
+            if (actionName.Equals("Index", StringComparison.OrdinalIgnoreCase))
             {
-                string actionName = (string)context.RouteData.Values["action"];
-                if (actionName.Equals("Index", StringComparison.OrdinalIgnoreCase))
+                context.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary(new { controller = "Authentication", action = "PermissionDenied" }));
+            }
+            else
+            {
+                var result = new JsonResult(null)
                 {
-                    context.Result = new RedirectToRouteResult(
-                        new RouteValueDictionary(new { controller = "Authentication", action = "PermissionDenied" }));
-                }
-                else
-                {
-                    var result = new JsonResult(null)
-                    {
-                         StatusCode = 401
-                    };
-                    context.Result = result;
-                }
+                    StatusCode = 401
+                };
+                context.Result = result;
             }
         }
     }

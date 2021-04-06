@@ -1,15 +1,25 @@
-﻿@media only screen and (max-width: 1026px) {
+﻿@media only screen and (max-width: 1100px) {
     #filter {
         display: none;
     }
 }
 
-@media only screen and (min-width: 1026px) {
+@media only screen and (min-width: 1100px) {
     #mobileButtons {
         display: none;
     }
 }
+@media screen and (max-width: 1290px) {
+    .userDesktop {
+        display: none;
+    }
+}
 
+@media screen and (min-width: 1289px) {
+    .userMobile {
+        display: none;
+    }
+}
 .collapButton1 {
     width: 25%;
     margin: 10px 0 10px 15px;
@@ -107,8 +117,8 @@ input.filter-data {
     border: 1px solid #1861ac;
     border-radius: 5px;
     border-top: none;
-    height: 70%;
     overflow: scroll;
+    max-height: 70%;
 }
 
 .scroll {
@@ -175,4 +185,14 @@ input.filter-data {
     text-align: center;
 }
 
+th {
+    border: 1px solid #1861ac;
+    background-color: #1b6ec2;
+    color: white;
+}
 
+tr {
+    color: #1b6ec2;
+    border: 1px solid #1861ac;
+    border-radius: 5px;
+}

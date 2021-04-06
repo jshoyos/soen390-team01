@@ -9,7 +9,7 @@
 
 <div class="container bike-components">
     <div class="row">
-        <div class="col-8">
+        <div class="col-lg-9 mx-lg-auto">
             <div class="tab">
                 <button style="width:100%;" class="tablinks @(Model.SelectedTab == "inventory" ? "active": "")" id="allButton" onclick="openTab(event, 'inventory'),showFilter('inventory')">Inventory</button>
             </div>
@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3" id="filter">
+        <div class="col-lg-3" id="filter">
             <div id="inventory-filter" class="filter-data" style="display:@(Model.SelectedTab == "inventory" ? "block": "none")">
                 @{await Html.RenderPartialAsync("Filter", Model.InventoryFilters, new ViewDataDictionary(ViewData) { { "mobile", false } });}
             </div>
@@ -64,6 +64,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal for filter in mobile mode-->
     <div class="modal fade @(Model.ShowFilters  ? "show": "")" id="filterModal" role="dialog" aria-labelledby="filterModalTitle" aria-hidden="true" style="display:@(Model.ShowFilters  ? "block": "none")">
         @{ Model.ShowFilters = false;}
