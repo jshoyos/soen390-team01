@@ -1,0 +1,50 @@
+﻿@using soen390_team01.Data
+@model List<soen390_team01.Data.Entities.Production>
+
+@{
+    var anyStopped = Model.Any(p => p.State == "stopped");
+}
+
+<div class="tableFixHead">
+    <table class="container" id="productionTableCsv" aria-label="pt">
+        <thead>
+            <tr class="row pt-4 pb-4 h-100 text-center">
+                @{
+                    if (anyStopped)
+                    {
+                        <th class="col-1" scope="col">
+                        </th>
+                    }
+                }
+                <th class="col" scope="col">ID</th>
+                <th class="col" scope="col">Status</th>
+                <th class="col" scope="col">Quantity</th>
+                <th class="col" scope="col">Added</th>
+                <th class="col" scope="col">Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var production in Model)
+            {
+            <tr class="row pt-4 pb-4 h-100 text-center">
+                @if (anyStopped)
+                {
+                    <td class="col-1">
+                        @if (production.State == "stopped")
+                        {
+                            <button class="btn btn-outline-secondary" onclick="location.href='@Url.Action("FixProduction", "Assembly", new { productionId = production.ProductionId })'">Fix</button>
+                        }
+                    </td>
+                }
+                <td class="col">@production.BikeId</td>
+                <td class="col">@production.State</td>
+                <td class="col">@production.Quantity</td>
+                <td class="col">@production.Added.DateTimeLocalString()</td>
+                <td class="col">@production.Modified.DateTimeLocalString()</td>
+                <td class="col"><button class="btn btn-outline-primary mr-1" data-toggle="modal" data-target="#edit_receivablesModal" id="@production.BikeId" onclick="showStatus(@production.BikeId, '@production.State')">Edit</button></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

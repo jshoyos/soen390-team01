@@ -5,8 +5,7 @@ using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 using soen390_team01.Services;
-using System.Net;
-using System.Net.Mail;
+
 
 namespace soen390_team01.Controllers
 {
@@ -85,19 +84,7 @@ namespace soen390_team01.Controllers
             var text = "The Receivable payment with id " + id + " has been completed";
             _model.setReceivableState(id, status);
 
-
-
-            if (status == "completed")
-            {
-                var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential("soen390Project@gmail.com", "Soen390!"),
-                    EnableSsl = true,
-                };
-
-                smtpClient.Send("soen390Project@gmail.com", "tigran.kar@hotmail.com", "Payment completed", text);
-            }
+            EmailService.sendEmail(status,text);
 
             _model.SelectedTab = "receivable";
             return PartialView("AccountingBody", _model);
