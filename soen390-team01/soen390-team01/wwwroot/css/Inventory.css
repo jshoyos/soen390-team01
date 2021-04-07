@@ -118,7 +118,6 @@ input.filter-data {
     border-radius: 5px;
     border-top: none;
     overflow: scroll;
-    max-height: 70%;
 }
 
 .scroll {
@@ -186,6 +185,7 @@ input.filter-data {
 }
 
 th {
+    font-size: 2vmax;
     border: 1px solid #1861ac;
     background-color: #1b6ec2;
     color: white;
