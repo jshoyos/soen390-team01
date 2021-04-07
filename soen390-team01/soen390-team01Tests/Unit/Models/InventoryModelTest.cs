@@ -79,6 +79,15 @@ namespace soen390_team01Tests.Services
                 _context.SaveChanges();
             }
 
+            _context.BikeParts.Add(new BikePart { BikeId = 1, PartId = 2, PartQuantity = 1 });
+            _context.BikeParts.Add(new BikePart { BikeId = 1, PartId = 4, PartQuantity = 1 });
+            _context.BikeParts.Add(new BikePart { BikeId = 3, PartId = 8, PartQuantity = 1 });
+
+            _context.PartMaterials.Add(new PartMaterial { PartId = 2, MaterialId = 5, MaterialQuantity = 1 });
+            _context.PartMaterials.Add(new PartMaterial { PartId = 2, MaterialId = 6, MaterialQuantity = 1 });
+            _context.PartMaterials.Add(new PartMaterial { PartId = 4, MaterialId = 7, MaterialQuantity = 1 });
+            _context.SaveChanges();
+
             _model = new InventoryModel(_context);
         }
 
@@ -100,6 +109,14 @@ namespace soen390_team01Tests.Services
             foreach (var entity in _context.Materials)
             {
                 _context.Materials.Remove(entity);
+            }
+            foreach (var entity in _context.BikeParts)
+            {
+                _context.BikeParts.Remove(entity);
+            }
+            foreach (var entity in _context.PartMaterials)
+            {
+                _context.PartMaterials.Remove(entity);
             }
             _context.SaveChanges();
         }
@@ -168,6 +185,44 @@ namespace soen390_team01Tests.Services
             Assert.AreEqual(initialMaterialCount, _model.MaterialList.Count);
             Assert.AreEqual(initialMaterialFilterCount, _model.MaterialFilters.List.Count);
 
+        }
+
+        [Test]
+        public void AddBikePartTest()
+        {
+            var partCount = _context.BikeParts.Count(p => p.BikeId == 1);
+            _model.AddBikePart(new BikePart { BikeId = 1, PartId = 8, PartQuantity = 1 });
+            var partCountAfterAdd = _context.BikeParts.Count(p => p.BikeId == 1);
+            Assert.AreEqual(partCount + 1, partCountAfterAdd);
+        }
+
+        [Test]
+        public void RemoveBikePartTest()
+        {
+            var partCount = _context.BikeParts.Count(p => p.BikeId == 1);
+            var bp = _context.BikeParts.First(p => p.BikeId == 1 && p.PartId == 2);
+            _model.RemoveBikePart(bp);
+            var partCountAfterRemove = _context.BikeParts.Count(p => p.BikeId == 1);
+            Assert.AreEqual(partCount - 1, partCountAfterRemove);
+        }
+
+        [Test]
+        public void AddPartMaterialTest()
+        {
+            var materialCount = _context.PartMaterials.Count(m => m.PartId == 2);
+            _model.AddPartMaterial(new PartMaterial { PartId = 2, MaterialId = 7, MaterialQuantity = 1 });
+            var materialCountAfterAdd = _context.PartMaterials.Count(m => m.PartId == 2);
+            Assert.AreEqual(materialCount + 1, materialCountAfterAdd);
+        }
+
+        [Test]
+        public void RemovePartMaterialTest()
+        {
+            var materialCount = _context.PartMaterials.Count(m => m.PartId == 2);
+            var mat = _context.PartMaterials.First(m => m.PartId == 2 && m.MaterialId == 5);
+            _model.RemovePartMaterial(mat);
+            var matCountAfterRemove = _context.PartMaterials.Count(m => m.PartId == 2);
+            Assert.AreEqual(materialCount - 1, matCountAfterRemove);
         }
     }
 }
