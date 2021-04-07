@@ -24,9 +24,9 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            _model.ResetBikes();
-            _model.ResetParts();
-            _model.ResetMaterials();
+            _model.BikeList = _model.GetAllBikes();
+            _model.PartList = _model.GetAllParts();
+            _model.MaterialList = _model.GetAllMaterials();
             return View(_model);
         }
 

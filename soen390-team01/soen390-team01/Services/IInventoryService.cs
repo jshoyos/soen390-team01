@@ -24,16 +24,21 @@ namespace soen390_team01.Services
         /// </summary>
         public void ResetInventories();
 
+        public List<Bike> GetAllBikes();
+
         public void ResetBikes();
 
         /// <summary>
         /// Resets PartList and its filters
         /// </summary>
+        public List<Part> GetAllParts();
         public void ResetParts();
 
         /// <summary>
         /// Resets MaterialList and its filters
         /// </summary>
+        /// 
+        public List<Material> GetAllMaterials();
         public void ResetMaterials();
 
         /// <summary>

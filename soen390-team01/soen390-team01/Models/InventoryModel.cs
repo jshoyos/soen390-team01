@@ -271,7 +271,7 @@ namespace soen390_team01.Models
             return _context.Inventories.OrderBy(inv => inv.InventoryId).ToList();
         }
 
-        private List<Bike> GetAllBikes()
+        public List<Bike> GetAllBikes()
         {
             return _context.Bikes.AsNoTracking().Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList()
                 .ConvertAll(
@@ -287,7 +287,7 @@ namespace soen390_team01.Models
                     });
         }
 
-        private List<Part> GetAllParts()
+        public List<Part> GetAllParts()
         {
             return _context.Parts.AsNoTracking().Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList()
                 .ConvertAll(
@@ -309,7 +309,7 @@ namespace soen390_team01.Models
                     });
         }
 
-        private List<Material> GetAllMaterials()
+        public List<Material> GetAllMaterials()
         {
             return _context.Materials.OrderBy(mat => mat.ItemId).ToList();
         }
