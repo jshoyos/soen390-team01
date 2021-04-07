@@ -271,7 +271,7 @@ namespace soen390_team01.Models
             return _context.Inventories.OrderBy(inv => inv.InventoryId).ToList();
         }
 
-        public List<Bike> GetAllBikes()
+        private List<Bike> GetAllBikes()
         {
             return _context.Bikes.AsNoTracking().Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList()
                 .ConvertAll(
@@ -287,7 +287,7 @@ namespace soen390_team01.Models
                     });
         }
 
-        public List<Part> GetAllParts()
+        private List<Part> GetAllParts()
         {
             return _context.Parts.AsNoTracking().Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList()
                 .ConvertAll(
@@ -309,7 +309,7 @@ namespace soen390_team01.Models
                     });
         }
 
-        public List<Material> GetAllMaterials()
+        private List<Material> GetAllMaterials()
         {
             return _context.Materials.OrderBy(mat => mat.ItemId).ToList();
         }
@@ -318,7 +318,7 @@ namespace soen390_team01.Models
         {
             try
             {
-                return _context.Inventories.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                return _context.Inventories.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).AsNoTracking().ToList();
             }
             catch (Exception)
             {
@@ -331,7 +331,7 @@ namespace soen390_team01.Models
             try
             {
                 return _context.Set<T>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).AsNoTracking().ToList();
             }
             catch (Exception)
             {
