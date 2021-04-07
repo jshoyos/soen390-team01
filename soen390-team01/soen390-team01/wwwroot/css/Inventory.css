@@ -183,16 +183,3 @@ input.filter-data {
     display: inline-block;
     text-align: center;
 }
-
-th {
-    font-size: 2vmax;
-    border: 1px solid #1861ac;
-    background-color: #1b6ec2;
-    color: white;
-}
-
-tr {
-    color: #1b6ec2;
-    border: 1px solid #1861ac;
-    border-radius: 5px;
-}

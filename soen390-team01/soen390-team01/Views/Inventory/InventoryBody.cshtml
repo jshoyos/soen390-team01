@@ -20,22 +20,16 @@
             </div>
             <div id="inventory" class="tabcontent" style="display: @(Model.SelectedTab == "inventory" ? "block": "none")" onclick="showFilter('inventory')">
 
-                <h4 class="tabTitle">Inventory</h4>
-
                 @{await Html.RenderPartialAsync("InventoryTable", Model.AllList);}
             </div>
             <!-- Tab content -->
             <div id="bike" class="tabcontent" style="display: @(Model.SelectedTab == "bike" ? "block": "none")" onclick="showFilter('bike')">
-
-                <h4 class="tabTitle">Bikes</h4>
                 <div class="Bike-table">
                     @{await Html.RenderPartialAsync("BikeTable", Model.BikeList);}
                 </div>
-
             </div>
 
             <div id="part" class="tabcontent" style="display: @(Model.SelectedTab == "part" ? "block": "none")" onclick="showFilter('part')">
-                <h4 class="tabTitle">Parts</h4>
                 <div class="Part-table">
                     @{await Html.RenderPartialAsync("PartTable", Model.PartList);}
                 </div>
@@ -43,7 +37,6 @@
             </div>
 
             <div id="material" class="tabcontent" style="display: @(Model.SelectedTab == "material" ? "block": "none")" onclick="showFilter('material')">
-                <h4 class="tabTitle">Material</h4>
                 <div class="Material-table">
                     @{await Html.RenderPartialAsync("MaterialTable", Model.MaterialList);}
                 </div>
