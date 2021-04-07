@@ -98,6 +98,14 @@ namespace soen390_team01Tests.Services
             {
                 _context.Inventories.Remove(entity);
             }
+            foreach (var entity in _context.BikeParts)
+            {
+                _context.BikeParts.Remove(entity);
+            }
+            foreach (var entity in _context.PartMaterials)
+            {
+                _context.PartMaterials.Remove(entity);
+            }
             foreach (var entity in _context.Bikes)
             {
                 _context.Bikes.Remove(entity);
@@ -110,14 +118,7 @@ namespace soen390_team01Tests.Services
             {
                 _context.Materials.Remove(entity);
             }
-            foreach (var entity in _context.BikeParts)
-            {
-                _context.BikeParts.Remove(entity);
-            }
-            foreach (var entity in _context.PartMaterials)
-            {
-                _context.PartMaterials.Remove(entity);
-            }
+            
             _context.SaveChanges();
         }
 
