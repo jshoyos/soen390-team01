@@ -38,17 +38,17 @@ namespace soen390_team01.Models
 
         public List<Payment> GetPayments()
         {
-            return _context.Payments.ToList();
+            return _context.Payments.OrderBy(p => p.PaymentId).ToList();
         }
 
         public List<Payment> GetReceivables()
         {
-            return _context.Payments.Where(p => p.Amount > 0).ToList();
+            return _context.Payments.Where(p => p.Amount > 0).OrderBy(p => p.PaymentId).ToList();
         }
 
         public List<Payment> GetPayables()
         {
-            return _context.Payments.Where(p => p.Amount < 0).ToList();
+            return _context.Payments.Where(p => p.Amount < 0).OrderBy(p => p.PaymentId).ToList();
 
         }
         public void ResetPayments()
@@ -112,14 +112,25 @@ namespace soen390_team01.Models
             }
         }
 
-        public void setReceivableState(int id, string status)
+        public string SetReceivableState(int id, string status)
         {
-            for(var i = 0; i<Receivables.Count; i++)
+            var receivable = Receivables.FirstOrDefault(r => r.PaymentId == id);
+           
+            try
             {
-                if (id == Receivables[i].PaymentId)
+                if(receivable != null)
                 {
-                    Receivables[i].State = status;
+                    receivable.State = status;
                 }
+                
+                _context.Update(receivable);
+                _context.SaveChanges();
+                Receivables = GetReceivables();
+                return _context.Procurements.Include(p => p.Vendor).FirstOrDefault(v => v.PaymentId == id).Vendor.Name;
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
     }   

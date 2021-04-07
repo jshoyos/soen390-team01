@@ -14,11 +14,13 @@ namespace soen390_team01.Controllers
     {
         private readonly IAccountingService _model;
         private readonly ILogger<AccountingController> _log;
+        private readonly IEmailService _emailService;
 
-        public AccountingController(IAccountingService model, ILogger<AccountingController> log)
+        public AccountingController(IAccountingService model, ILogger<AccountingController> log, IEmailService emailService)
         {
             _model = model;
             _log = log;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -76,16 +78,25 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        public IActionResult update([FromBody] ReceivableUpdateModel receivableUpdateModel )
+        public IActionResult Update([FromBody] ReceivableUpdateModel receivableUpdateModel )
         {
             var id = receivableUpdateModel.Id;
             var status = receivableUpdateModel.Status;
-
-            var text = "The Receivable payment with id " + id + " has been completed";
-            _model.setReceivableState(id, status);
-
-            EmailService.sendEmail(status,text);
-
+                      
+            try
+            {
+               string name = _model.SetReceivableState(id, status);
+                if (status == "completed")
+                {
+                    var text = "The receivable payment with id " + id + " from "+ name + " has been completed.";
+                    _emailService.SendEmail(text, Roles.Accountant);
+                }
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+                       
             _model.SelectedTab = "receivable";
             return PartialView("AccountingBody", _model);
         }

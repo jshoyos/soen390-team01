@@ -6,7 +6,9 @@ using soen390_team01.Data.Exceptions;
 using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 using soen390_team01.Services;
+using System;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace soen390_team01.Controllers
 {
@@ -15,11 +17,13 @@ namespace soen390_team01.Controllers
     {
         private readonly ITransferService _model;
         private readonly ILogger<TransfersController> _log;
+        
 
         public TransfersController(ITransferService model, ILogger<TransfersController> log)
         {
             _model = model;
             _log = log;
+
         }
         [HttpGet]
         [ModulePermission(Roles = Role.Accountant + "," + Role.SalesRep + "," + Role.Admin)]

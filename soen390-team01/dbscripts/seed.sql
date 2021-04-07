@@ -610,8 +610,6 @@ INSERT INTO public."order"(customer_id, state, payment_id) VALUES (4, 'completed
 INSERT INTO public."order"(customer_id, state, payment_id) VALUES (5, 'completed' , 5);
 
 INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (1, 1, 1, 'pending', 'bike', 1);
-INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (2, 3, 1, 'pending', 'bike', 2);
-INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (6, 4, 1, 'completed', 'material', 3);
-INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (7, 5, 1, 'completed', 'material', 4);
-INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (8, 2, 1, 'canceled', 'material', 5);
-INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (14, 3, 1, 'pending', 'part', 5);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (2, 4, 1, 'pending', 'bike', 2);
+INSERT INTO public.procurement(item_id, payment_id, item_quantity, state, type, vendor_id) VALUES (6, 5, 1, 'completed', 'material', 3);
+

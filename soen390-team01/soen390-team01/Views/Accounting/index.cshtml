@@ -89,7 +89,8 @@
         function showStatus(id, status) {
             $("#currentId").text(id);
             $("#currentStatus").text(status);
-
+            $("#edit_receivablesModal").modal("show");
+            console.log("In show status");
         };
 
         function updateStatus() {

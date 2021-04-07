@@ -28,6 +28,7 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ProductionClient>();
             services.AddTransient<Random>();
             services.AddTransient<ProductionInventoryValidator>();
@@ -42,7 +43,7 @@ namespace soen390_team01
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<ITransferService, TransfersModel>();
             services.AddSingleton<IAssemblyService, AssemblyModel>();
-            services.AddSingleton(s => new CsvProductionProcessor("productions", new ProductionController(s.GetService<IAssemblyService>(), s.GetService<ILogger<ProductionController>>())));
+            services.AddSingleton(s => new CsvProductionProcessor("productions", new ProductionController(s.GetService<IAssemblyService>(), s.GetService<ILogger<ProductionController>>(), s.GetService<EmailService>())));
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
             ));

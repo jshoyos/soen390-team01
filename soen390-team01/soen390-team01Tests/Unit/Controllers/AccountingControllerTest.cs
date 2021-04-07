@@ -19,12 +19,14 @@ namespace soen390_team01TestsControllers
     {
         Mock<IAccountingService> _modelMock;
         Mock<ILogger<AccountingController>> _loggerMock;
+        Mock<IEmailService> _emailServiceMock;
 
         [SetUp]
         public void Setup()
         {
             _modelMock = new Mock<IAccountingService>();
             _loggerMock = new Mock<ILogger<AccountingController>>();
+            _emailServiceMock = new Mock<IEmailService>();
         }
 
         [Test]
@@ -49,7 +51,7 @@ namespace soen390_team01TestsControllers
 
             _modelMock.Setup(m => m.Payments).Returns(paymentList);
 
-            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object);
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object);
 
             var result = controller.Index() as ViewResult;
             Assert.IsNotNull(result);
@@ -80,7 +82,7 @@ namespace soen390_team01TestsControllers
             _modelMock.Setup(m => m.Payments).Returns(paymentList);
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>()));
 
-            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object);
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object);
             var result = controller.FilterPaymentTable(new MobileFiltersInput { Filters = filters, Mobile = false}) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as IAccountingService).Payments.Count);
@@ -103,7 +105,7 @@ namespace soen390_team01TestsControllers
             });
 
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>())).Throws(new UnexpectedDataAccessException("some_code"));
-            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object)
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object)
             {
                 TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
@@ -118,7 +120,7 @@ namespace soen390_team01TestsControllers
             _modelMock.Setup(m => m.ResetReceivables());
             _modelMock.Setup(m => m.ResetPayables());
 
-            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object);
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object);
 
             controller.Refresh(new RefreshTabInput { SelectedTab = "payment", Mobile = true });
             _modelMock.Verify(m => m.ResetPayments(), Times.Once());
@@ -126,6 +128,22 @@ namespace soen390_team01TestsControllers
             _modelMock.Verify(m => m.ResetReceivables(), Times.Once());
             controller.Refresh(new RefreshTabInput { SelectedTab = "payable", Mobile = false });
             _modelMock.Verify(m => m.ResetPayables(), Times.Once());
+        }
+
+        public void UpdateStatusCompleted()
+        {
+            ReceivableUpdateModel input = new ReceivableUpdateModel
+            {
+                Id = 1,
+                Status="completed"
+                
+            };
+
+            var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object);
+
+            controller.Update(input);
+            _emailServiceMock.Verify(m => m.SendEmail(It.IsAny<string>(), Roles.Accountant), Times.Once);
+
         }
     }
 }
