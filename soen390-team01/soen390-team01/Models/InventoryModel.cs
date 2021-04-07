@@ -127,43 +127,84 @@ namespace soen390_team01.Models
             }
         }
 
-        public Bike AddBikePart(BikePart addPart)
+        public BikePart AddBikePart(BikePart addPart)
         {
-            if (_context.Parts.First(p => p.ItemId == addPart.PartId) != null)
+            try
             {
                 _context.BikeParts.Add(addPart);
                 _context.SaveChanges();
+                return new BikePart
+                {
+                    PartId = addPart.PartId,
+                    PartQuantity = addPart.PartQuantity,
+                    BikeId = addPart.BikeId
+                };
             }
-            return _context.Bikes.First(b => b.ItemId == addPart.BikeId);
+            catch (InvalidOperationException)
+            {
+                throw new NonUniqueValueException("BikePart.PartId");
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
         }
 
-        public Bike RemoveBikePart(BikePart removePart)
+        public void RemoveBikePart(BikePart removePart)
         {
-            var actualBikePart = _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId);
-
-            if (_context.Parts.First(p => p.ItemId == removePart.PartId) != null && actualBikePart != null)
+            try
             {
+                var actualBikePart = _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId);
                 _context.BikeParts.Remove(actualBikePart);
                 _context.SaveChanges();
             }
-            return _context.Bikes.Include(b => b.BikeParts).First(b => b.ItemId == removePart.BikeId);
-        }
-        public void AddMaterial(PartMaterial addMat)
-        {
-            if (_context.Materials.First(p => p.ItemId == addMat.MaterialId) != null)
+            catch (InvalidOperationException)
             {
-                //var b = _context.Bikes.First(b => b.ItemId == addPart.BikeId);
+                throw new NotFoundException("BikePart", "PartId", removePart.PartId.ToString());
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+        }
+        public PartMaterial AddPartMaterial(PartMaterial addMat)
+        {
+            try
+            {
                 _context.PartMaterials.Add(addMat);
                 _context.SaveChanges();
+                return new PartMaterial
+                {
+                    MaterialId = addMat.MaterialId,
+                    MaterialQuantity = addMat.MaterialQuantity,
+                    PartId = addMat.PartId
+                };
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NonUniqueValueException("PartMaterial.MaterialId");
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
-        public void RemoveMaterial(PartMaterial removeMat)
+        public void RemovePartMaterial(PartMaterial removeMat)
         {
-            if (_context.Materials.First(p => p.ItemId == removeMat.MaterialId) != null && _context.PartMaterials.First(p => p.PartId == removeMat.MaterialId && p.PartId == removeMat.PartId) != null)
+            try
             {
-                _context.PartMaterials.Remove(removeMat);
+                var actualPartMaterial = _context.PartMaterials.First(m => m.MaterialId == removeMat.MaterialId && m.PartId == removeMat.PartId);
+                _context.PartMaterials.Remove(actualPartMaterial);
                 _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("PartMaterial", "MaterialId", removeMat.MaterialId.ToString());
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
             }
         }
 
@@ -232,21 +273,23 @@ namespace soen390_team01.Models
 
         private List<Bike> GetAllBikes()
         {
-            return _context.Bikes.Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList()
+            return _context.Bikes.AsNoTracking().Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList()
                 .ConvertAll(
                     bike =>
                     {
                         bike.BikeParts = bike.BikeParts.ToList().ConvertAll(
                             bp =>
                             {
-                                bp.Bike = null; return bp;
+                                bp.Bike = null;
+                                bp.Part = null;
+                                return bp;
                             }).ToList(); return bike;
                     });
         }
 
         private List<Part> GetAllParts()
         {
-            return _context.Parts.Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList()
+            return _context.Parts.AsNoTracking().Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList()
                 .ConvertAll(
                     part =>
                     {
@@ -258,8 +301,10 @@ namespace soen390_team01.Models
                         part.BikeParts = part.BikeParts.ToList().ConvertAll(
                             bp =>
                             {
-                                bp.Part = null; return bp;
-                            }).ToList(); 
+                                bp.Bike = null;
+                                bp.Part = null;
+                                return bp;
+                            }).ToList();
                         return part;
                     });
         }

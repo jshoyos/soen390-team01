@@ -6,7 +6,7 @@
 
 @foreach (var item in Model)
 {
-<div id="@("modal-BikePart-" + item.ItemId)">
+<div id="@("BikePart-" + item.ItemId)">
     @{ await Html.RenderPartialAsync("BikePartList", item);}
 </div>
     

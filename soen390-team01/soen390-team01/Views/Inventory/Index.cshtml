@@ -88,7 +88,11 @@
         }
 
         function addBikePart(bikeId) {
-            var formData = $("#form-BikePart-" + bikeId).serialize();
+            var form = $("#form-BikePart-" + bikeId);
+            var formData = form.serialize();
+            console.log(form);
+            var partId = form[0][0].value;
+
             formData += "&BikeId=" + bikeId;
             $.ajax({
                 url: '@Url.Action("AddBikePart", "Inventory")',
@@ -97,15 +101,19 @@
                 data: formData,
                 dataType: 'html',
                 success: function (result) {
-                    $("#modal-BikePart-" + bikeId).html(result);
+                    var row = '<tr id="BikePart-' + bikeId + '-' + partId + '" class="row pt-4 pb-4 h-100 text-center ">' + result + '</tr>'
+                    $("#BikeParts-" + bikeId + " tbody").append(row);
                 },
                 fail: function (result) {
                     alert("You don't have the permission required")
+                },
+                error: function (result) {
+                    location.reload(true);
                 }
             });
         };
 
-        function removeBikePart(bikePart) {
+        function removeBikePart(bikePart, target) {
             $.ajax({
                 url: '@Url.Action("RemoveBikePart", "Inventory")',
                 type: 'POST',
@@ -113,8 +121,49 @@
                 data: JSON.stringify(bikePart),
                 dataType: 'html',
                 success: function (result) {
-                    console.log(result)
-                    $("#modal-BikePart-" + bikePart.BikeId).html(result);
+                    target.parentNode.parentNode.remove();
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                }
+            });
+        };
+
+        function addPartMaterial(partId) {
+            var form = $("#form-PartMaterial-" + partId);
+            var formData = form.serialize();
+            console.log(form);
+            var materialId = form[0][0].value;
+
+            formData += "&PartId=" + partId;
+            $.ajax({
+                url: '@Url.Action("AddPartMaterial", "Inventory")',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: formData,
+                dataType: 'html',
+                success: function (result) {
+                    var row = '<tr id="PartMaterial-' + partId + '-' + materialId + '" class="row pt-4 pb-4 h-100 text-center ">' + result + '</tr>'
+                    $("#PartMaterials-" + partId + " tbody").append(row);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                },
+                error: function (result) {
+                    location.reload(true);
+                }
+            });
+        };
+
+        function removePartMaterial(partMaterial, target) {
+            $.ajax({
+                url: '@Url.Action("RemovePartMaterial", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(partMaterial),
+                dataType: 'html',
+                success: function (result) {
+                    target.parentNode.parentNode.remove();
                 },
                 fail: function (result) {
                     alert("You don't have the permission required")
@@ -189,7 +238,7 @@
     </div>
 </div>*@
 
-<div class="modal fade" id="partParts" role="dialog" aria-hidden="true">
+@*<div class="modal fade" id="partParts" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -220,4 +269,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
