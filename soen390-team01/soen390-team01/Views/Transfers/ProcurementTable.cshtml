@@ -3,8 +3,8 @@
 @model List<soen390_team01.Data.Entities.Procurement>
 
 
-<table class="container" id="procurementTableCsv" aria-label="pt">
-        <tr class="row pt-4 pb-4 h-100 text-center">
+<table class="table table-bordered table-hover" id="procurementTableCsv" aria-label="pt" style="overflow: scroll;">
+        <tr>
             <th class="col" scope="col">ID</th>
             <th class="col" scope="col">State</th>
             <th class="col" scope="col">Vendor</th>
@@ -16,7 +16,7 @@
         </tr>
         @foreach (var proc in Model)
         {   
-            <tr class="row pt-4 pb-4 h-100 text-center">
+            <tr>
                 <td class="col">@proc.ProcurementId</td>
                 <td class="col">@proc.State</td>
                 <td class="col">@proc.Vendor.Name</td>
