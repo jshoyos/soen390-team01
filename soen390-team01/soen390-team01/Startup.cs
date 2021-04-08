@@ -15,6 +15,7 @@ using System.Reactive.Linq;
 using soen390_team01.Controllers;
 using System.Net.Mail;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace soen390_team01
 {

@@ -24,6 +24,9 @@ namespace soen390_team01.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            _model.ResetBikes();
+            _model.ResetParts();
+            _model.ResetMaterials();
             return View(_model);
         }
 
@@ -100,6 +103,98 @@ namespace soen390_team01.Controllers
             _log.LogInformation($"Updating inventory item {inventory.ItemId} with quantity {inventory.Quantity}");
 
             return PartialView("InventoryItem", inventory);
+        }
+
+        [HttpPost]
+        public IActionResult AddBikePart(BikePart addPart)
+        {
+            BikePart bp;
+
+            try
+            {
+                if (addPart.PartQuantity <= 0)
+                {
+                    throw new InvalidValueException("Part Quantity", addPart.PartQuantity.ToString());
+                }
+                bp = _model.AddBikePart(addPart);
+            }
+            catch (InvalidValueException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+                Response.StatusCode = 400;
+                return Content("Invalid");
+            }
+
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+                Response.StatusCode = 400;
+                return Content("Invalid");
+            }
+
+            return PartialView("BikePartListItem", bp);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveBikePart([FromBody] BikePart removePart)
+        {
+            try
+            {
+                _model.RemoveBikePart(removePart);
+            }
+
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+
+            return RedirectToAction("Index");
+        }
+        
+        [HttpPost]
+        public IActionResult AddPartMaterial(PartMaterial addMat)
+        {
+            PartMaterial pm = null;
+
+            try
+            {
+                if (addMat.MaterialQuantity <= 0)
+                {
+                    throw new InvalidValueException("Material Quantity", addMat.MaterialQuantity.ToString());
+                }
+                pm = _model.AddPartMaterial(addMat);
+            }
+            catch (InvalidValueException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+                Response.StatusCode = 400;
+                return Content("Invalid");
+            }
+
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+                Response.StatusCode = 400;
+                return Content("Invalid");
+            }
+
+            return PartialView("PartMaterialListItem", pm);
+        }
+
+        [HttpPost]
+        public IActionResult RemovePartMaterial([FromBody] PartMaterial removeMat)
+        {
+            try
+            {
+                _model.RemovePartMaterial(removeMat);
+            }
+
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

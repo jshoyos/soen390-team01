@@ -24,6 +24,10 @@ namespace soen390_team01.Services
         /// </summary>
         public void ResetInventories();
 
+
+        /// <summary>
+        /// Resets BikeList and its filters
+        /// </summary>
         public void ResetBikes();
 
         /// <summary>
@@ -34,6 +38,7 @@ namespace soen390_team01.Services
         /// <summary>
         /// Resets MaterialList and its filters
         /// </summary>
+        /// 
         public void ResetMaterials();
 
         /// <summary>
@@ -47,5 +52,11 @@ namespace soen390_team01.Services
         /// </summary>
         /// <param name="inventory">inventory item to update</param>
         public Inventory Update(Inventory inventory);
+        public BikePart AddBikePart(BikePart addPart);
+        public void RemoveBikePart(BikePart removePart);
+        public PartMaterial AddPartMaterial(PartMaterial addMat);
+        public void RemovePartMaterial(PartMaterial removeMat);
+
+
     }
 }

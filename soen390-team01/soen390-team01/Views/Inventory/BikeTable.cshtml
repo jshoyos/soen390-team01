@@ -2,7 +2,17 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Bike>
 
-<table class="table table-bordered table-hover" id = "bikeTableCsv" aria-label="Bikes">
+<link rel="stylesheet" href="\css\Inventory.css">
+
+@foreach (var item in Model)
+{
+<div id="@("BikePart-" + item.ItemId)">
+    @{ await Html.RenderPartialAsync("BikePartList", item);}
+</div>
+    
+}
+
+<table class="table table-bordered table-hover" id="bikeTableCsv" aria-label="Bikes">
     <tr>
         <th scope="col">ItemId</th>
         <th scope="col">Name</th>
@@ -15,7 +25,7 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.ItemId</td>
+            <td class="idbutton" data-toggle="modal" data-target="@("#bikeParts-"+item.ItemId)" aria-hidden="true">@item.ItemId</td>
             <td>@item.Name</td>
             <td>@item.Price</td>
             <td>@item.Grade</td>
@@ -24,4 +34,6 @@
             <td>@item.Updated.DateTimeLocalString()</td>
         </tr>
     }
+
 </table>
+

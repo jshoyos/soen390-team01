@@ -61,6 +61,89 @@
                 }
             });
         };
+
+        function addBikePart(bikeId) {
+            var form = $("#form-BikePart-" + bikeId);
+            var formData = form.serialize();
+            var partId = form[0][0].value;
+
+            formData += "&BikeId=" + bikeId;
+            $.ajax({
+                url: '@Url.Action("AddBikePart", "Inventory")',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: formData,
+                dataType: 'html',
+                success: function (result) {
+                    var row = '<tr id="BikePart-' + bikeId + '-' + partId + '" class="row pt-4 pb-4 h-100 text-center ">' + result + '</tr>'
+                    $("#BikeParts-" + bikeId + " tbody").append(row);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                },
+                error: function (result) {
+                    location.reload(true);
+                }
+            });
+        };
+
+        function removeBikePart(bikePart, target) {
+            $.ajax({
+                url: '@Url.Action("RemoveBikePart", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(bikePart),
+                dataType: 'html',
+                success: function (result) {
+                    target.parentNode.parentNode.remove();
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                }
+            });
+        };
+
+        function addPartMaterial(partId) {
+            var form = $("#form-PartMaterial-" + partId);
+            var formData = form.serialize();
+            var materialId = form[0][0].value;
+
+            formData += "&PartId=" + partId;
+            $.ajax({
+                url: '@Url.Action("AddPartMaterial", "Inventory")',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                data: formData,
+                dataType: 'html',
+                success: function (result) {
+                    var row = '<tr id="PartMaterial-' + partId + '-' + materialId + '" class="row pt-4 pb-4 h-100 text-center ">' + result + '</tr>'
+                    $("#PartMaterials-" + partId + " tbody").append(row);
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                },
+                error: function (result) {
+                    location.reload(true);
+                }
+            });
+        };
+
+        function removePartMaterial(partMaterial, target) {
+            $.ajax({
+                url: '@Url.Action("RemovePartMaterial", "Inventory")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(partMaterial),
+                dataType: 'html',
+                success: function (result) {
+                    target.parentNode.parentNode.remove();
+                },
+                fail: function (result) {
+                    alert("You don't have the permission required")
+                }
+            });
+        };
+
     </script>
     <script>
         function openTab(evt, tableName) {
@@ -79,7 +162,6 @@
                 tablinks[i].className = tablinks[i].className.replace("active", "");
             }
             // Show the current tab, and add an "active" class to the button that opened the tab
-            console.log(document.getElementById(tableName))
             document.getElementById(tableName).style.display = "block";
             evt.currentTarget.className += " active";
 
@@ -96,4 +178,3 @@
 <div class="row inventory-view">
     @{await Html.RenderPartialAsync("InventoryBody", Model);}
 </div>
-

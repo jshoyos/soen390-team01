@@ -1,7 +1,17 @@
 ﻿@using Newtonsoft.Json
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Part>
-<!--Desktop view-->
+
+<link rel="stylesheet" href="\css\Inventory.css">
+
+@foreach (var item in Model)
+{
+    <div id="@("PartMaterial-" + item.ItemId)">
+        @{ await Html.RenderPartialAsync("PartMaterialList", item);}
+    </div>
+
+}
+
 <table class="table table-bordered table-hover" id="partTableCsv" aria-label="Parts">
     <tr>
         <th scope="col">ItemId</th>
@@ -15,7 +25,7 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.ItemId</td>
+            <td class="idbutton" data-toggle="modal" data-target="@("#partMaterials-"+item.ItemId)" aria-hidden="true">@item.ItemId</td>
             <td>@item.Name</td>
             <td>@item.Price</td>
             <td>@item.Grade</td>

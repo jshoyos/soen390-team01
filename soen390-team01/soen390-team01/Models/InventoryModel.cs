@@ -11,7 +11,7 @@ using soen390_team01.Data.Queries;
 using soen390_team01.Services;
 
 namespace soen390_team01.Models
-{ 
+{
     public class InventoryModel : Inventory, IInventoryService
     {
 
@@ -127,6 +127,87 @@ namespace soen390_team01.Models
             }
         }
 
+        public BikePart AddBikePart(BikePart addPart)
+        {
+            try
+            {
+                _context.BikeParts.Add(addPart);
+                _context.SaveChanges();
+                return new BikePart
+                {
+                    PartId = addPart.PartId,
+                    PartQuantity = addPart.PartQuantity,
+                    BikeId = addPart.BikeId
+                };
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NonUniqueValueException("BikePart.PartId");
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+        }
+
+        public void RemoveBikePart(BikePart removePart)
+        {
+            try
+            {
+                var actualBikePart = _context.BikeParts.First(p => p.PartId == removePart.PartId && p.BikeId == removePart.BikeId);
+                _context.BikeParts.Remove(actualBikePart);
+                _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("BikePart", "PartId", removePart.PartId.ToString());
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+        }
+        public PartMaterial AddPartMaterial(PartMaterial addMat)
+        {
+            try
+            {
+                _context.PartMaterials.Add(addMat);
+                _context.SaveChanges();
+                return new PartMaterial
+                {
+                    MaterialId = addMat.MaterialId,
+                    MaterialQuantity = addMat.MaterialQuantity,
+                    PartId = addMat.PartId
+                };
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NonUniqueValueException("PartMaterial.MaterialId");
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+        }
+
+        public void RemovePartMaterial(PartMaterial removeMat)
+        {
+            try
+            {
+                var actualPartMaterial = _context.PartMaterials.First(m => m.MaterialId == removeMat.MaterialId && m.PartId == removeMat.PartId);
+                _context.PartMaterials.Remove(actualPartMaterial);
+                _context.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException("PartMaterial", "MaterialId", removeMat.MaterialId.ToString());
+            }
+            catch (DbUpdateException e)
+            {
+                throw DbAccessExceptionProvider.Provide(e.InnerException as PostgresException);
+            }
+        }
+
         private Filters ResetInventoryFilters()
         {
             var filters = new Filters("inventory");
@@ -192,12 +273,40 @@ namespace soen390_team01.Models
 
         private List<Bike> GetAllBikes()
         {
-            return _context.Bikes.OrderBy(bike => bike.ItemId).ToList();
+            return _context.Bikes.AsNoTracking().Include(bike => bike.BikeParts).OrderBy(bike => bike.ItemId).ToList()
+                .ConvertAll(
+                    bike =>
+                    {
+                        bike.BikeParts = bike.BikeParts.ToList().ConvertAll(
+                            bp =>
+                            {
+                                bp.Bike = null;
+                                bp.Part = null;
+                                return bp;
+                            }).ToList(); return bike;
+                    });
         }
 
         private List<Part> GetAllParts()
         {
-            return _context.Parts.OrderBy(part => part.ItemId).ToList();
+            return _context.Parts.AsNoTracking().Include(part => part.PartMaterials).OrderBy(part => part.ItemId).ToList()
+                .ConvertAll(
+                    part =>
+                    {
+                        part.PartMaterials = part.PartMaterials.ToList().ConvertAll(
+                            pm =>
+                            {
+                                pm.Part = null; return pm;
+                            }).ToList();
+                        part.BikeParts = part.BikeParts.ToList().ConvertAll(
+                            bp =>
+                            {
+                                bp.Bike = null;
+                                bp.Part = null;
+                                return bp;
+                            }).ToList();
+                        return part;
+                    });
         }
 
         private List<Material> GetAllMaterials()
@@ -209,7 +318,7 @@ namespace soen390_team01.Models
         {
             try
             {
-                return _context.Inventories.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                return _context.Inventories.FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).AsNoTracking().ToList();
             }
             catch (Exception)
             {
@@ -222,7 +331,7 @@ namespace soen390_team01.Models
             try
             {
                 return _context.Set<T>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).ToList();
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).AsNoTracking().ToList();
             }
             catch (Exception)
             {
