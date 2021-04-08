@@ -13,11 +13,11 @@
     @foreach (var rec in Model)
     {
         <tr>
-            <td scope="col">@rec.PaymentId</td>
-            <td scope="col">@rec.State</td>
-            <td scope="col">@rec.Amount</td>
-            <td scope="col">@rec.Added.DateTimeLocalString()</td>
-            <td scope="col">@rec.Updated.DateTimeLocalString()</td>
+            <td>@rec.PaymentId</td>
+            <td>@rec.State</td>
+            <td>@rec.Amount</td>
+            <td>@rec.Added.DateTimeLocalString()</td>
+            <td>@rec.Updated.DateTimeLocalString()</td>
         </tr>
     }
 </table>

@@ -12,11 +12,11 @@
     @foreach (var order in Model)
     {
         <tr>
-            <td scope="col">@order.OrderId</td>
-            <td scope="col">@order.State</td>
-            <td scope="col">@order.Customer.Name</td>
-            <td scope="col">@order.Added.DateTimeLocalString()</td>
-            <td scope="col">@order.Updated.DateTimeLocalString()</td>
+            <td>@order.OrderId</td>
+            <td>@order.State</td>
+            <td>@order.Customer.Name</td>
+            <td>@order.Added.DateTimeLocalString()</td>
+            <td>@order.Updated.DateTimeLocalString()</td>
         </tr>
     }
 </table>
