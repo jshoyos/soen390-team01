@@ -70,7 +70,7 @@ namespace soen390_team01Tests.Unit.Controllers
                     State = "pending",
 
                 },
-                Quality = "bad"         
+                Quality = "bad"
             };
 
             _modelMock.Setup(m => m.UpdateInventory(It.IsAny<Production>())).Throws(new UnexpectedDataAccessException("some_code"));
@@ -82,7 +82,7 @@ namespace soen390_team01Tests.Unit.Controllers
             };
             controller.Process(input);
             Assert.IsNotNull(controller.TempData["errorMessage"]);
-            
+
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace soen390_team01Tests.Unit.Controllers
 
             _modelMock.Setup(m => m.UpdateInventory(It.IsAny<Production>())).Returns(new Inventory());
             _modelMock.Setup(m => m.UpdateProduction(It.IsAny<Production>())).Returns(input.Production);
-           
+
 
             var controller = new ProductionController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object)
             {
@@ -133,7 +133,7 @@ namespace soen390_team01Tests.Unit.Controllers
             _modelMock.Verify(m => m.UpdateInventory(input2.Production), Times.Once);
             _modelMock.Verify(m => m.UpdateProduction(input2.Production), Times.Once);
             _emailServiceMock.Verify(m => m.SendEmail(It.IsAny<string>(), Roles.InventoryManager), Times.Once);
-            
+
         }
     }
 }

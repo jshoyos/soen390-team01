@@ -13,6 +13,8 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using soen390_team01.Controllers;
+using System.Net.Mail;
+using System.Net;
 
 namespace soen390_team01
 {
@@ -28,6 +30,7 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<EmailClient>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ProductionClient>();
             services.AddTransient<Random>();
@@ -36,6 +39,7 @@ namespace soen390_team01
             services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
             services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
 
+            
             services.AddSingleton<AuthenticationFirebaseService>();
             services.AddSingleton<IProductionService,ProductionService>();
             services.AddSingleton<IInventoryService, InventoryModel>();

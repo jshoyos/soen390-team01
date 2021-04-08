@@ -83,7 +83,7 @@ namespace soen390_team01TestsControllers
             _modelMock.Setup(i => i.FilterSelectedTab(It.IsAny<Filters>()));
 
             var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object);
-            var result = controller.FilterPaymentTable(new MobileFiltersInput { Filters = filters, Mobile = false}) as PartialViewResult;
+            var result = controller.FilterPaymentTable(new MobileFiltersInput { Filters = filters, Mobile = false }) as PartialViewResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(1, (result.Model as IAccountingService).Payments.Count);
 
@@ -130,20 +130,33 @@ namespace soen390_team01TestsControllers
             _modelMock.Verify(m => m.ResetPayables(), Times.Once());
         }
 
-        public void UpdateStatusCompleted()
+        public void UpdateStatusTest()
         {
             ReceivableUpdateModel input = new ReceivableUpdateModel
             {
                 Id = 1,
-                Status="completed"
-                
+                Status = "completed"
+
+            };
+
+            ReceivableUpdateModel input2 = new ReceivableUpdateModel
+            {
+                Id = 1,
+                Status = "pending"
+
             };
 
             var controller = new AccountingController(_modelMock.Object, _loggerMock.Object, _emailServiceMock.Object);
 
+
             controller.Update(input);
             _emailServiceMock.Verify(m => m.SendEmail(It.IsAny<string>(), Roles.Accountant), Times.Once);
 
+            controller.Update(input2);
+            _emailServiceMock.Verify(m => m.SendEmail(It.IsAny<string>(), Roles.Accountant), Times.Never);
+
+            _emailServiceMock.Setup(m => m.SendEmail(It.IsAny<string>(), Roles.Accountant)).Throws(new UnexpectedDataAccessException("some_code"));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
         }
     }
 }

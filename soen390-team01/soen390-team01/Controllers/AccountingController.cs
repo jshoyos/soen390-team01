@@ -78,17 +78,17 @@ namespace soen390_team01.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update([FromBody] ReceivableUpdateModel receivableUpdateModel )
+        public IActionResult Update([FromBody] ReceivableUpdateModel receivableUpdateModel)
         {
             var id = receivableUpdateModel.Id;
             var status = receivableUpdateModel.Status;
-                      
+
             try
             {
-               string name = _model.SetReceivableState(id, status);
+                string name = _model.SetReceivableState(id, status);
                 if (status == "completed")
                 {
-                    var text = "The receivable payment with id " + id + " from "+ name + " has been completed.";
+                    var text = "The receivable payment with id " + id + " from " + name + " has been completed.";
                     _emailService.SendEmail(text, Roles.Accountant);
                 }
             }
@@ -96,7 +96,7 @@ namespace soen390_team01.Controllers
             {
                 TempData["errorMessage"] = e.ToString();
             }
-                       
+
             _model.SelectedTab = "receivable";
             return PartialView("AccountingBody", _model);
         }

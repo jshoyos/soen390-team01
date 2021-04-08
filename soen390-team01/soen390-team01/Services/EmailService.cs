@@ -13,12 +13,15 @@ namespace soen390_team01.Services
     {
         private readonly ErpDbContext _erpDbContext;
         private readonly EncryptionService _encryption;
+        private readonly EmailClient _emailClient;
+        
 
        
-        public EmailService(ErpDbContext erpDbContext, EncryptionService encryption)
+        public EmailService(ErpDbContext erpDbContext, EncryptionService encryption, EmailClient emailClient)
         {
             _erpDbContext = erpDbContext;
             _encryption = encryption;
+            _emailClient = emailClient;
         }
 
         private List<User> GetUsers(Roles role)
@@ -46,19 +49,17 @@ namespace soen390_team01.Services
         public void SendEmail(string text, Roles role)
         {
             List<User> users = GetUsers(role);
-            var smtpClient = new SmtpClient("smtp.gmail.com")
+            if (users.Count <= 0)
             {
-                Port = 587,
-                Credentials = new NetworkCredential("soen390Project@gmail.com", "Soen390!"),
-                EnableSsl = true,
-            };
-
+                return;
+            }
+               
             MailAddressCollection mailAddresses = new MailAddressCollection();
 
             MailMessage message = new MailMessage("soen390Project@gmail.com", string.Join(",", users.Select(u => u.Email).ToList()));
             message.Subject = "ERP Update";
             message.Body = text;
-            smtpClient.Send(message);
+            _emailClient.Send(message);
 
         }
 
