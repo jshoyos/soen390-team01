@@ -118,6 +118,7 @@ input.filter-data {
     border-radius: 5px;
     border-top: none;
     overflow: scroll;
+    height: 50%;
 }
 
 .scroll {
