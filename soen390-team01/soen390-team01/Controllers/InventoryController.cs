@@ -112,10 +112,9 @@ namespace soen390_team01.Controllers
 
             try
             {
-                if (addPart.PartQuantity <= 0 || addPart.PartId <= 0)
+                if (addPart.PartQuantity <= 0)
                 {
-                    throw addPart.PartId <= 0 ? new InvalidValueException("Part Id", addPart.PartId.ToString()) :
-                     new InvalidValueException("Part Quantity", addPart.PartQuantity.ToString());
+                    throw new InvalidValueException("Part Quantity", addPart.PartQuantity.ToString());
                 }
                 bp = _model.AddBikePart(addPart);
             }
@@ -159,10 +158,9 @@ namespace soen390_team01.Controllers
 
             try
             {
-                if (addMat.MaterialQuantity <= 0 || addMat.MaterialId <= 0)
+                if (addMat.MaterialQuantity <= 0)
                 {
-                    throw addMat.MaterialId <= 0 ? new InvalidValueException("Material Id", addMat.MaterialId.ToString()) :
-                     new InvalidValueException("Material Quantity", addMat.MaterialQuantity.ToString());
+                    throw new InvalidValueException("Material Quantity", addMat.MaterialQuantity.ToString());
                 }
                 pm = _model.AddPartMaterial(addMat);
             }

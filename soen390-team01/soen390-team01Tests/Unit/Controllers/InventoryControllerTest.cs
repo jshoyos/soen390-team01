@@ -182,6 +182,31 @@ namespace soen390_team01Tests.Controllers
         }
 
         [Test]
+        public void AddBikePartInvalidQuantityTest()
+        {
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            Assert.IsNotNull(controller.AddBikePart(new BikePart { BikeId = 1, PartId = 2, PartQuantity = -1 }));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
+        }
+
+        [Test]
+        public void AddBikePartDataAccessExceptionTest()
+        {
+            _modelMock.Setup(i => i.AddBikePart(It.IsAny<BikePart>())).Throws(new UnexpectedDataAccessException("some_code"));
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            Assert.IsNotNull(controller.AddBikePart(new BikePart { BikeId = 1, PartId = 2, PartQuantity = 3 }));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
+        }
+
+        [Test]
         public void RemoveBikePartTest()
         {
             BikePart bp = new BikePart { BikeId = 1, PartId = 2, PartQuantity = 1 };
@@ -189,6 +214,20 @@ namespace soen390_team01Tests.Controllers
             var result = controller.RemoveBikePart(bp) as RedirectToActionResult;
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.ActionName);
+        }
+
+        [Test]
+        public void RemoveBikePartDataAccessExceptionTest()
+        {
+            BikePart bp = new BikePart { BikeId = 1, PartId = 2, PartQuantity = 1 };
+            _modelMock.Setup(i => i.RemoveBikePart(It.IsAny<BikePart>())).Throws(new UnexpectedDataAccessException("some_code"));
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            Assert.IsNotNull(controller.RemoveBikePart(bp));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
         }
 
         [Test]
@@ -200,6 +239,31 @@ namespace soen390_team01Tests.Controllers
         }
 
         [Test]
+        public void AddPartMaterialInvalidQuantityTest()
+        {
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            Assert.IsNotNull(controller.AddPartMaterial(new PartMaterial { PartId = 1, MaterialId = 2, MaterialQuantity = -1 }));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
+        }
+
+        [Test]
+        public void AddPartMaterialDataAccessExceptionTest()
+        {
+            _modelMock.Setup(i => i.AddPartMaterial(It.IsAny<PartMaterial>())).Throws(new UnexpectedDataAccessException("some_code"));
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            Assert.IsNotNull(controller.AddPartMaterial(new PartMaterial { PartId = 1, MaterialId = 2, MaterialQuantity = 3 }));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
+        }
+
+        [Test]
         public void RemovePartMaterialTest()
         {
             PartMaterial pm = new PartMaterial { PartId = 2, MaterialId = 7, MaterialQuantity = 1 };
@@ -207,6 +271,20 @@ namespace soen390_team01Tests.Controllers
             var result = controller.RemovePartMaterial(pm) as RedirectToActionResult;
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.ActionName);
+        }
+
+        [Test]
+        public void RemovePartMaterialDataAccessExceptionTest()
+        {
+            PartMaterial pm = new PartMaterial { PartId = 2, MaterialId = 7, MaterialQuantity = 1 };
+            _modelMock.Setup(i => i.RemovePartMaterial(It.IsAny<PartMaterial>())).Throws(new UnexpectedDataAccessException("some_code"));
+            var controller = new InventoryController(_modelMock.Object, _loggerMock.Object)
+            {
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>()),
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            Assert.IsNotNull(controller.RemovePartMaterial(pm));
+            Assert.IsNotNull(controller.TempData["errorMessage"]);
         }
     }
 }

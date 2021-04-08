@@ -143,7 +143,6 @@ namespace soen390_team01Tests.Services
             ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object).Callback(() =>
             {
                 nbInventoriesCall++;
-                // 4th call (the one in Update()) in the update method throws a db exception
                 if (nbInventoriesCall == 4)
                     throw new DbUpdateException("error", new PostgresException("", "", "", ""));
             });
@@ -196,6 +195,18 @@ namespace soen390_team01Tests.Services
             var partCountAfterAdd = _context.BikeParts.Count(p => p.BikeId == 1);
             Assert.AreEqual(partCount + 1, partCountAfterAdd);
         }
+        
+        [Test]
+        public void AddBikePartInvalidTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Materials).Returns(new List<Material>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.BikeParts).Throws(new DbUpdateException("error", new PostgresException("", "", "", "")));
+            Assert.Throws<UnexpectedDataAccessException>(() => new InventoryModel(ctx.Object).AddBikePart(new BikePart { BikeId = 1, PartId = 8, PartQuantity = 1 }));
+        }
 
         [Test]
         public void RemoveBikePartTest()
@@ -208,12 +219,37 @@ namespace soen390_team01Tests.Services
         }
 
         [Test]
+        public void RemoveBikePartInvalidTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            var bp = new BikePart { BikeId = 1, PartId = 8, PartQuantity = 1 };
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Materials).Returns(new List<Material>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.BikeParts).Throws(new DbUpdateException("error", new PostgresException("", "", "", "")));
+            Assert.Throws<UnexpectedDataAccessException>(() => new InventoryModel(ctx.Object).RemoveBikePart(bp));
+        }
+
+        [Test]
         public void AddPartMaterialTest()
         {
             var materialCount = _context.PartMaterials.Count(m => m.PartId == 2);
             _model.AddPartMaterial(new PartMaterial { PartId = 2, MaterialId = 7, MaterialQuantity = 1 });
             var materialCountAfterAdd = _context.PartMaterials.Count(m => m.PartId == 2);
             Assert.AreEqual(materialCount + 1, materialCountAfterAdd);
+        }
+
+        [Test]
+        public void AddPartMaterialInvalidTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Materials).Returns(new List<Material>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.PartMaterials).Throws(new DbUpdateException("error", new PostgresException("", "", "", "")));
+            Assert.Throws<UnexpectedDataAccessException>(() => new InventoryModel(ctx.Object).AddPartMaterial(new PartMaterial { PartId = 1, MaterialId = 8, MaterialQuantity = 1 }));
         }
 
         [Test]
@@ -224,6 +260,19 @@ namespace soen390_team01Tests.Services
             _model.RemovePartMaterial(mat);
             var matCountAfterRemove = _context.PartMaterials.Count(m => m.PartId == 2);
             Assert.AreEqual(materialCount - 1, matCountAfterRemove);
+        }
+
+        [Test]
+        public void RemovePartMaterialInvalidTest()
+        {
+            var ctx = new Mock<ErpDbContext>();
+            var pm = new PartMaterial { PartId = 1, MaterialId = 8, MaterialQuantity = 1 };
+            ctx.Setup(c => c.Bikes).Returns(new List<Bike>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Parts).Returns(new List<Part>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Inventories).Returns(new List<Inventory>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.Materials).Returns(new List<Material>().AsQueryable().BuildMockDbSet().Object);
+            ctx.Setup(c => c.PartMaterials).Throws(new DbUpdateException("error", new PostgresException("", "", "", "")));
+            Assert.Throws<UnexpectedDataAccessException>(() => new InventoryModel(ctx.Object).RemovePartMaterial(pm));
         }
     }
 }
