@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="\css\Filter.css">
 
 <div id="@Model.Table-filter-body">
-    <h2>Filter</h2>
+    <h3 style="border-bottom: 1px solid #1861ac;">Filter</h3>
     @foreach (var filter in Model.List)
     {
         <h6><strong>@filter.DisplayColumn</strong></h6>
@@ -92,8 +92,8 @@
             <br/><br/>
         }
     }
-    <br/>
-    <input type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
+    <br /><br />
+    <input class="btn btn-outline-primary" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
     <br /><br />
 
     <button class="btn btn-primary" onclick="generateCsv('@(Model.Tab + "TableCsv")');">Generate @(System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Model.Tab)) Report</button>

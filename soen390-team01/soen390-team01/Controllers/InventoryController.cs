@@ -108,7 +108,7 @@ namespace soen390_team01.Controllers
         [HttpPost]
         public IActionResult AddBikePart(BikePart addPart)
         {
-            BikePart bp = null;
+            BikePart bp;
 
             try
             {

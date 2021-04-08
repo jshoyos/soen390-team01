@@ -93,15 +93,15 @@ namespace soen390_team01.Models
                     InventoryFilters = filters;
                     break;
                 case "bike":
-                    BikeList = filters.AnyActive() ? GetFilteredProductList<Bike>(filters) : GetAllBikes();
+                    BikeList = filters.AnyActive() ? GetFilteredProductList<Bike>(filters, "Bike.BikeParts") : GetAllBikes();
                     BikeFilters = filters;
                     break;
                 case "part":
-                    PartList = filters.AnyActive() ? GetFilteredProductList<Part>(filters) : GetAllParts();
+                    PartList = filters.AnyActive() ? GetFilteredProductList<Part>(filters, "Part.PartMaterials") : GetAllParts();
                     PartFilters = filters;
                     break;
                 case "material":
-                    MaterialList = filters.AnyActive() ? GetFilteredProductList<Material>(filters) : GetAllMaterials();
+                    MaterialList = filters.AnyActive() ? GetFilteredProductList<Material>(filters, "") : GetAllMaterials();
                     MaterialFilters = filters;
                     break;
             }
@@ -326,12 +326,12 @@ namespace soen390_team01.Models
             }
         }
 
-        private List<T> GetFilteredProductList<T>(Filters filters) where T : Item
+        private List<T> GetFilteredProductList<T>(Filters filters, string includeString) where T : Item
         {
             try
             {
                 return _context.Set<T>("soen390_team01.Data.Entities." + CultureInfo.CurrentCulture.TextInfo.ToTitleCase(filters.Table))
-                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).AsNoTracking().ToList();
+                    .FromSqlRaw(ProductQueryBuilder.FilterProduct(filters)).Include(includeString).AsNoTracking().ToList();
             }
             catch (Exception)
             {
