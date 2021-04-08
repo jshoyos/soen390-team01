@@ -1,4 +1,31 @@
-﻿div.inventory-view::after {
+﻿@media only screen and (max-width: 1100px) {
+    #filter {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 1100px) {
+    #mobileButtons {
+        display: none;
+    }
+}
+@media screen and (max-width: 1290px) {
+    .userDesktop {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1289px) {
+    .userMobile {
+        display: none;
+    }
+}
+.collapButton1 {
+    width: 25%;
+    margin: 10px 0 10px 15px;
+}
+
+div.inventory-view::after {
     visibility: hidden;
     display: block;
     font-size: 0;
@@ -24,6 +51,7 @@ div.quantity::after {
     height: 0;
 }
 
+
 * html .clearfix {
     zoom: 1;
 }
@@ -32,40 +60,25 @@ div.quantity::after {
     zoom: 1;
 }
 
-div.inventory-view {
-    border-style: solid;
-    border-width: thin;
-    border-color: lightgrey;
-    padding: 10px;
-    border-radius: 8px;
-}
 
-div.bike-components {
-    float: left;
-    overflow: scroll;
-}
 
 .filter-data {
     text-align: center;
 }
 
 div.filter-data {
-    border-style: solid;
-    border-color: lightgrey;
+    width: 100%;
+    border: 1px solid #1861ac;
+    border-radius: 5px;
     padding: 10px;
-    border-width: thin;
-    float: right;
 }
 input.filter-data {
-    border-style: solid;
-    border-color: lightgrey;
-    padding: 10px;
-    border-width: thin;
-    float: right;
+    border: 1px solid #1861ac;
 }
 .tab {
     overflow: hidden;
-    border: 1px solid #ccc;
+    border: 1px solid #1861ac;
+    border-radius: 5px;
     background-color: white;
 }
 
@@ -77,26 +90,35 @@ input.filter-data {
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
-    width: 33%;
-}
-
-.bike-components {
-    width: 78.7%;
 }
 
 .tablinks:hover {
-    background-color: #ccc;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    transition: 0.3s;
 }
 
 .tablinks.active {
-    background-color: #ccc;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    color: #fff;
 }
+
+.tabTitle {
+    text-align: center;
+    padding: 7px;
+}
+
 
 .tabcontent {
     display: none;
     padding: 6px 12px;
+    border: 1px solid #1861ac;
+    border-radius: 5px;
     border-top: none;
-    height: 400px;
+    overflow: scroll;
+    height: 50%;
 }
 
 .scroll {

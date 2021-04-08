@@ -6,10 +6,10 @@
 <link rel="stylesheet" href="\css\Filter.css">
 
 <div id="@Model.Table-filter-body">
-    <h2>Filter</h2>
+    <h3 style="border-bottom: 1px solid #1861ac;">Filter</h3>
     @foreach (var filter in Model.List)
     {
-        <p><strong>@filter.DisplayColumn</strong></p>
+        <h6><strong>@filter.DisplayColumn</strong></h6>
         if (filter.GetType() == typeof(SelectFilter))
         {
             <select onchange="passingFilters(@JsonConvert.SerializeObject(@Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { SelectInput: { SelectValue: this.value, PossibleValues: @JsonConvert.SerializeObject(((SelectFilter)filter).PossibleSelectValues) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))">
@@ -50,40 +50,50 @@
         }
         else if (filter.GetType() == typeof(StringFilter))
         {
-            <input type="text" value="@(((StringFilter)filter).Value)" onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { StringValue: this.value })" />
+            <input 
+                   style="width: 100%; padding:2px;"
+                   type="text" value="@(((StringFilter)filter).Value)" onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { StringValue: this.value })" />
             <br /><br />
         }
         else if (filter.GetType() == typeof(RangeFilter))
         {
-            <input type="number" class="price-text" min="-1000000" max="1000000"
-                   value="@(((RangeFilter)filter).Min)"
-                   onkeyup="enforceMinMax(this)"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(this.value), MaxValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Max)) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
-            <span>To</span>
-            <input type="number" class="price-text" min="-1000000" max="1000000"
-                   value="@(((RangeFilter)filter).Max)"
-                   onkeyup="enforceMinMax(this)"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
-            <br /><br />
+            <div class="row mx-auto justify-content-center">
+                <input 
+                        style="width: 40%; padding:2px;"
+                        type="number" class="price-text" min="-1000000" max="1000000"
+                        value="@(((RangeFilter)filter).Min)"
+                        onkeyup="enforceMinMax(this)"
+                        onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(this.value), MaxValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Max)) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
+                <h6 style=" text-align: center; padding: 2px;">To</h6>
+                <input 
+                        style="width: 40%; padding:2px;"
+                        type="number" class="price-text" min="-1000000" max="1000000"
+                        value="@(((RangeFilter)filter).Max)"
+                        onkeyup="enforceMinMax(this)"
+                        onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { RangeInput: { MinValue: cleanNumberValue(@JsonConvert.SerializeObject(((RangeFilter)filter).Min)), MaxValue: cleanNumberValue(this.value) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
+            </div>
+            <br />
         }
         else if (filter.GetType() == typeof(DateRangeFilter))
         {
             <div>From</div>
-            <input style="max-width: 200px;"
-                   type="datetime-local"
-                   value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
-            <br />
+            <input 
+                style="width: 100%; padding:5px;"
+                type="datetime-local"
+                value="@(((DateRangeFilter)filter).MinDate != null ? ((DateTime)((DateRangeFilter)filter).MinDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(this.value, true), MaxValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MaxDate)), false) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
+            <br/>
             <div>To</div>
-            <input style="max-width: 200px;"
-                   type="datetime-local"
-                   value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
-                   onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
-            <br /><br />
+            <input 
+                style="width: 100%; padding:5px;"
+                type="datetime-local"
+                value="@(((DateRangeFilter)filter).MaxDate != null ? ((DateTime)((DateRangeFilter)filter).MaxDate!).AddHours(-5).ToString("yyyy-MM-ddTHH:mm:ss") : "")"
+                onchange="passingFilters(@JsonConvert.SerializeObject(Model), @JsonConvert.SerializeObject(filter.DisplayColumn), { DateRangeInput: { MinValue: cleanDateValue(@(JsonConvert.SerializeObject(((DateRangeFilter)filter).MinDate)), false), MaxValue: cleanDateValue(this.value, true) } }, @JsonConvert.SerializeObject(((bool?) ViewData["Mobile"] ?? false)))" />
+            <br/><br/>
         }
     }
-    <br/>
-    <input type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
+    <br /><br />
+    <input class="btn btn-outline-primary" type="button" value="Clear" onclick="refreshFilter(@JsonConvert.SerializeObject(Model.Tab), @JsonConvert.SerializeObject((bool?) ViewData["Mobile"] ?? false)), showFilter(@JsonConvert.SerializeObject(Model.Tab))">
     <br /><br />
 
     <button class="btn btn-primary" onclick="generateCsv('@(Model.Tab + "TableCsv")');">Generate @(System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Model.Tab)) Report</button>

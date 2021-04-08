@@ -1,5 +1,5 @@
 ﻿.price-text {
-    width: 60px;
+    width:100%;
     text-align: center;
     -moz-appearance: textfield !important;
 }
