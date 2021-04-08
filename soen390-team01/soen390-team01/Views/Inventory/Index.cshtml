@@ -61,7 +61,6 @@
                 }
             });
         };
-<<<<<<< HEAD
 
         function generateCsv(table_id)
         {
@@ -91,7 +90,6 @@
         function addBikePart(bikeId) {
             var form = $("#form-BikePart-" + bikeId);
             var formData = form.serialize();
-            console.log(form);
             var partId = form[0][0].value;
 
             formData += "&BikeId=" + bikeId;
@@ -133,7 +131,6 @@
         function addPartMaterial(partId) {
             var form = $("#form-PartMaterial-" + partId);
             var formData = form.serialize();
-            console.log(form);
             var materialId = form[0][0].value;
 
             formData += "&PartId=" + partId;
@@ -171,8 +168,7 @@
                 }
             });
         };
-=======
->>>>>>> a8d0c38f65d93080ce5ee7246f8a458dbe119c90
+
     </script>
     <script>
         function openTab(evt, tableName) {
