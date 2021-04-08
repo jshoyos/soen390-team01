@@ -6,9 +6,9 @@
 }
 
 <div class="tableFixHead">
-    <table class="container" id="productionTableCsv" aria-label="pt">
+    <table class="table table-bordered table-hover" id="productionTableCsv" aria-label="pt">
         <thead>
-            <tr class="row pt-4 pb-4 h-100 text-center">
+            <tr>
                 @{
                     if (anyStopped)
                     {
@@ -16,32 +16,32 @@
                         </th>
                     }
                 }
-                <th class="col" scope="col">ID</th>
-                <th class="col" scope="col">Status</th>
-                <th class="col" scope="col">Quantity</th>
-                <th class="col" scope="col">Added</th>
-                <th class="col" scope="col">Updated</th>                
+                <th scope="col">ID</th>
+                <th scope="col">Status</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Added</th>
+                <th scope="col">Updated</th>                
             </tr>
         </thead>
         <tbody>
             @foreach (var production in Model)
             {
-            <tr class="row pt-4 pb-4 h-100 text-center">
-                @if (anyStopped)
-                {
-                    <td class="col-1">
-                        @if (production.State == "stopped")
-                        {
-                            <button class="btn btn-outline-secondary" onclick="location.href='@Url.Action("FixProduction", "Assembly", new { productionId = production.ProductionId })'">Fix</button>
-                        }
-                    </td>
-                }
-                <td class="col">@production.BikeId</td>
-                <td class="col">@production.State</td>
-                <td class="col">@production.Quantity</td>
-                <td class="col">@production.Added.DateTimeLocalString()</td>
-                <td class="col">@production.Modified.DateTimeLocalString()</td>                
-            </tr>
+                <tr>
+                    @if (anyStopped)
+                    {
+                        <td class="col-1">
+                            @if (production.State == "stopped")
+                            {
+                                <button class="btn btn-outline-secondary" onclick="location.href='@Url.Action("FixProduction", "Assembly", new { productionId = production.ProductionId })'">Fix</button>
+                            }
+                        </td>
+                    }
+                    <td>@production.BikeId</td>
+                    <td>@production.State</td>
+                    <td>@production.Quantity</td>
+                    <td>@production.Added.DateTimeLocalString()</td>
+                    <td>@production.Modified.DateTimeLocalString()</td>
+                </tr>
             }
         </tbody>
     </table>

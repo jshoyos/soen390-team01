@@ -36,7 +36,7 @@
 
     <div class="row">
         <!--Table with tabs-->
-        <div class="col-lg-8 mx-lg-auto" id="LHS">
+        <div class="col-lg-8 mx-lg-auto" id="LHS" style="overflow: scroll;">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 50%;text-align:center;">
                     <a class="nav-link @(Model.SelectedTab == "order" ? "active" : "")" id="orderTab" data-toggle="pill" href="#orderTabContent" role="tab" aria-controls="orderTabContent" aria-selected="@(Model.SelectedTab == "order" || Model.SelectedTab == "Order" ? "true": "false")" onclick="hideButton(),showFilter('order',true);">
