@@ -15,12 +15,12 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td scope="col">@item.ItemId</td>
-            <td scope="col">@item.Name</td>
-            <td scope="col">@item.Price</td>
-            <td scope="col">@item.Grade</td>
-            <td scope="col">@item.Added.DateTimeLocalString()</td>
-            <td scope="col">@item.Updated.DateTimeLocalString()</td>
+            <td>@item.ItemId</td>
+            <td>@item.Name</td>
+            <td>@item.Price</td>
+            <td>@item.Grade</td>
+            <td>@item.Added.DateTimeLocalString()</td>
+            <td>@item.Updated.DateTimeLocalString()</td>
         </tr>
     }
 </table>

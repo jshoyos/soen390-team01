@@ -2,22 +2,22 @@
 @using soen390_team01.Data
 @model List<soen390_team01.Data.Entities.Payment>
 
-<table class="container" id="receivableTableCsv" aria-label="rt">
-    <tr class="row pt-4 pb-4 h-100 text-center">
-        <th class="col" scope="col">ID</th>
-        <th class="col" scope="col">Status</th>
-        <th class="col" scope="col">Value</th>
-        <th class="col" scope="col">Added</th>
-        <th class="col" scope="col">Updated</th>
+<table class="table table-bordered table-hover" id="receivableTableCsv" aria-label="rt" style="overflow: scroll;">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Value</th>
+        <th scope="col">Added</th>
+        <th scope="col">Updated</th>
     </tr>
     @foreach (var rec in Model)
     {
-        <tr class="row pt-4 pb-4 h-100 text-center">
-            <td class="col">@rec.PaymentId</td>
-            <td class="col">@rec.State</td>
-            <td class="col">@rec.Amount</td>
-            <td class="col">@rec.Added.DateTimeLocalString()</td>
-            <td class="col">@rec.Updated.DateTimeLocalString()</td>
+        <tr>
+            <td>@rec.PaymentId</td>
+            <td>@rec.State</td>
+            <td>@rec.Amount</td>
+            <td>@rec.Added.DateTimeLocalString()</td>
+            <td>@rec.Updated.DateTimeLocalString()</td>
         </tr>
     }
 </table>

@@ -12,8 +12,8 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-12">
-                <button class="btn btn-outline-primary filterButton" data-toggle="modal" data-target="#filterModal" id="filter-button" >FILTER</button>
+            <div class="col-4">
+                <button class="btn btn-outline-primary p-2" data-toggle="modal" data-target="#filterModal" id="filter-button">Filter</button>
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
             @{await Html.RenderPartialAsync("Graph", Model.Receivables, new ViewDataDictionary(ViewData) { { "type", "receivable" } });}
         </div>
         <!--Table with tabs-->
-        <div class="col-lg-8 mx-lg-auto" id="LHS">
+        <div class="col-lg-8 mx-lg-auto" id="LHS" style="overflow: scroll;">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li style="width: 33.3%;text-align:center;" onclick="showFilter('payment', true)">
                     <a class="nav-link @(Model.SelectedTab == "payment" ? "active": "")" id="allTab" data-toggle="pill" href="#allTabContent" role="tab" aria-controls="allTabContent" aria-selected="@(Model.SelectedTab == "payment" ? "true": "false")">
