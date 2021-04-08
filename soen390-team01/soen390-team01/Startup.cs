@@ -13,6 +13,8 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using soen390_team01.Controllers;
+using System.Net.Mail;
+using System.Net;
 
 namespace soen390_team01
 {
@@ -28,6 +30,8 @@ namespace soen390_team01
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<EmailClient>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<ProductionClient>();
             services.AddTransient<Random>();
             services.AddTransient<ProductionInventoryValidator>();
@@ -35,6 +39,7 @@ namespace soen390_team01
             services.AddTransient<IProductionReportGenerator, CsvProductionReportGenerator>();
             services.AddTransient<IProductionReportGenerator, WebProductionReportGenerator>();
 
+            
             services.AddSingleton<AuthenticationFirebaseService>();
             services.AddSingleton<IProductionService,ProductionService>();
             services.AddSingleton<IInventoryService, InventoryModel>();
@@ -42,7 +47,7 @@ namespace soen390_team01
             services.AddSingleton<IUserManagementService, UserManagementModel>();
             services.AddSingleton<ITransferService, TransfersModel>();
             services.AddSingleton<IAssemblyService, AssemblyModel>();
-            services.AddSingleton(s => new CsvProductionProcessor("productions", new ProductionController(s.GetService<IAssemblyService>(), s.GetService<ILogger<ProductionController>>())));
+            services.AddSingleton(s => new CsvProductionProcessor("productions", new ProductionController(s.GetService<IAssemblyService>(), s.GetService<ILogger<ProductionController>>(), s.GetService<IEmailService>())));
             services.AddSingleton(s => new EncryptionService(
                 Environment.GetEnvironmentVariable("ENCRYPTED_KEY")
             ));

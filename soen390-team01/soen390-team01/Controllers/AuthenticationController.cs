@@ -4,6 +4,8 @@ using soen390_team01.Data.Entities;
 using soen390_team01.Data.Exceptions;
 using soen390_team01.Models;
 using soen390_team01.Services;
+using System;
+using System.Linq;
 
 namespace soen390_team01.Controllers
 {
@@ -109,6 +111,7 @@ namespace soen390_team01.Controllers
         {
             return View();
         }
+                
 
         /// <summary>
         /// Authenticates the user with the help of the firebase services
@@ -125,6 +128,8 @@ namespace soen390_team01.Controllers
             }
             return null;
         }
+
+        
 
         #endregion
     }
