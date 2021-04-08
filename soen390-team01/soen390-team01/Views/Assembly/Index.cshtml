@@ -47,6 +47,42 @@
             });
         };
 
+        function showAssemblyStatus(id, status) {
+            $("#currentId").text(id);
+            $("#currentStatus").text(status);
+
+        };
+
+        function updateAssemblyStatus() {
+            var id = $("#currentId").text();
+            var status = $("#currentStatus").html();
+            location.reload();
+            $.ajax({
+                url: '@Url.Action("update", "Assembly")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    "Id": id,
+                    "Status": status
+                }),
+                dataType: 'html',
+                success: function (result) {
+                    $('.assembly-view').html(result);
+                }
+            });
+
+        }
+
+        $(function () {
+
+            $(".dropdown-menu li a").click(function () {
+
+                $("#currentStatus").text($(this).text());
+                $("currentStatus").val($(this).text());
+            });
+
+        });
+
     </script>
 </head>
 

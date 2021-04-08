@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace soen390_team01.Controllers
     public class AssemblyController : Controller
     {
         private readonly IAssemblyService _model;
-        private readonly ILogger<AssemblyController> _log;
+        private readonly ILogger<AssemblyController> _log;       
 
         public AssemblyController(IAssemblyService model, ILogger<AssemblyController> log)
         {

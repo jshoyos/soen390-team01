@@ -6,6 +6,7 @@ using soen390_team01.Data.Queries;
 using soen390_team01.Models;
 using soen390_team01.Services;
 
+
 namespace soen390_team01.Controllers
 {
     [Authorize]
@@ -13,11 +14,13 @@ namespace soen390_team01.Controllers
     {
         private readonly IAccountingService _model;
         private readonly ILogger<AccountingController> _log;
+        private readonly IEmailService _emailService;
 
-        public AccountingController(IAccountingService model, ILogger<AccountingController> log)
+        public AccountingController(IAccountingService model, ILogger<AccountingController> log, IEmailService emailService)
         {
             _model = model;
             _log = log;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -71,6 +74,30 @@ namespace soen390_team01.Controllers
 
             _model.SelectedTab = mobileFiltersInput.Filters.Tab;
 
+            return PartialView("AccountingBody", _model);
+        }
+
+        [HttpPost]
+        public IActionResult Update([FromBody] ReceivableUpdateModel receivableUpdateModel)
+        {
+            var id = receivableUpdateModel.Id;
+            var status = receivableUpdateModel.Status;
+
+            try
+            {
+                string name = _model.SetReceivableState(id, status);
+                if (status == "completed")
+                {
+                    var text = "The receivable payment with id " + id + " from " + name + " has been completed.";
+                    _emailService.SendEmail(text, Roles.Accountant);
+                }
+            }
+            catch (DataAccessException e)
+            {
+                TempData["errorMessage"] = e.ToString();
+            }
+
+            _model.SelectedTab = "receivable";
             return PartialView("AccountingBody", _model);
         }
     }

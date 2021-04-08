@@ -6,9 +6,9 @@
 }
 
 <div class="tableFixHead">
-    <table class="container" id="productionTableCsv" aria-label="pt">
+    <table class="table table-bordered table-hover" id="productionTableCsv" aria-label="pt">
         <thead>
-            <tr class="row pt-4 pb-4 h-100 text-center">
+            <tr>
                 @{
                     if (anyStopped)
                     {
@@ -16,17 +16,17 @@
                         </th>
                     }
                 }
-                <th class="col" scope="col">ID</th>
-                <th class="col" scope="col">Status</th>
-                <th class="col" scope="col">Quantity</th>
-                <th class="col" scope="col">Added</th>
-                <th class="col" scope="col">Updated</th>
+                <th scope="col">ID</th>
+                <th scope="col">Status</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Added</th>
+                <th scope="col">Updated</th>                
             </tr>
         </thead>
         <tbody>
             @foreach (var production in Model)
             {
-                <tr class="row pt-4 pb-4 h-100 text-center">
+                <tr>
                     @if (anyStopped)
                     {
                         <td class="col-1">

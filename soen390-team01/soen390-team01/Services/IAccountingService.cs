@@ -30,6 +30,7 @@ namespace soen390_team01.Services
 
         public void ResetReceivables();
         public void FilterSelectedTab(Filters filters);
+        string SetReceivableState(int id, string status);
     }
 
 }

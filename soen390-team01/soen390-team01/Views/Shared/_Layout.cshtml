@@ -28,6 +28,22 @@
             });
         };
 
+        function hideReceivablesModal() {
+            $("#edit_receivablesModal").removeClass("show");
+            $(".modal-backdrop").remove();
+            $("#edit_receivablesModal").fadeOut(200, () => {
+                $("#edit_receivablesModal").hide();
+            });
+        };
+
+        function hideAssemblyModal() {
+            $("#edit_assemblyModal").removeClass("show");
+            $(".modal-backdrop").remove();
+            $("#edit_assemblyModal").fadeOut(200, () => {
+                $("#edit_assemblyModal").hide();
+            });
+        };
+
         function showFilter(type, mobile) {
             var filters = $(".filter-data");
             for (var i = 0; i < filters.length; i++) {
@@ -179,7 +195,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Assembly" asp-action="Index">Assembly</a>
-                        </li>
+                        </li>                       
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a>
                         </li>
